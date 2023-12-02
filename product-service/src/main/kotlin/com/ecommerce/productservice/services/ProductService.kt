@@ -1,5 +1,6 @@
 package com.ecommerce.productservice.services
 
+import com.ecommerce.productservice.constants.MessageResponses
 import com.ecommerce.productservice.dto.requests.ProductRequestBody
 import com.ecommerce.productservice.exceptions.ProductNotFound
 import com.ecommerce.productservice.models.Product
@@ -26,6 +27,6 @@ class ProductService(private val productRepository: ProductRepository) {
     fun getProductBy(id: Int): Product {
         return productRepository
             .findById(id)
-            .orElseThrow { throw ProductNotFound("Product not found with id $id") }
+            .orElseThrow { throw ProductNotFound("${MessageResponses.PRODUCT_NOT_FOUND} with id $id") }
     }
 }

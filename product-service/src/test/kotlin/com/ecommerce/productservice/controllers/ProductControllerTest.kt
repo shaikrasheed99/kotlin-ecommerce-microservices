@@ -45,9 +45,11 @@ internal class ProductControllerTest {
             .withInitScript("create-products-table.sql")
     }
 
+    private lateinit var product: Product
+
     @BeforeEach
     internal fun setUp() {
-        Product(
+        product = Product(
             id = 1,
             name = "test name",
             description = "test description",
@@ -138,5 +140,23 @@ internal class ProductControllerTest {
             .andExpect(jsonPath("$.status").value(StatusResponses.SUCCESS.name))
             .andExpect(jsonPath("$.code").value(HttpStatus.OK.name))
             .andExpect(jsonPath("$.message").value(MessageResponses.PRODUCT_FETCHED_SUCCESS.message))
+    }
+
+    @Test
+    internal fun shouldBeAbleToReturnProductById() {
+        mockMvc.perform(get("/products/{id}", product.id))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.status").value(StatusResponses.SUCCESS.name))
+            .andExpect(jsonPath("$.code").value(HttpStatus.OK.name))
+            .andExpect(jsonPath("$.message").value(MessageResponses.PRODUCT_FETCHED_SUCCESS.message))
+    }
+
+    @Test
+    internal fun shouldBeAbleToReturnErrorWhenProductIsNotFoundById() {
+        mockMvc.perform(get("/products/{id}", 100))
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.status").value(StatusResponses.ERROR.name))
+            .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.name))
+            .andExpect(jsonPath("$.message").value("${MessageResponses.PRODUCT_NOT_FOUND} with id 100"))
     }
 }
