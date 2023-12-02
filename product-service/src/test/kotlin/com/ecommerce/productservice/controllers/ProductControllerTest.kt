@@ -3,7 +3,11 @@ package com.ecommerce.productservice.controllers
 import com.ecommerce.productservice.constants.MessageResponses
 import com.ecommerce.productservice.constants.StatusResponses
 import com.ecommerce.productservice.dto.requests.ProductRequestBody
+import com.ecommerce.productservice.models.Product
+import com.ecommerce.productservice.models.ProductRepository
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -13,6 +17,7 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -29,12 +34,30 @@ internal class ProductControllerTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @Autowired
+    private lateinit var productRepository: ProductRepository
+
     companion object {
         @Container
         @ServiceConnection
         private val postgreSQLContainer = PostgreSQLContainer("postgres:latest")
             .withDatabaseName("products")
             .withInitScript("create-products-table.sql")
+    }
+
+    @BeforeEach
+    internal fun setUp() {
+        Product(
+            id = 1,
+            name = "test name",
+            description = "test description",
+            price = BigDecimal(10.20)
+        ).also(productRepository::save)
+    }
+
+    @AfterEach
+    internal fun tearDown() {
+        productRepository.deleteAll()
     }
 
     @Test
@@ -106,5 +129,14 @@ internal class ProductControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(productRequestBodyJson)
         ).andExpect(status().isBadRequest)
+    }
+
+    @Test
+    internal fun shouldBeAbleToReturnAllProducts() {
+        mockMvc.perform(get("/products"))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.status").value(StatusResponses.SUCCESS.name))
+            .andExpect(jsonPath("$.code").value(HttpStatus.OK.name))
+            .andExpect(jsonPath("$.message").value(MessageResponses.PRODUCT_FETCHED_SUCCESS.message))
     }
 }

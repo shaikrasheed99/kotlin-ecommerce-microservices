@@ -3,6 +3,7 @@ package com.ecommerce.productservice.services
 import com.ecommerce.productservice.dto.requests.ProductRequestBody
 import com.ecommerce.productservice.models.Product
 import com.ecommerce.productservice.models.ProductRepository
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.extension.ExtendWith
@@ -41,5 +42,25 @@ internal class ProductServiceTest {
         assertDoesNotThrow { productService.createProduct(productRequestBody) }
 
         verify(productRepository, times(1)).save(any(Product::class.java))
+    }
+
+    @Test
+    internal fun shouldBeAbleToReturnListOfProducts() {
+        val products = listOf<Product>(
+            Product(
+                id = 1,
+                name = "test name",
+                description = "test description",
+                price = BigDecimal(10.20)
+            )
+        )
+
+        `when`(productRepository.findAll()).thenReturn(products)
+
+        val listOfProducts = productService.getAllProducts()
+
+        assertEquals(listOfProducts.size, 1)
+
+        verify(productRepository, times(1)).findAll()
     }
 }
