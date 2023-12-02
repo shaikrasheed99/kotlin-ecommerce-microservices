@@ -16,7 +16,9 @@ class ProductController(private val productService: ProductService) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @PostMapping
-    fun createProduct(@Valid @RequestBody productRequestBody: ProductRequestBody): ResponseEntity<SuccessResponse> {
+    fun createProduct(
+        @Valid @RequestBody productRequestBody: ProductRequestBody
+    ): ResponseEntity<SuccessResponse> {
         val newProduct = productService.createProduct(productRequestBody)
 
         val message = MessageResponses.PRODUCT_CREATION_SUCCESS.message
@@ -35,6 +37,20 @@ class ProductController(private val productService: ProductService) {
         val successResponse = createSuccessResponse(message, products)
 
         logger.info("$message of length ${products.size}")
+
+        return ResponseEntity.ok(successResponse)
+    }
+
+    @GetMapping("/{id}")
+    fun getAllProducts(
+        @PathVariable("id") productId: Int
+    ): ResponseEntity<SuccessResponse> {
+        val product = productService.getProductBy(productId)
+
+        val message = MessageResponses.PRODUCT_FETCHED_SUCCESS.message
+        val successResponse = createSuccessResponse(message, product)
+
+        logger.info("$message with id ${product.id}")
 
         return ResponseEntity.ok(successResponse)
     }

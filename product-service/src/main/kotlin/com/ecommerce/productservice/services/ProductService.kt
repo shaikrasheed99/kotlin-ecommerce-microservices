@@ -1,6 +1,7 @@
 package com.ecommerce.productservice.services
 
 import com.ecommerce.productservice.dto.requests.ProductRequestBody
+import com.ecommerce.productservice.exceptions.ProductNotFound
 import com.ecommerce.productservice.models.Product
 import com.ecommerce.productservice.models.ProductRepository
 import org.springframework.stereotype.Service
@@ -20,5 +21,11 @@ class ProductService(private val productRepository: ProductRepository) {
 
     fun getAllProducts(): MutableList<Product> {
         return productRepository.findAll()
+    }
+
+    fun getProductBy(id: Int): Product {
+        return productRepository
+            .findById(id)
+            .orElseThrow { throw ProductNotFound("Product not found with id $id") }
     }
 }
