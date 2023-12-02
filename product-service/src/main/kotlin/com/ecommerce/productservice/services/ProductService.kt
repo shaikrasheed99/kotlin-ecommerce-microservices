@@ -17,4 +17,8 @@ class ProductService(private val productRepository: ProductRepository) {
 
         return productRepository.save(newProduct)
     }
+
+    fun getAllProducts(): MutableList<Product> {
+        return productRepository.findAll()
+    }
 }

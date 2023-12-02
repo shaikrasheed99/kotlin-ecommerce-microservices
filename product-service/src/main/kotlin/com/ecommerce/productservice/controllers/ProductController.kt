@@ -8,10 +8,7 @@ import com.ecommerce.productservice.utils.createSuccessResponse
 import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/products")
@@ -26,6 +23,18 @@ class ProductController(private val productService: ProductService) {
         val successResponse = createSuccessResponse(message, newProduct)
 
         logger.info("$message with id ${newProduct.id}")
+
+        return ResponseEntity.ok(successResponse)
+    }
+
+    @GetMapping
+    fun getAllProducts(): ResponseEntity<SuccessResponse> {
+        val products = productService.getAllProducts()
+
+        val message = MessageResponses.PRODUCT_FETCHED_SUCCESS.message
+        val successResponse = createSuccessResponse(message, products)
+
+        logger.info("$message of length ${products.size}")
 
         return ResponseEntity.ok(successResponse)
     }
