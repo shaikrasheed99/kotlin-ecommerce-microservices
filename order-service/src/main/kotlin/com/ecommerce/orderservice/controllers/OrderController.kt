@@ -5,6 +5,7 @@ import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.SuccessResponse
 import com.ecommerce.orderservice.services.OrderService
 import com.ecommerce.orderservice.utils.createSuccessResponse
+import jakarta.validation.Valid
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -19,7 +20,7 @@ class OrderController(private val orderService: OrderService) {
 
     @PostMapping
     fun createOrder(
-        @RequestBody orderRequestBody: OrderRequestBody
+        @Valid @RequestBody orderRequestBody: OrderRequestBody
     ): ResponseEntity<SuccessResponse> {
         val newOrder = orderService.createOrder(orderRequestBody)
 
