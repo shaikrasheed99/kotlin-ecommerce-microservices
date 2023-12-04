@@ -1,6 +1,9 @@
 package com.ecommerce.orderservice.exceptions
 
+import com.ecommerce.orderservice.constants.StatusResponses
+import com.ecommerce.orderservice.dto.responses.SuccessResponse
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -23,5 +26,22 @@ class ExceptionHandlerController {
         }
 
         return ResponseEntity.badRequest().body(errors)
+    }
+
+    @ExceptionHandler(InventoryNotFoundException::class)
+    fun handleInventoryNotFoundException(
+        inventoryNotFoundException: InventoryNotFoundException
+    ): ResponseEntity<SuccessResponse> {
+        val response = inventoryNotFoundException.message?.let {
+            logger.info(it)
+            SuccessResponse(
+                status = StatusResponses.ERROR,
+                code = HttpStatus.NOT_FOUND,
+                message = it,
+                data = null
+            )
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response)
     }
 }

@@ -27,7 +27,7 @@ class OrderController(private val orderService: OrderService) {
         val message = MessageResponses.ORDER_CREATION_SUCCESS.message
         val successResponse = createSuccessResponse(message, newOrder)
 
-        logger.info("$message with id ${newOrder.id}")
+        logger.info("$message with id ${newOrder?.id}")
 
         return ResponseEntity.ok(successResponse)
     }
