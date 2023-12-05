@@ -1,10 +1,11 @@
 package com.ecommerce.inventoryservice.controllers
 
 import com.ecommerce.inventoryservice.constants.MessageResponses
-import com.ecommerce.inventoryservice.dto.responses.SuccessResponse
+import com.ecommerce.inventoryservice.constants.StatusResponses
+import com.ecommerce.inventoryservice.dto.responses.Response
 import com.ecommerce.inventoryservice.services.InventoryService
-import com.ecommerce.inventoryservice.utils.createSuccessResponse
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,14 +20,19 @@ class InventoryController(private val inventoryService: InventoryService) {
     @GetMapping("/{sku-code}")
     fun getInventoryBy(
         @PathVariable("sku-code") skuCode: String
-    ): ResponseEntity<SuccessResponse> {
+    ): ResponseEntity<Response> {
         val inventory = inventoryService.getInventoryBy(skuCode)
 
         val message = MessageResponses.INVENTORY_FETCHED_SUCCESS.message
-        val successResponse = createSuccessResponse(message, inventory)
+        val response = Response(
+            status = StatusResponses.SUCCESS,
+            code = HttpStatus.OK,
+            message = message,
+            data = inventory
+        )
 
         logger.info("$message of skuCode $skuCode")
 
-        return ResponseEntity.ok(successResponse)
+        return ResponseEntity.ok(response)
     }
 }

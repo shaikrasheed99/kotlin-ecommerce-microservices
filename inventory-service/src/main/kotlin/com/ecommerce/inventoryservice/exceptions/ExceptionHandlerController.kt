@@ -1,7 +1,7 @@
 package com.ecommerce.inventoryservice.exceptions
 
-import com.ecommerce.inventoryservice.dto.responses.ErrorResponse
-import com.ecommerce.inventoryservice.utils.createErrorResponse
+import com.ecommerce.inventoryservice.constants.StatusResponses
+import com.ecommerce.inventoryservice.dto.responses.Response
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,10 +15,15 @@ class ExceptionHandlerController {
     @ExceptionHandler(InventoryNotFoundException::class)
     fun handleInventoryNotFoundException(
         inventoryNotFoundException: InventoryNotFoundException
-    ): ResponseEntity<ErrorResponse> {
+    ): ResponseEntity<Response> {
         val errorResponse = inventoryNotFoundException.message?.let {
             logger.info(it)
-            createErrorResponse(HttpStatus.NOT_FOUND, it)
+            Response(
+                status = StatusResponses.ERROR,
+                code = HttpStatus.NOT_FOUND,
+                message = it,
+                data = null
+            )
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
