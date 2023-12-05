@@ -1,7 +1,7 @@
 package com.ecommerce.orderservice.exceptions
 
 import com.ecommerce.orderservice.constants.StatusResponses
-import com.ecommerce.orderservice.dto.responses.SuccessResponse
+import com.ecommerce.orderservice.dto.responses.Response
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -21,27 +21,33 @@ class ExceptionHandlerController {
         val fieldErrors = methodArgumentNotValidException.fieldErrors
 
         fieldErrors.forEach {
-            logger.info(it.field + it.defaultMessage)
+            logger.info(it.defaultMessage)
             errors[it.field] = it.defaultMessage
         }
 
         return ResponseEntity.badRequest().body(errors)
     }
 
-    @ExceptionHandler(InventoryNotFoundException::class)
-    fun handleInventoryNotFoundException(
-        inventoryNotFoundException: InventoryNotFoundException
-    ): ResponseEntity<SuccessResponse> {
-        val response = inventoryNotFoundException.message?.let {
+    @ExceptionHandler(
+        value = [
+            InsufficientInventoryQuantityException::class,
+            InventoryNotAvailableException::class,
+            InventoryServiceErrorException::class
+        ]
+    )
+    fun handleInventoryExceptions(
+        exception: Exception
+    ): ResponseEntity<Response> {
+        val response = exception.message?.let {
             logger.info(it)
-            SuccessResponse(
+            Response(
                 status = StatusResponses.ERROR,
-                code = HttpStatus.NOT_FOUND,
+                code = HttpStatus.INTERNAL_SERVER_ERROR,
                 message = it,
                 data = null
             )
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response)
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response)
     }
 }
