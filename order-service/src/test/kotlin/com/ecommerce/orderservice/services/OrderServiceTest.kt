@@ -129,13 +129,6 @@ internal class OrderServiceTest {
             quantity = 1
         )
 
-        val inventoryNotAvailableResponse = Response(
-            status = StatusResponses.ERROR,
-            code = HttpStatus.NOT_FOUND,
-            message = "inventory not available",
-            data = null
-        )
-
         mockCommonWebClientSetup()
         `when`(
             responseSpec.bodyToMono(any(Class::class.java))
