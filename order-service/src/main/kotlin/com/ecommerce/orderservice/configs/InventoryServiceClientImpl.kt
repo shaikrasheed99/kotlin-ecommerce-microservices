@@ -6,12 +6,12 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Component
 class InventoryServiceClientImpl(
-    private val webClient: WebClient
+    private val webClientBuilder: WebClient.Builder
 ) : InventoryServiceClient {
     override fun getInventoryBySkuCode(skuCode: String): Response? {
-        return webClient
+        return webClientBuilder.build()
             .get()
-            .uri("http://localhost:8082/inventory/{sku-code}", skuCode)
+            .uri("http://inventory-service/inventory/{sku-code}", skuCode)
             .retrieve()
             .bodyToMono(com.ecommerce.orderservice.dto.responses.Response::class.java)
             .block()
