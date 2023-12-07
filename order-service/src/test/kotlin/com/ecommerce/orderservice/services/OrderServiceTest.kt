@@ -1,5 +1,6 @@
 package com.ecommerce.orderservice.services
 
+import com.ecommerce.orderservice.configs.InventoryServiceClient
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
@@ -21,11 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import org.springframework.web.reactive.function.client.WebClientResponseException
-import reactor.core.publisher.Mono
 import java.math.BigDecimal
 import java.net.URI
 import java.util.*
@@ -36,13 +34,7 @@ internal class OrderServiceTest {
     private lateinit var orderRepository: OrderRepository
 
     @Mock
-    private lateinit var webClient: WebClient
-
-    @Mock
-    private lateinit var requestHeadersUriSpec: WebClient.RequestHeadersUriSpec<*>
-
-    @Mock
-    private lateinit var responseSpec: ResponseSpec
+    private lateinit var inventoryServiceClient: InventoryServiceClient
 
     @InjectMocks
     private lateinit var orderService: OrderService
@@ -74,11 +66,7 @@ internal class OrderServiceTest {
         )
 
         `when`(orderRepository.save(any(Order::class.java))).thenReturn(order)
-
-        mockCommonWebClientSetup()
-        `when`(
-            responseSpec.bodyToMono(any(Class::class.java))
-        ).thenReturn(Mono.just(inventorySuccessResponse))
+        `when`(inventoryServiceClient.getInventoryBySkuCode(order.skuCode)).thenReturn(inventorySuccessResponse)
 
         val createdOrder = orderService.createOrder(orderRequestBody)
 
@@ -90,6 +78,7 @@ internal class OrderServiceTest {
         }
 
         verify(orderRepository, times(1)).save(any(Order::class.java))
+        verify(inventoryServiceClient, times(1)).getInventoryBySkuCode(order.skuCode)
     }
 
     @Test
@@ -111,10 +100,7 @@ internal class OrderServiceTest {
             )
         )
 
-        mockCommonWebClientSetup()
-        `when`(
-            responseSpec.bodyToMono(any(Class::class.java))
-        ).thenReturn(Mono.just(insufficientQuantityResponse))
+        `when`(inventoryServiceClient.getInventoryBySkuCode(orderRequestBody.skuCode)).thenReturn(insufficientQuantityResponse)
 
         assertThrows<InsufficientInventoryQuantityException> {
             orderService.createOrder(orderRequestBody)
@@ -129,9 +115,8 @@ internal class OrderServiceTest {
             quantity = 1
         )
 
-        mockCommonWebClientSetup()
         `when`(
-            responseSpec.bodyToMono(any(Class::class.java))
+            inventoryServiceClient.getInventoryBySkuCode(orderRequestBody.skuCode)
         ).thenThrow(
             WebClientResponseException.create(
                 HttpStatus.NOT_FOUND.value(),
@@ -155,9 +140,8 @@ internal class OrderServiceTest {
             quantity = 1
         )
 
-        mockCommonWebClientSetup()
         `when`(
-            responseSpec.bodyToMono(any(Class::class.java))
+            inventoryServiceClient.getInventoryBySkuCode(orderRequestBody.skuCode)
         ).thenThrow(
             WebClientRequestException(
                 RuntimeException("test exception message"),
@@ -170,13 +154,5 @@ internal class OrderServiceTest {
         assertThrows<InventoryServiceErrorException> {
             orderService.createOrder(orderRequestBody)
         }
-    }
-
-    private fun mockCommonWebClientSetup() {
-        `when`(webClient.get()).thenReturn(requestHeadersUriSpec)
-        `when`(
-            requestHeadersUriSpec.uri(any(String::class.java), any(String::class.java))
-        ).thenReturn(requestHeadersUriSpec)
-        `when`(requestHeadersUriSpec.retrieve()).thenReturn(responseSpec)
     }
 }
