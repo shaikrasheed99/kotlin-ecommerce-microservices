@@ -9,14 +9,14 @@ import com.ecommerce.orderservice.models.OrderRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
+import org.mockserver.client.MockServerClient
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.integration.ClientAndServer.startClientAndServer
 import org.mockserver.model.HttpRequest.request
 import org.mockserver.model.HttpResponse.response
-import org.mockserver.model.MediaType.*
+import org.mockserver.model.MediaType.APPLICATION_JSON
 import org.mockserver.verify.VerificationTimes.exactly
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -24,16 +24,16 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.test.context.DynamicPropertyRegistry
-import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.testcontainers.containers.MockServerContainer
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import java.math.BigDecimal
-
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -54,12 +54,21 @@ internal class OrderControllerTest {
             .withInitScript("create-orders-table.sql")
 
         private val mockServer: ClientAndServer = startClientAndServer(8082)
+
+        private val mockServerContainer = MockServerContainer(
+            DockerImageName.parse("mockserver/mockserver:5.15.0")
+        ).apply { start() }
+
+        private val mockServerContainerClient = MockServerClient(
+            mockServerContainer.host, 8082
+        )
     }
 
     @AfterEach
     internal fun tearDown() {
         orderRepository.deleteAll()
         mockServer.reset()
+        mockServerContainerClient.reset()
     }
 
     @Test
@@ -188,7 +197,7 @@ internal class OrderControllerTest {
             )
         )
 
-        mockServer
+        mockServerContainerClient
             .`when`(
                 request()
                     .withMethod(HttpMethod.GET.name())
@@ -207,7 +216,7 @@ internal class OrderControllerTest {
                 .content(orderRequestBodyJson)
         ).andExpect(status().isInternalServerError)
 
-        mockServer.verify(
+        mockServerContainerClient.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
         )
@@ -232,7 +241,7 @@ internal class OrderControllerTest {
             )
         )
 
-        mockServer
+        mockServerContainerClient
             .`when`(
                 request()
                     .withMethod(HttpMethod.GET.name())
@@ -251,7 +260,7 @@ internal class OrderControllerTest {
                 .content(orderRequestBodyJson)
         ).andExpect(status().isInternalServerError)
 
-        mockServer.verify(
+        mockServerContainerClient.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
         )
