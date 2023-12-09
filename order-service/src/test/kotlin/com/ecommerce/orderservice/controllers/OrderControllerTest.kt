@@ -10,8 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.mockserver.client.MockServerClient
-import org.mockserver.integration.ClientAndServer
-import org.mockserver.integration.ClientAndServer.startClientAndServer
 import org.mockserver.model.HttpRequest.request
 import org.mockserver.model.HttpResponse.response
 import org.mockserver.model.MediaType.APPLICATION_JSON
@@ -24,6 +22,8 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -53,22 +53,28 @@ internal class OrderControllerTest {
             .withDatabaseName("orders")
             .withInitScript("create-orders-table.sql")
 
-        private val mockServer: ClientAndServer = startClientAndServer(8082)
-
         private val mockServerContainer = MockServerContainer(
             DockerImageName.parse("mockserver/mockserver:5.15.0")
         ).apply { start() }
 
-        private val mockServerContainerClient = MockServerClient(
-            mockServerContainer.host, 8082
+        private val mockServer = MockServerClient(
+            mockServerContainer.host,
+            mockServerContainer.serverPort
         )
+
+        @JvmStatic
+        @DynamicPropertySource
+        private fun configure(registry: DynamicPropertyRegistry) {
+            registry.add("inventory.service.url") {
+                "http://${mockServerContainer.host}:${mockServerContainer.serverPort}"
+            }
+        }
     }
 
     @AfterEach
     internal fun tearDown() {
         orderRepository.deleteAll()
         mockServer.reset()
-        mockServerContainerClient.reset()
     }
 
     @Test
@@ -97,8 +103,7 @@ internal class OrderControllerTest {
         mockServer
             .`when`(
                 request()
-                    .withMethod("GET")
-                    .withLocalAddress("http://localhost:8082")
+                    .withMethod(HttpMethod.GET.name())
                     .withPath("/inventory/.*")
             )
             .respond(
@@ -118,7 +123,7 @@ internal class OrderControllerTest {
             .andExpect(jsonPath("$.message").value(MessageResponses.ORDER_CREATION_SUCCESS.message))
 
         mockServer.verify(
-            request().withMethod("GET").withPath("/inventory/.*"),
+            request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
         );
     }
@@ -197,11 +202,10 @@ internal class OrderControllerTest {
             )
         )
 
-        mockServerContainerClient
+        mockServer
             .`when`(
                 request()
                     .withMethod(HttpMethod.GET.name())
-                    .withLocalAddress("http://localhost:8082")
                     .withPath("/inventory/.*")
             ).respond(
                 response()
@@ -216,7 +220,7 @@ internal class OrderControllerTest {
                 .content(orderRequestBodyJson)
         ).andExpect(status().isInternalServerError)
 
-        mockServerContainerClient.verify(
+        mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
         )
@@ -241,11 +245,10 @@ internal class OrderControllerTest {
             )
         )
 
-        mockServerContainerClient
+        mockServer
             .`when`(
                 request()
                     .withMethod(HttpMethod.GET.name())
-                    .withLocalAddress("http://localhost:8082")
                     .withPath("/inventory/.*")
             ).respond(
                 response()
@@ -260,7 +263,7 @@ internal class OrderControllerTest {
                 .content(orderRequestBodyJson)
         ).andExpect(status().isInternalServerError)
 
-        mockServerContainerClient.verify(
+        mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
         )
