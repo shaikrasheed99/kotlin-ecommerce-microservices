@@ -152,6 +152,6 @@ internal class ProductControllerTest {
             .andExpect(status().isNotFound)
             .andExpect(jsonPath("$.status").value(StatusResponses.ERROR.name))
             .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.name))
-            .andExpect(jsonPath("$.message").value("${MessageResponses.PRODUCT_NOT_FOUND} with id 100"))
+            .andExpect(jsonPath("$.message").value("${MessageResponses.PRODUCT_NOT_FOUND.message} with id 100"))
     }
 }
