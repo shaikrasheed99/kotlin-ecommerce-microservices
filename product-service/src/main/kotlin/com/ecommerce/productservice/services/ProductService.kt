@@ -27,6 +27,6 @@ class ProductService(private val productRepository: ProductRepository) {
     fun getProductBy(id: Int): Product {
         return productRepository
             .findById(id)
-            .orElseThrow { throw ProductNotFound("${MessageResponses.PRODUCT_NOT_FOUND} with id $id") }
+            .orElseThrow { throw ProductNotFound("${MessageResponses.PRODUCT_NOT_FOUND.name} with id $id") }
     }
 }

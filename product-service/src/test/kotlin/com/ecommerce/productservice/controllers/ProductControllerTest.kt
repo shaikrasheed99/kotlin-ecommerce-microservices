@@ -57,11 +57,6 @@ internal class ProductControllerTest {
         ).also(productRepository::save)
     }
 
-    @AfterEach
-    internal fun tearDown() {
-        productRepository.deleteAll()
-    }
-
     @Test
     internal fun shouldBeAbleToCreateNewProduct() {
         val productRequestBodyJson = ProductRequestBody(
