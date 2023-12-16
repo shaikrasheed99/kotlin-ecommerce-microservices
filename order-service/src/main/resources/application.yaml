@@ -1,5 +1,4 @@
-server:
-  port: 8081
+server.port: 8081
 
 spring:
   application:
@@ -9,11 +8,5 @@ spring:
     username: postgres
     password: root
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-
-inventory:
-  service:
-    url: http://inventory-service
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
+inventory.service.url: http://inventory-service
