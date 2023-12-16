@@ -1,5 +1,4 @@
-server:
-  port: 8000
+server.port: 8000
 
 spring:
   application:
@@ -21,7 +20,4 @@ spring:
           filters:
             - RewritePath=/api/product/(?<remaining>.*), /$\{remaining}
 
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
