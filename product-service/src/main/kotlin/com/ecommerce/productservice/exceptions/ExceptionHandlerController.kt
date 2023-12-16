@@ -1,7 +1,7 @@
 package com.ecommerce.productservice.exceptions
 
-import com.ecommerce.productservice.dto.response.ErrorResponse
-import com.ecommerce.productservice.utils.createErrorResponse
+import com.ecommerce.productservice.constants.StatusResponses
+import com.ecommerce.productservice.dto.response.Response
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -31,10 +31,15 @@ class ExceptionHandlerController {
     @ExceptionHandler(ProductNotFound::class)
     fun handleProductNotFound(
         productNotFound: ProductNotFound
-    ): ResponseEntity<ErrorResponse> {
+    ): ResponseEntity<Response> {
         val errorResponse = productNotFound.message?.let {
             logger.info(it)
-            createErrorResponse(HttpStatus.NOT_FOUND, it)
+            Response(
+                status = StatusResponses.ERROR,
+                code = HttpStatus.NOT_FOUND,
+                message = it,
+                data = null
+            )
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
