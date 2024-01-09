@@ -6,14 +6,14 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: inventory-service
+        - id: inventory-service-route
           uri: lb://inventory-service
           predicates:
             - Path=/api/inventory/**
           filters:
             - RewritePath=/api/inventory/(?<remaining>.*), /$\{remaining}
 
-        - id: product-service
+        - id: product-service-route
           uri: lb://product-service
           predicates:
             - Path=/api/product/**
