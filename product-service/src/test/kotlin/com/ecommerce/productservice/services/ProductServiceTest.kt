@@ -4,96 +4,103 @@ import com.ecommerce.productservice.dto.requests.ProductRequestBody
 import com.ecommerce.productservice.exceptions.ProductNotFound
 import com.ecommerce.productservice.models.Product
 import com.ecommerce.productservice.models.ProductRepository
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers.any
-import org.mockito.InjectMocks
-import org.mockito.Mock
-import org.mockito.Mockito.*
-import org.mockito.junit.jupiter.MockitoExtension
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import java.math.BigDecimal
-import java.util.*
+import java.util.Optional
 
-@ExtendWith(MockitoExtension::class)
-internal class ProductServiceTest {
-    @Mock
-    private lateinit var productRepository: ProductRepository
+class ProductServiceTest : DescribeSpec({
+    describe("Product Service Tests") {
+        val productRepository = mockk<ProductRepository>()
+        val productService = ProductService(productRepository)
 
-    @InjectMocks
-    private lateinit var productService: ProductService
+        describe("Create New Product") {
+            it("should be able to create New Product") {
+                val productRequestBody = ProductRequestBody(
+                    name = "test name",
+                    description = "test description",
+                    price = BigDecimal(10.20)
+                )
+                val product = Product(
+                    id = 1,
+                    name = "test name",
+                    description = "test description",
+                    price = BigDecimal(10.20)
+                )
+                every { productRepository.save(any(Product::class)) } returns product
 
-    @Test
-    internal fun shouldBeAbleToCreateNewProduct() {
-        val productRequestBody = ProductRequestBody(
-            name = "test name",
-            description = "test description",
-            price = BigDecimal(10.20)
-        )
+                val createdProduct = productService.createProduct(productRequestBody)
 
-        val product = Product(
-            id = 1,
-            name = "test name",
-            description = "test description",
-            price = BigDecimal(10.20)
-        )
+                createdProduct shouldBe product
+                verify { productRepository.save(any(Product::class)) }
+            }
 
-        `when`(productRepository.save(any(Product::class.java))).thenReturn(product)
+            describe("Error scenarios") {
+                it("should throw exception when the exception thrown from repository layer") {
+                    val productRequestBody = ProductRequestBody(
+                        name = "test name",
+                        description = "test description",
+                        price = BigDecimal(10.20)
+                    )
+                    val exception = Exception("exception from the repository")
+                    every { productRepository.save(any(Product::class)) } throws exception
 
-        assertDoesNotThrow { productService.createProduct(productRequestBody) }
+                    shouldThrow<Exception> { productService.createProduct(productRequestBody) }
 
-        verify(productRepository, times(1)).save(any(Product::class.java))
+                    verify { productRepository.save(any(Product::class)) }
+                }
+            }
+        }
+
+        describe("Get List of Products") {
+            it("should be able to return list of products") {
+                val products = listOf<Product>(
+                    Product(
+                        id = 1,
+                        name = "test name",
+                        description = "test description",
+                        price = BigDecimal(10.20)
+                    )
+                )
+                every { productRepository.findAll() } returns products
+
+                val listOfProducts = productService.getAllProducts()
+
+                listOfProducts shouldBe products
+                verify { productRepository.findAll() }
+            }
+        }
+
+        describe("Get Product by Id") {
+            it("should be able to return product by id") {
+                val product = Product(
+                    id = 1,
+                    name = "test name",
+                    description = "test description",
+                    price = BigDecimal(10.20)
+                )
+                every { productRepository.findById(product.id!!) } returns Optional.ofNullable(product)
+
+                val productById = productService.getProductBy(product.id!!)
+
+                productById shouldBe product
+                verify { productRepository.findById(product.id!!) }
+            }
+
+            describe("Error scenarios") {
+                it("should throw exception when the Product is not found by id") {
+                    val productId = 1
+                    every { productRepository.findById(productId) } returns Optional.empty()
+
+                    shouldThrow<ProductNotFound> { productService.getProductBy(productId) }
+
+                    verify { productRepository.findById(productId) }
+                }
+            }
+        }
     }
-
-    @Test
-    internal fun shouldBeAbleToReturnListOfProducts() {
-        val products = listOf<Product>(
-            Product(
-                id = 1,
-                name = "test name",
-                description = "test description",
-                price = BigDecimal(10.20)
-            )
-        )
-
-        `when`(productRepository.findAll()).thenReturn(products)
-
-        val listOfProducts = productService.getAllProducts()
-
-        assertEquals(listOfProducts.size, 1)
-
-        verify(productRepository, times(1)).findAll()
-    }
-
-    @Test
-    internal fun shouldBeAbleToReturnProductById() {
-        val product = Product(
-            id = 1,
-            name = "test name",
-            description = "test description",
-            price = BigDecimal(10.20)
-        )
-
-        `when`(productRepository.findById(1)).thenReturn(Optional.ofNullable(product))
-
-        val productById = productService.getProductBy(1)
-
-        assertEquals(productById.id, product.id)
-        assertEquals(productById.name, product.name)
-        assertEquals(productById.description, product.description)
-        assertEquals(productById.price, product.price)
-
-        verify(productRepository, times(1)).findById(1)
-    }
-
-    @Test
-    internal fun shouldBeAbleToThrowExceptionWhenProductIsNotFoundById() {
-        `when`(productRepository.findById(1)).thenReturn(Optional.empty())
-
-        assertThrows<ProductNotFound> { productService.getProductBy(1) }
-
-        verify(productRepository, times(1)).findById(1)
-    }
-}
+})
