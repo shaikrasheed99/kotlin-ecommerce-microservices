@@ -26,9 +26,12 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
     implementation("com.h2database:h2")
+
     runtimeOnly("org.postgresql:postgresql")
+
 	testImplementation("io.mockk:mockk:1.13.9")
 	testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
 	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
