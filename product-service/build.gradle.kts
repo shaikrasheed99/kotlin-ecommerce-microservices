@@ -70,7 +70,8 @@ tasks.jacocoTestReport {
 	classDirectories.setFrom(
 		sourceSets.main.get().output.asFileTree.matching {
 			exclude(
-				"**/ProductServiceApplication*.*"
+				"**/ProductServiceApplication*.*",
+				"**/ProductsTableSchemaCreation*.*"
 			)
 		}
 	)
@@ -89,7 +90,8 @@ tasks.jacocoTestCoverageVerification {
 			classDirectories.setFrom(
 				sourceSets.main.get().output.asFileTree.matching {
 					exclude(
-						"**/ProductServiceApplication*.*"
+						"**/ProductServiceApplication*.*",
+						"**/ProductsTableSchemaCreation*.*"
 					)
 				}
 			)

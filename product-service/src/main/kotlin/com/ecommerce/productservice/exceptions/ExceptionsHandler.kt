@@ -32,7 +32,7 @@ class ExceptionsHandler {
     fun handleProductNotFound(
         productNotFound: ProductNotFound
     ): ResponseEntity<Response> {
-        val errorResponse = productNotFound.message?.let {
+        val errorResponse = productNotFound.message!!.let {
             logger.info(it)
             Response(
                 status = StatusResponses.ERROR,
