@@ -35,9 +35,9 @@ object TestUtils {
     )
 
     fun createProductRequestBody(
-        name: String,
-        description: String,
-        price: BigDecimal
+        name: String = "test name",
+        description: String = "test description",
+        price: BigDecimal = BigDecimal(10.0)
     ): ProductRequestBody =
         ProductRequestBody(
             name = name,
