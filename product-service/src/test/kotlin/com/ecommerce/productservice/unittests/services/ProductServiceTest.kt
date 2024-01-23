@@ -1,9 +1,10 @@
-package com.ecommerce.productservice.services
+package com.ecommerce.productservice.unittests.services
 
 import com.ecommerce.productservice.dto.requests.ProductRequestBody
 import com.ecommerce.productservice.exceptions.ProductNotFound
 import com.ecommerce.productservice.models.Product
 import com.ecommerce.productservice.models.ProductRepository
+import com.ecommerce.productservice.services.ProductService
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe

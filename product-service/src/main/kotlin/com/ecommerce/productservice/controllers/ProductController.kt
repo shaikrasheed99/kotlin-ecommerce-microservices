@@ -53,7 +53,7 @@ class ProductController(private val productService: ProductService) {
     }
 
     @GetMapping("/{id}")
-    fun getAllProducts(
+    fun getProductById(
         @PathVariable("id") productId: Int
     ): ResponseEntity<Response> {
         val product = productService.getProductBy(productId)
