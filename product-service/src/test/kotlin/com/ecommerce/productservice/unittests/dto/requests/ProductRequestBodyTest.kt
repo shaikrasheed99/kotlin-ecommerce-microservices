@@ -14,13 +14,6 @@ class ProductRequestBodyTest: DescribeSpec({
             productRequestBody.description shouldBe "test description"
             productRequestBody.price shouldBe BigDecimal(10.0)
         }
-
-        it("should be able to change name attribute of the request body") {
-            val productRequestBody = createProductRequestBody()
-            productRequestBody.name = "another name"
-
-            productRequestBody.name shouldBe "another name"
-        }
     }
 
     describe("Product Request Body - setters") {
