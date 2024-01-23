@@ -16,7 +16,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
-class ExceptionHandlerTest : DescribeSpec({
+class ExceptionsHandlerTest : DescribeSpec({
     val exceptionsHandler = ExceptionsHandler()
 
     describe("Exception Handler - annotations") {
