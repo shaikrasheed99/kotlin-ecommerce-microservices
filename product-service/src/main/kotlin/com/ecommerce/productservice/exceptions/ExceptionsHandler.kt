@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-class ExceptionHandler {
+class ExceptionsHandler {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
