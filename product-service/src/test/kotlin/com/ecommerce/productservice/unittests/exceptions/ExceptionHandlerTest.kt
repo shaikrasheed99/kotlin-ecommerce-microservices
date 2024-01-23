@@ -1,6 +1,9 @@
 package com.ecommerce.productservice.unittests.exceptions
 
+import com.ecommerce.productservice.constants.StatusResponses
+import com.ecommerce.productservice.dto.response.Response
 import com.ecommerce.productservice.exceptions.ExceptionsHandler
+import com.ecommerce.productservice.exceptions.ProductNotFound
 import com.ecommerce.productservice.utils.EntityUtils.getMethodAnnotations
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -51,7 +54,37 @@ class ExceptionHandlerTest : DescribeSpec({
             exceptionHandlerAnnotation shouldNotBe null
             exceptionHandlerAnnotation.value.firstOrNull {
                 it == MethodArgumentNotValidException::class
-            } shouldNotBe null
+            } shouldBe MethodArgumentNotValidException::class
+        }
+    }
+
+    describe("handleProductNotFound") {
+        it("should handle ProductNotFound and return Not Found status code") {
+            val mockException = mockk<ProductNotFound>()
+            val errorResponse = Response(
+                status = StatusResponses.ERROR,
+                code = HttpStatus.NOT_FOUND,
+                message = "product not found",
+                data = null
+            )
+            every { mockException.message } returns errorResponse.message
+
+            val response = exceptionsHandler.handleProductNotFound(mockException)
+
+            response.statusCode shouldBe HttpStatus.NOT_FOUND
+            response.body shouldBe errorResponse
+        }
+    }
+
+    describe("handleProductNotFound - annotations") {
+        it("should have ExceptionHandler annotation with ProductNotFound class as value") {
+            val annotations = exceptionsHandler.getMethodAnnotations("handleProductNotFound")
+            val exceptionHandlerAnnotation = annotations.firstOrNull { it is ExceptionHandler } as ExceptionHandler
+
+            exceptionHandlerAnnotation shouldNotBe null
+            exceptionHandlerAnnotation.value.firstOrNull {
+                it == ProductNotFound::class
+            } shouldBe ProductNotFound::class
         }
     }
 })
