@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
-class HealthControllerTest() : DescribeSpec({
+class HealthControllerTest : DescribeSpec({
     val healthController = HealthController()
 
     describe("Health Controller") {

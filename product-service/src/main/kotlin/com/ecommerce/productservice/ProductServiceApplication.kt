@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class ProductServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<ProductServiceApplication>(*args)
+    runApplication<ProductServiceApplication>(args = args)
 }
