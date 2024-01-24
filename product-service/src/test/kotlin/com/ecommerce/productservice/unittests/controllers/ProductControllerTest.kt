@@ -194,4 +194,10 @@ class ProductControllerTest : DescribeSpec({
             pathVariableAnnotation.value shouldBe "id"
         }
     }
+
+    describe("Product Controller - logger") {
+        it("should initialize the logger of product controller") {
+            ProductController.logger shouldNotBe null
+        }
+    }
 })

@@ -2,6 +2,7 @@ package com.ecommerce.productservice.exceptions
 
 import com.ecommerce.productservice.constants.StatusResponses
 import com.ecommerce.productservice.dto.response.Response
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -11,8 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class ExceptionsHandler {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(
         methodArgumentNotValidException: MethodArgumentNotValidException
@@ -43,5 +42,9 @@ class ExceptionsHandler {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
+    }
+
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
 }

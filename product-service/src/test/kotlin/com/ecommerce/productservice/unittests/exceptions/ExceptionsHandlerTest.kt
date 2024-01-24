@@ -92,4 +92,10 @@ class ExceptionsHandlerTest : DescribeSpec({
             } shouldBe ProductNotFound::class
         }
     }
+
+    describe("Exception Handler - logger") {
+        it("should initialize the logger of exception handler") {
+            ExceptionsHandler.logger shouldNotBe null
+        }
+    }
 })
