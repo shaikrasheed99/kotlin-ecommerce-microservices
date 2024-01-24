@@ -5,17 +5,22 @@ import com.ecommerce.productservice.controllers.ProductController
 import com.ecommerce.productservice.exceptions.ProductNotFound
 import com.ecommerce.productservice.services.ProductService
 import com.ecommerce.productservice.utils.EntityUtils.getMethodAnnotations
+import com.ecommerce.productservice.utils.EntityUtils.getMethodParameterAnnotations
 import com.ecommerce.productservice.utils.TestUtils.assertCommonFields
 import com.ecommerce.productservice.utils.TestUtils.createProduct
 import com.ecommerce.productservice.utils.TestUtils.createProductRequestBody
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -67,6 +72,18 @@ class ProductControllerTest : DescribeSpec({
             val postMappingAnnotation = annotations.firstOrNull { it is PostMapping } as PostMapping
 
             postMappingAnnotation shouldNotBe null
+        }
+
+        it("should have Valid and RequestBody annotations to parameter of the createProduct method") {
+            val annotations = productController.getMethodParameterAnnotations(
+                "createProduct",
+                "productRequestBody"
+            )
+            val validAnnotation = annotations.firstOrNull { it is Valid } as Valid
+            val requestBodyAnnotations = annotations.firstOrNull { it is RequestBody } as RequestBody
+
+            validAnnotation shouldNotBe null
+            requestBodyAnnotations shouldNotBe null
         }
     }
 
@@ -164,6 +181,17 @@ class ProductControllerTest : DescribeSpec({
 
             getMappingAnnotation shouldNotBe null
             getMappingAnnotation.value.firstOrNull { it == "/{id}" } shouldNotBe null
+        }
+
+        it("should have PathVariable annotation to parameter of the getProductById method") {
+            val annotations = productController.getMethodParameterAnnotations(
+                "getProductById",
+                "productId"
+            )
+            val pathVariableAnnotation = annotations.firstOrNull { it is PathVariable } as PathVariable
+
+            pathVariableAnnotation shouldNotBe null
+            pathVariableAnnotation.value shouldBe "id"
         }
     }
 })
