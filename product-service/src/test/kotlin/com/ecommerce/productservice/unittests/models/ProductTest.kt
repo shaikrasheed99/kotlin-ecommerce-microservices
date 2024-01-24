@@ -56,7 +56,7 @@ class ProductTest : DescribeSpec({
     }
 
     describe("Product - annotations") {
-        it("should have Entity and Table annotations to Product class") {
+        it("should have Entity & Table annotations to Product class") {
             val classAnnotations = product.javaClass.annotations
             val entityAnnotation = classAnnotations.firstOrNull { it is Entity } as Entity
             val tableAnnotation = classAnnotations.firstOrNull { it is Table } as Table
@@ -67,7 +67,7 @@ class ProductTest : DescribeSpec({
             tableAnnotation.name shouldBe "products"
         }
 
-        it("should have Id and GeneratedValue annotations to the Id attribute of Product class") {
+        it("should have Id & GeneratedValue annotations to the Id attribute of Product class") {
             val annotations = product.getAttributeAnnotations("id")
             val idAnnotation = annotations.firstOrNull { it is Id } as Id
             val generatedValueAnnotation = annotations.firstOrNull { it is GeneratedValue } as GeneratedValue

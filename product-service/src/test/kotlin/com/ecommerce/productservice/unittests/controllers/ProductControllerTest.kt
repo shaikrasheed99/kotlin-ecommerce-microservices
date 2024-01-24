@@ -31,7 +31,7 @@ class ProductControllerTest : DescribeSpec({
     val product = createProduct()
 
     describe("Product Controller - annotations") {
-        it("should have relevant annotations to the Product Controller class") {
+        it("should have RestController & RequestMapping annotations to the Product Controller class") {
             val classAnnotations = productController.javaClass.annotations
             val restControllerAnnotation = classAnnotations.firstOrNull { it is RestController } as RestController
             val requestMappingAnnotation = classAnnotations.firstOrNull { it is RequestMapping } as RequestMapping
@@ -74,7 +74,7 @@ class ProductControllerTest : DescribeSpec({
             postMappingAnnotation shouldNotBe null
         }
 
-        it("should have Valid and RequestBody annotations to parameter of the createProduct method") {
+        it("should have Valid & RequestBody annotations to parameter of the createProduct method") {
             val annotations = productController.getMethodParameterAnnotations(
                 "createProduct",
                 "productRequestBody"

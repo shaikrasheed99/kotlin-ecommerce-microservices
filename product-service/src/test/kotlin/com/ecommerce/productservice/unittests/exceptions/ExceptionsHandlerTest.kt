@@ -10,6 +10,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.springframework.http.HttpStatus
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -43,6 +44,8 @@ class ExceptionsHandlerTest : DescribeSpec({
 
             response.statusCode shouldBe HttpStatus.BAD_REQUEST
             response.body shouldBe errors
+
+            verify { mockException.fieldErrors }
         }
     }
 
@@ -73,6 +76,8 @@ class ExceptionsHandlerTest : DescribeSpec({
 
             response.statusCode shouldBe HttpStatus.NOT_FOUND
             response.body shouldBe errorResponse
+
+            verify { mockException.message }
         }
     }
 
