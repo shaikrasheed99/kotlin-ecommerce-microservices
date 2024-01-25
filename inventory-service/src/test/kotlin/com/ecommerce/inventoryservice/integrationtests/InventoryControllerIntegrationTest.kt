@@ -4,6 +4,10 @@ import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.constants.StatusResponses
 import com.ecommerce.inventoryservice.models.Inventory
 import com.ecommerce.inventoryservice.models.InventoryRepository
+import com.ecommerce.inventoryservice.utils.TestUtils.assertCommonResponseBody
+import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
+import com.ecommerce.inventoryservice.utils.TestUtils.getPostgreSQLContainer
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -14,10 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import org.testcontainers.containers.PostgreSQLContainer
+import org.springframework.test.web.servlet.get
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 
@@ -35,49 +36,48 @@ internal class InventoryControllerIntegrationTest {
     companion object {
         @Container
         @ServiceConnection
-        private val postgreSQLContainer = PostgreSQLContainer("postgres:latest")
-            .withDatabaseName("inventory")
-            .withInitScript("create-inventory-table.sql")
+        private val postgreSQLContainer = getPostgreSQLContainer()
     }
 
     private lateinit var inventory: Inventory
 
     @BeforeEach
-    internal fun setUp() {
-        inventory = Inventory(
-            id = 1,
-            skuCode = "test_code",
-            quantity = 10
-        ).also(inventoryRepository::save)
-    }
-
-    @AfterEach
-    internal fun tearDown() {
+    fun setUp() {
         inventoryRepository.deleteAll()
     }
 
     @Test
     internal fun shouldBeAbleToReturnInventoryBySkuCode() {
-        mockMvc.perform(get("/inventory/{sku-code}", inventory.skuCode))
-            .andExpect(status().isOk)
-            .andExpect(jsonPath("$.status").value(StatusResponses.SUCCESS.name))
-            .andExpect(jsonPath("$.code").value(HttpStatus.OK.name))
-            .andExpect(
-                jsonPath("$.message")
-                    .value(MessageResponses.INVENTORY_FETCHED_SUCCESS.message)
-            )
+        inventory = createInventory()
+        inventoryRepository.save(inventory)
+
+        mockMvc.get("/inventory/{sku-code}", inventory.skuCode)
+            .andExpect {
+                status { isOk() }
+                assertCommonResponseBody(
+                    status = StatusResponses.SUCCESS,
+                    code = HttpStatus.OK,
+                    message = MessageResponses.INVENTORY_FETCHED_SUCCESS.message
+                )
+            }
+
+        inventoryRepository.count() shouldBe 1
     }
 
     @Test
     internal fun shouldBeAbleToReturnErrorWhenInventoryIsNotFoundBySkuCode() {
         val wrongSkuCode = "wrong_skucode"
-        mockMvc.perform(get("/inventory/{sku-code}", wrongSkuCode))
-            .andExpect(status().isNotFound)
-            .andExpect(jsonPath("$.status").value(StatusResponses.ERROR.name))
-            .andExpect(jsonPath("$.code").value(HttpStatus.NOT_FOUND.name))
-            .andExpect(
-                jsonPath("$.message")
-                    .value("${MessageResponses.INVENTORY_NOT_FOUND.message} with skuCode $wrongSkuCode")
-            )
+
+        mockMvc.get("/inventory/{sku-code}", wrongSkuCode)
+            .andExpect {
+                status { isNotFound() }
+                assertCommonResponseBody(
+                    status = StatusResponses.ERROR,
+                    code = HttpStatus.NOT_FOUND,
+                    message = "${MessageResponses.INVENTORY_NOT_FOUND.message} with skuCode $wrongSkuCode"
+                )
+            }
+
+        inventoryRepository.count() shouldBe 0
     }
 }
