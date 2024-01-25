@@ -9,9 +9,15 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
+import org.testcontainers.containers.PostgreSQLContainer
 import java.math.BigDecimal
 
 object TestUtils {
+    fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
+        PostgreSQLContainer("postgres:latest")
+            .withDatabaseName("products")
+            .withInitScript("create-products-table.sql")
+
     fun MockMvcResultMatchersDsl.assertCommonResponseBody(
         status: StatusResponses,
         code: HttpStatus,
