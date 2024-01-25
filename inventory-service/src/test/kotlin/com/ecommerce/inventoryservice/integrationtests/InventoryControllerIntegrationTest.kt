@@ -1,4 +1,4 @@
-package com.ecommerce.inventoryservice.controllers
+package com.ecommerce.inventoryservice.integrationtests
 
 import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.constants.StatusResponses
@@ -25,7 +25,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Testcontainers
-internal class InventoryControllerTest {
+internal class InventoryControllerIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 

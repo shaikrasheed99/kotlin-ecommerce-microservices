@@ -1,4 +1,4 @@
-package com.ecommerce.inventoryservice.controllers
+package com.ecommerce.inventoryservice.integrationtests
 
 import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.constants.StatusResponses
@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest
 @AutoConfigureMockMvc
-internal class HealthControllerTest {
+internal class HealthControllerIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc;
 

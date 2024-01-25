@@ -27,6 +27,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 
 	runtimeOnly("org.postgresql:postgresql")
 
@@ -36,7 +37,6 @@ dependencies {
 	testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
 	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
 	testImplementation("io.kotest:kotest-assertions-json:4.6.3")
-	testImplementation("io.kotest.extensions:kotest-extensions-testcontainers:2.0.2")
 
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
