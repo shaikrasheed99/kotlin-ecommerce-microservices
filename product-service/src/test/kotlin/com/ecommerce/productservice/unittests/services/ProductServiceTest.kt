@@ -42,18 +42,18 @@ class ProductServiceTest : DescribeSpec({
             createdProduct shouldBe product
             verify { productRepository.save(any(Product::class)) }
         }
+    }
 
-        describe("Error scenarios") {
-            it("should throw exception when the exception thrown from repository layer") {
-                val productRequestBody = createProductRequestBody()
+    describe("Create New Product - Error scenarios") {
+        it("should throw exception when the exception thrown from repository layer") {
+            val productRequestBody = createProductRequestBody()
 
-                val exception = Exception("exception from the repository")
-                every { productRepository.save(any(Product::class)) } throws exception
+            val exception = Exception("exception from the repository")
+            every { productRepository.save(any(Product::class)) } throws exception
 
-                shouldThrow<Exception> { productService.createProduct(productRequestBody) }
+            shouldThrow<Exception> { productService.createProduct(productRequestBody) }
 
-                verify { productRepository.save(any(Product::class)) }
-            }
+            verify { productRepository.save(any(Product::class)) }
         }
     }
 
@@ -78,16 +78,16 @@ class ProductServiceTest : DescribeSpec({
             productById shouldBe product
             verify { productRepository.findById(product.id!!) }
         }
+    }
 
-        describe("Error scenarios") {
-            it("should throw exception when the Product is not found by id") {
-                val productId = 1
-                every { productRepository.findById(productId) } returns Optional.empty()
+    describe("Get Product by Id - Error scenarios") {
+        it("should throw exception when the Product is not found by id") {
+            val productId = 1
+            every { productRepository.findById(productId) } returns Optional.empty()
 
-                shouldThrow<ProductNotFound> { productService.getProductBy(productId) }
+            shouldThrow<ProductNotFound> { productService.getProductBy(productId) }
 
-                verify { productRepository.findById(productId) }
-            }
+            verify { productRepository.findById(productId) }
         }
     }
 })
