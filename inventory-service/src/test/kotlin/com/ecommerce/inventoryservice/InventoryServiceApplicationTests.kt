@@ -19,6 +19,6 @@ class InventoryServiceApplicationTests {
 
     @Test
     fun contextLoads() {
+        println("InventoryServiceApplication context test")
     }
-
 }

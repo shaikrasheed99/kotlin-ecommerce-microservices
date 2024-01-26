@@ -20,7 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @Testcontainers
 internal class HealthControllerTestIntegrationTest {
     @Autowired
-    private lateinit var mockMvc: MockMvc;
+    private lateinit var mockMvc: MockMvc
 
     companion object {
         @Container

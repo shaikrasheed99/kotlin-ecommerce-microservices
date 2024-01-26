@@ -8,7 +8,6 @@ import com.ecommerce.inventoryservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
 import com.ecommerce.inventoryservice.utils.TestUtils.getPostgreSQLContainer
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

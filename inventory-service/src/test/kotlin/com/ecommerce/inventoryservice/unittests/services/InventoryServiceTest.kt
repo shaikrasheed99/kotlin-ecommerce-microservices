@@ -31,7 +31,9 @@ class InventoryServiceTest : DescribeSpec({
 
     describe("Get Inventory by SkuCode") {
         it("should be able to return inventory by SkuCode") {
-            every { mockInventoryRepository.findInventoryBySkuCode(inventory.skuCode) } returns Optional.ofNullable(inventory)
+            every {
+                mockInventoryRepository.findInventoryBySkuCode(inventory.skuCode)
+            } returns Optional.ofNullable(inventory)
 
             val inventoryBySkuCode = inventoryService.getInventoryBySkuCode(inventory.skuCode)
 

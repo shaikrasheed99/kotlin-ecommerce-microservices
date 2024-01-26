@@ -36,5 +36,5 @@ class InventoryServiceApplication {
 }
 
 fun main(args: Array<String>) {
-    runApplication<InventoryServiceApplication>(*args)
+    runApplication<InventoryServiceApplication>(args = args)
 }
