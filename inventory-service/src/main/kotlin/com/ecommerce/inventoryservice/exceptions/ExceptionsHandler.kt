@@ -15,12 +15,12 @@ class ExceptionsHandler {
     fun handleInventoryNotFoundException(
         inventoryNotFoundException: InventoryNotFoundException
     ): ResponseEntity<Response> {
-        val errorResponse = inventoryNotFoundException.message?.let {
+        val errorResponse = inventoryNotFoundException.message.let {
             logger.info(it)
             Response(
                 status = StatusResponses.ERROR,
                 code = HttpStatus.NOT_FOUND,
-                message = it,
+                message = it!!,
                 data = null
             )
         }

@@ -71,17 +71,17 @@ class InventoryControllerTest : DescribeSpec({
     }
 
     describe("Get Inventory by SkuCode - annotations") {
-        it("should have GetMapping annotation with path value to the getInventoryBy method") {
-            val annotations = inventoryController.getMethodAnnotations("getInventoryBy")
+        it("should have GetMapping annotation with path value to the getInventoryBySkuCode method") {
+            val annotations = inventoryController.getMethodAnnotations("getInventoryBySkuCode")
             val getMappingAnnotation = annotations.firstOrNull { it is GetMapping } as GetMapping
 
             getMappingAnnotation shouldNotBe null
             getMappingAnnotation.value.firstOrNull { it == "/{sku-code}" } shouldNotBe null
         }
 
-        it("should have PathVariable annotation to parameter of the getInventoryBy method") {
+        it("should have PathVariable annotation to parameter of the getInventoryBySkuCode method") {
             val annotations = inventoryController.getMethodParameterAnnotations(
-                "getInventoryBy",
+                "getInventoryBySkuCode",
                 "skuCode"
             )
             val pathVariableAnnotation = annotations.firstOrNull { it is PathVariable } as PathVariable
