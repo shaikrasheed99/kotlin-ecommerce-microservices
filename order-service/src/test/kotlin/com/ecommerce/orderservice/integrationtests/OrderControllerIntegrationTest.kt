@@ -6,6 +6,9 @@ import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.models.OrderRepository
+import com.ecommerce.orderservice.utils.TestUtils.assertCommonResponseBody
+import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBodyJson
+import com.ecommerce.orderservice.utils.TestUtils.getPostgreSQLContainer
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -25,11 +28,10 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.testcontainers.containers.MockServerContainer
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
@@ -49,9 +51,7 @@ internal class OrderControllerIntegrationTest {
     companion object {
         @Container
         @ServiceConnection
-        private val postgreSQLContainer = PostgreSQLContainer("postgres:latest")
-            .withDatabaseName("orders")
-            .withInitScript("create-orders-table.sql")
+        private val postgreSQLContainer = getPostgreSQLContainer()
 
         private val mockServerContainer = MockServerContainer(
             DockerImageName.parse("mockserver/mockserver:5.15.0")
@@ -79,13 +79,7 @@ internal class OrderControllerIntegrationTest {
 
     @Test
     internal fun shouldBeAbleToCreateNewOrder() {
-        val orderRequestBodyJson = ObjectMapper().writeValueAsString(
-            OrderRequestBody(
-                skuCode = "test_code",
-                price = BigDecimal(10.00),
-                quantity = 2
-            )
-        )
+        val orderRequestBodyJson = createOrderRequestBodyJson()
 
         val inventorySuccessResponseJson = ObjectMapper().writeValueAsString(
             Response(
@@ -113,14 +107,17 @@ internal class OrderControllerIntegrationTest {
                     .withBody(inventorySuccessResponseJson)
             )
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(orderRequestBodyJson)
-        ).andExpect(status().isOk)
-            .andExpect(jsonPath("$.status").value(StatusResponses.SUCCESS.name))
-            .andExpect(jsonPath("$.code").value(HttpStatus.OK.name))
-            .andExpect(jsonPath("$.message").value(MessageResponses.ORDER_CREATION_SUCCESS.message))
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isOk() }
+            assertCommonResponseBody(
+                status = StatusResponses.SUCCESS,
+                code = HttpStatus.OK,
+                message = MessageResponses.ORDER_CREATION_SUCCESS.message
+            )
+        }
 
         mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
@@ -130,64 +127,49 @@ internal class OrderControllerIntegrationTest {
 
     @Test
     internal fun shouldNotBeAbleToCreateNewOrderWhenSkuCodeIsBlank() {
-        val orderRequestBodyJson = ObjectMapper().writeValueAsString(
-            OrderRequestBody(
-                skuCode = "",
-                price = BigDecimal(10.00),
-                quantity = 2
-            )
+        val orderRequestBodyJson = createOrderRequestBodyJson(
+            skuCode = ""
         )
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(orderRequestBodyJson)
-        ).andExpect(status().isBadRequest)
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isBadRequest() }
+        }
     }
 
     @Test
     internal fun shouldNotBeAbleToCreateNewOrderWhenPriceIsNegative() {
-        val orderRequestBodyJson = ObjectMapper().writeValueAsString(
-            OrderRequestBody(
-                skuCode = "test_code",
-                price = BigDecimal(-10.00),
-                quantity = 2
-            )
+        val orderRequestBodyJson = createOrderRequestBodyJson(
+            price = BigDecimal(-10.00)
         )
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(orderRequestBodyJson)
-        ).andExpect(status().isBadRequest)
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isBadRequest() }
+        }
     }
 
     @Test
     internal fun shouldNotBeAbleToCreateNewOrderWhenQuantityIsNegative() {
-        val orderRequestBodyJson = ObjectMapper().writeValueAsString(
-            OrderRequestBody(
-                skuCode = "test_code",
-                price = BigDecimal(10.00),
-                quantity = -2
-            )
+        val orderRequestBodyJson = createOrderRequestBodyJson(
+            quantity = -2
         )
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(orderRequestBodyJson)
-        ).andExpect(status().isBadRequest)
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isBadRequest() }
+        }
     }
 
     @Test
     internal fun shouldNotBeAbleToCreateNewOrderWhenInsufficientInventoryQuantity() {
-        val orderRequestBodyJson = ObjectMapper().writeValueAsString(
-            OrderRequestBody(
-                skuCode = "test_code",
-                price = BigDecimal(10.00),
-                quantity = 2
-            )
-        )
+        val orderRequestBodyJson = createOrderRequestBodyJson()
 
         val insufficientInventoryQuantityJson = ObjectMapper().writeValueAsString(
             Response(
@@ -214,11 +196,12 @@ internal class OrderControllerIntegrationTest {
                     .withBody(insufficientInventoryQuantityJson)
             )
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(orderRequestBodyJson)
-        ).andExpect(status().isInternalServerError)
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isInternalServerError() }
+        }
 
         mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
@@ -228,13 +211,7 @@ internal class OrderControllerIntegrationTest {
 
     @Test
     internal fun shouldNotBeAbleToCreateNewOrderWhenInventoryIsNotFoundInInventoryService() {
-        val orderRequestBodyJson = ObjectMapper().writeValueAsString(
-            OrderRequestBody(
-                skuCode = "test_code",
-                price = BigDecimal(10.00),
-                quantity = 2
-            )
-        )
+        val orderRequestBodyJson = createOrderRequestBodyJson()
 
         val inventoryNotFoundResponseJson = ObjectMapper().writeValueAsString(
             Response(
@@ -257,11 +234,12 @@ internal class OrderControllerIntegrationTest {
                     .withBody(inventoryNotFoundResponseJson)
             )
 
-        mockMvc.perform(
-            post("/orders")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(orderRequestBodyJson)
-        ).andExpect(status().isInternalServerError)
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isInternalServerError() }
+        }
 
         mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),

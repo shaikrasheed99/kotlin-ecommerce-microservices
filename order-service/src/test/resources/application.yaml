@@ -1,2 +1,4 @@
 eureka.client.enabled: false
 spring.cloud.loadbalancer.enabled: false
+
+inventory.service.url: http://dummyurl
