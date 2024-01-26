@@ -2,8 +2,11 @@ package com.ecommerce.orderservice.utils
 
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
+import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.models.Order
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.testcontainers.containers.PostgreSQLContainer
@@ -58,4 +61,17 @@ object TestUtils {
             quantity = quantity
         )
     )
+
+    fun assertCommonFields(
+        response: Response?,
+        status: StatusResponses = StatusResponses.SUCCESS,
+        code: HttpStatus = HttpStatus.OK,
+        message: String,
+        data: Any
+    ) {
+        response?.status shouldBe status
+        response?.code shouldBe code
+        response?.message shouldContain message
+        response?.data shouldBe data
+    }
 }

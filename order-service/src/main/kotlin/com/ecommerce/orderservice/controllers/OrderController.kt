@@ -6,6 +6,7 @@ import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.services.OrderService
 import jakarta.validation.Valid
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/orders")
 class OrderController(private val orderService: OrderService) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     @PostMapping
     fun createOrder(
         @Valid @RequestBody orderRequestBody: OrderRequestBody
@@ -36,5 +35,9 @@ class OrderController(private val orderService: OrderService) {
         logger.info("$message with id ${newOrder?.id}")
 
         return ResponseEntity.ok(response)
+    }
+
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
 }
