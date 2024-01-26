@@ -32,6 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.mock-server:mockserver-netty:5.15.0")
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
     implementation("com.h2database:h2")
 
     runtimeOnly("org.postgresql:postgresql")

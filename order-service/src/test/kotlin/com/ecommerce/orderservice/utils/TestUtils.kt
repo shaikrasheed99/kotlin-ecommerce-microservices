@@ -2,11 +2,13 @@ package com.ecommerce.orderservice.utils
 
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
+import com.ecommerce.orderservice.models.Order
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.testcontainers.containers.PostgreSQLContainer
 import java.math.BigDecimal
+import java.util.UUID
 
 object TestUtils {
     fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
@@ -24,12 +26,33 @@ object TestUtils {
         jsonPath("$.message") { value(message) }
     }
 
+    fun createOrder(
+        skuCode: String = "test_code",
+        price: BigDecimal = BigDecimal(10),
+        quantity: Int = 2
+    ) = Order(
+        id = UUID.randomUUID(),
+        skuCode = skuCode,
+        price = price,
+        quantity = quantity
+    )
+
+    fun createOrderRequestBody(
+        skuCode: String = "test_code",
+        price: BigDecimal = BigDecimal(10),
+        quantity: Int = 2
+    ) = OrderRequestBody(
+        skuCode = skuCode,
+        price = price,
+        quantity = quantity
+    )
+
     fun createOrderRequestBodyJson(
         skuCode: String = "test_code",
         price: BigDecimal = BigDecimal(10),
         quantity: Int = 2
     ): String = ObjectMapper().writeValueAsString(
-        OrderRequestBody(
+        createOrderRequestBody(
             skuCode = skuCode,
             price = price,
             quantity = quantity
