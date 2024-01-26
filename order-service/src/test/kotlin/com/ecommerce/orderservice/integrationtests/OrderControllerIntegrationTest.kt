@@ -1,4 +1,4 @@
-package com.ecommerce.orderservice.controllers
+package com.ecommerce.orderservice.integrationtests
 
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
@@ -39,7 +39,7 @@ import java.math.BigDecimal
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 @Testcontainers
-internal class OrderControllerTest {
+internal class OrderControllerIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
 

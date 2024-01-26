@@ -1,4 +1,4 @@
-package com.ecommerce.orderservice.controllers
+package com.ecommerce.orderservice.integrationtests
 
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
@@ -16,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-internal class HealthControllerTest {
+internal class HealthControllerIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc;
 
