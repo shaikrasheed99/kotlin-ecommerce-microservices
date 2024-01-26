@@ -32,7 +32,7 @@ class OrderController(private val orderService: OrderService) {
             data = newOrder
         )
 
-        logger.info("$message with id ${newOrder?.id}")
+        logger.info("$message with id ${newOrder!!.id}")
 
         return ResponseEntity.ok(response)
     }
