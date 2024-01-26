@@ -4,6 +4,7 @@ import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.constants.StatusResponses
 import com.ecommerce.inventoryservice.dto.responses.Response
 import com.ecommerce.inventoryservice.services.InventoryService
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -15,8 +16,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/inventory")
 class InventoryController(private val inventoryService: InventoryService) {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
     @GetMapping("/{sku-code}")
     fun getInventoryBy(
         @PathVariable("sku-code") skuCode: String
@@ -34,5 +33,9 @@ class InventoryController(private val inventoryService: InventoryService) {
         logger.info("$message of skuCode $skuCode")
 
         return ResponseEntity.ok(response)
+    }
+
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
 }

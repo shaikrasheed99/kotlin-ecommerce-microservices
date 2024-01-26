@@ -18,14 +18,14 @@ import org.testcontainers.junit.jupiter.Testcontainers
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
-internal class HealthControllerIntegrationTest {
+internal class HealthControllerTestIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc;
 
     companion object {
         @Container
         @ServiceConnection
-        private val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainer()
     }
 
     @Test

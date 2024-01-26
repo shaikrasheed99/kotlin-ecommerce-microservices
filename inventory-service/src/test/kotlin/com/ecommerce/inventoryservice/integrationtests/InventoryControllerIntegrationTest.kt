@@ -36,7 +36,7 @@ internal class InventoryControllerIntegrationTest {
     companion object {
         @Container
         @ServiceConnection
-        private val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainer()
     }
 
     private lateinit var inventory: Inventory

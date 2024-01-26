@@ -14,7 +14,7 @@ class InventoryServiceApplicationTests {
     companion object {
         @Container
         @ServiceConnection
-        private val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainer()
     }
 
     @Test
