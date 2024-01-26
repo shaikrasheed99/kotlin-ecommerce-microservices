@@ -1,4 +1,4 @@
-package com.ecommerce.orderservice.services
+package com.ecommerce.orderservice.unittests.services
 
 import com.ecommerce.orderservice.configs.InventoryServiceClient
 import com.ecommerce.orderservice.constants.StatusResponses
@@ -10,6 +10,7 @@ import com.ecommerce.orderservice.exceptions.InventoryNotAvailableException
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
+import com.ecommerce.orderservice.services.OrderService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
