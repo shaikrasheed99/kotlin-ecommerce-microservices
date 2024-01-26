@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/inventory")
 class InventoryController(private val inventoryService: InventoryService) {
     @GetMapping("/{sku-code}")
-    fun getInventoryBy(
+    fun getInventoryBySkuCode(
         @PathVariable("sku-code") skuCode: String
     ): ResponseEntity<Response> {
-        val inventory = inventoryService.getInventoryBy(skuCode)
+        val inventory = inventoryService.getInventoryBySkuCode(skuCode)
 
         val message = MessageResponses.INVENTORY_FETCHED_SUCCESS.message
         val response = Response(

@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class InventoryService(private val inventoryRepository: InventoryRepository) {
-    fun getInventoryBy(skuCode: String): Inventory {
+    fun getInventoryBySkuCode(skuCode: String): Inventory {
         return inventoryRepository
-            .findInventoryBy(skuCode)
+            .findInventoryBySkuCode(skuCode)
             .orElseThrow {
                 InventoryNotFoundException("${MessageResponses.INVENTORY_NOT_FOUND.message} with skuCode $skuCode")
             }

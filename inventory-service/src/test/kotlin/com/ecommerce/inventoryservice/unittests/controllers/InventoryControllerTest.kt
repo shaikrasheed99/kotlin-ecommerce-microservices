@@ -41,9 +41,9 @@ class InventoryControllerTest : DescribeSpec({
 
     describe("Get Inventory by SkuCode") {
         it("should be able to return Inventory by SkuCode") {
-            every { mockInventoryService.getInventoryBy(inventory.skuCode) } returns inventory
+            every { mockInventoryService.getInventoryBySkuCode(inventory.skuCode) } returns inventory
 
-            val response = inventoryController.getInventoryBy(inventory.skuCode).body
+            val response = inventoryController.getInventoryBySkuCode(inventory.skuCode).body
 
             assertCommonFields(
                 response = response,
@@ -52,7 +52,7 @@ class InventoryControllerTest : DescribeSpec({
             )
 
             verify {
-                mockInventoryService.getInventoryBy(inventory.skuCode)
+                mockInventoryService.getInventoryBySkuCode(inventory.skuCode)
             }
         }
     }
@@ -60,12 +60,12 @@ class InventoryControllerTest : DescribeSpec({
     describe("Get Inventory by SkuCode - Error scenarios") {
         it("should be able to throw Inventory Not Found Exception when Inventory is not present by SkuCode") {
             val inventoryNotFoundException = InventoryNotFoundException("inventory not found")
-            every { mockInventoryService.getInventoryBy(inventory.skuCode) } throws inventoryNotFoundException
+            every { mockInventoryService.getInventoryBySkuCode(inventory.skuCode) } throws inventoryNotFoundException
 
-            shouldThrow<InventoryNotFoundException> { inventoryController.getInventoryBy(inventory.skuCode) }
+            shouldThrow<InventoryNotFoundException> { inventoryController.getInventoryBySkuCode(inventory.skuCode) }
 
             verify {
-                mockInventoryService.getInventoryBy(inventory.skuCode)
+                mockInventoryService.getInventoryBySkuCode(inventory.skuCode)
             }
         }
     }

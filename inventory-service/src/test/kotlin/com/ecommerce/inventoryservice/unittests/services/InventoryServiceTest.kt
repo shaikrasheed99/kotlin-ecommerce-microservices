@@ -31,23 +31,23 @@ class InventoryServiceTest : DescribeSpec({
 
     describe("Get Inventory by SkuCode") {
         it("should be able to return inventory by SkuCode") {
-            every { mockInventoryRepository.findInventoryBy(inventory.skuCode) } returns Optional.ofNullable(inventory)
+            every { mockInventoryRepository.findInventoryBySkuCode(inventory.skuCode) } returns Optional.ofNullable(inventory)
 
-            val inventoryBySkuCode = inventoryService.getInventoryBy(inventory.skuCode)
+            val inventoryBySkuCode = inventoryService.getInventoryBySkuCode(inventory.skuCode)
 
             inventoryBySkuCode shouldBe inventory
-            verify { mockInventoryRepository.findInventoryBy(inventory.skuCode) }
+            verify { mockInventoryRepository.findInventoryBySkuCode(inventory.skuCode) }
         }
     }
 
     describe("Get Inventory by SkuCode - Error scenarios") {
         it("should throw exception when the Inventory is not found by skuCode") {
             val wrongSkuCode = "wrong-skucode"
-            every { mockInventoryRepository.findInventoryBy(wrongSkuCode) } returns Optional.empty()
+            every { mockInventoryRepository.findInventoryBySkuCode(wrongSkuCode) } returns Optional.empty()
 
-            shouldThrow<InventoryNotFoundException> { inventoryService.getInventoryBy(wrongSkuCode) }
+            shouldThrow<InventoryNotFoundException> { inventoryService.getInventoryBySkuCode(wrongSkuCode) }
 
-            verify { mockInventoryRepository.findInventoryBy(wrongSkuCode) }
+            verify { mockInventoryRepository.findInventoryBySkuCode(wrongSkuCode) }
         }
     }
 })
