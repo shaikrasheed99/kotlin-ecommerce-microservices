@@ -30,11 +30,12 @@ object TestUtils {
     }
 
     fun createOrder(
+        id: UUID = UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10"),
         skuCode: String = "test_code",
         price: BigDecimal = BigDecimal(10),
         quantity: Int = 2
     ) = Order(
-        id = UUID.randomUUID(),
+        id = id,
         skuCode = skuCode,
         price = price,
         quantity = quantity
