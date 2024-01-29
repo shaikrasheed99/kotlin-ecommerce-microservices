@@ -2,6 +2,7 @@ package com.ecommerce.orderservice.exceptions
 
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.responses.Response
+import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -10,9 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-class ExceptionHandlerController {
-    private val logger = LoggerFactory.getLogger(this::class.java)
-
+class ExceptionsHandler {
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleMethodArgumentNotValidException(
         methodArgumentNotValidException: MethodArgumentNotValidException
@@ -35,10 +34,10 @@ class ExceptionHandlerController {
             InventoryServiceErrorException::class
         ]
     )
-    fun handleInventoryExceptions(
+    fun handleInventoryServiceExceptions(
         exception: Exception
     ): ResponseEntity<Response> {
-        val response = exception.message?.let {
+        val response = exception.message!!.let {
             logger.info(it)
             Response(
                 status = StatusResponses.ERROR,
@@ -49,5 +48,9 @@ class ExceptionHandlerController {
         }
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response)
+    }
+
+    companion object {
+        val logger: Logger = LoggerFactory.getLogger(this::class.java)
     }
 }
