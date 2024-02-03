@@ -4,14 +4,11 @@ import com.ecommerce.orderservice.configs.InventoryServiceClient
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityException
-import com.ecommerce.orderservice.exceptions.InventoryNotAvailableException
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.client.WebClientRequestException
-import org.springframework.web.reactive.function.client.WebClientResponseException
 
 @Service
 class OrderService(
@@ -19,31 +16,36 @@ class OrderService(
     private val inventoryServiceClient: InventoryServiceClient
 ) {
     fun createOrder(orderRequestBody: OrderRequestBody): Order? {
-        val order = Order(
-            id = null,
-            skuCode = orderRequestBody.skuCode,
-            price = orderRequestBody.price,
-            quantity = orderRequestBody.quantity
-        )
+        var order: Order? = null
 
-        try {
-            val inventoryResponse = inventoryServiceClient.getInventoryBySkuCode(order.skuCode)
-
-            return inventoryResponse?.let {
-                val inventory = ObjectMapper().convertValue(it.data, InventoryResponse::class.java)
-                if (order.quantity <= inventory.quantity) {
-                    orderRepository.save(order)
+        runCatching {
+            inventoryServiceClient.getInventoryBySkuCode(orderRequestBody.skuCode)
+        }.onSuccess { inventoryResponse ->
+            order = inventoryResponse?.let {
+                val inventory = mapper.convertValue(it.data, InventoryResponse::class.java)
+                if (orderRequestBody.quantity <= inventory.quantity) {
+                    orderRepository.save(mapToOrder(orderRequestBody))
                 } else {
-                    val exceptionMessage = "Order cannot be created as it's quantity is more than inventory quantity"
+                    val exceptionMessage =
+                        "Order cannot be created as it's quantity is more than inventory quantity"
                     throw InsufficientInventoryQuantityException(exceptionMessage)
                 }
             }
-        } catch (webClientResponseException: WebClientResponseException) {
-            val exceptionMessage = "Inventory is not available for item with skuCode ${order.skuCode}"
-            throw InventoryNotAvailableException(exceptionMessage)
-        } catch (webClientRequestException: WebClientRequestException) {
-            val exceptionMessage = "Internal server error from Inventory service"
-            throw InventoryServiceErrorException(exceptionMessage)
+        }.onFailure {
+            throw InventoryServiceErrorException(it.message.toString())
         }
+
+        return order
+    }
+
+    private fun mapToOrder(orderRequestBody: OrderRequestBody): Order = Order(
+        id = null,
+        skuCode = orderRequestBody.skuCode,
+        price = orderRequestBody.price,
+        quantity = orderRequestBody.quantity
+    )
+
+    companion object {
+        val mapper = ObjectMapper()
     }
 }

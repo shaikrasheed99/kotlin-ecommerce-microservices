@@ -4,7 +4,6 @@ import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.exceptions.ExceptionsHandler
 import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityException
-import com.ecommerce.orderservice.exceptions.InventoryNotAvailableException
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.utils.EntityUtils.getMethodAnnotations
 import io.kotest.core.spec.style.DescribeSpec
@@ -92,7 +91,6 @@ class ExceptionsHandlerTest : DescribeSpec({
             exceptionHandlerAnnotation shouldNotBe null
             exceptionHandlerAnnotation.value shouldBe mutableListOf(
                 InsufficientInventoryQuantityException::class,
-                InventoryNotAvailableException::class,
                 InventoryServiceErrorException::class
             )
         }

@@ -30,7 +30,6 @@ class ExceptionsHandler {
     @ExceptionHandler(
         value = [
             InsufficientInventoryQuantityException::class,
-            InventoryNotAvailableException::class,
             InventoryServiceErrorException::class
         ]
     )

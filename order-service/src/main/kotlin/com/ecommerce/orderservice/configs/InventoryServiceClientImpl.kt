@@ -19,7 +19,7 @@ class InventoryServiceClientImpl(
             .get()
             .uri(url, skuCode)
             .retrieve()
-            .bodyToMono(com.ecommerce.orderservice.dto.responses.Response::class.java)
+            .bodyToMono(Response::class.java)
             .block()
     }
 }
