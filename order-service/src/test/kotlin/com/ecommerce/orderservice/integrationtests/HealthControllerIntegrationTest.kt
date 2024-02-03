@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.get
 @AutoConfigureMockMvc
 internal class HealthControllerIntegrationTest {
     @Autowired
-    private lateinit var mockMvc: MockMvc;
+    private lateinit var mockMvc: MockMvc
 
     @Test
     internal fun shouldBeAbleToReturnSuccessResponseWhenServerIsUp() {

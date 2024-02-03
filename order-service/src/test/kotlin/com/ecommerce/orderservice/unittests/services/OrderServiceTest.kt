@@ -2,7 +2,6 @@ package com.ecommerce.orderservice.unittests.services
 
 import com.ecommerce.orderservice.configs.InventoryServiceClient
 import com.ecommerce.orderservice.constants.StatusResponses
-import com.ecommerce.orderservice.controllers.OrderController
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityException

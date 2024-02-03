@@ -2,7 +2,6 @@ package com.ecommerce.orderservice.integrationtests
 
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
-import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.models.OrderRepository
@@ -51,7 +50,7 @@ internal class OrderControllerIntegrationTest {
     companion object {
         @Container
         @ServiceConnection
-        private val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainer()
 
         private val mockServerContainer = MockServerContainer(
             DockerImageName.parse("mockserver/mockserver:5.15.0")
@@ -64,7 +63,7 @@ internal class OrderControllerIntegrationTest {
 
         @JvmStatic
         @DynamicPropertySource
-        private fun configure(registry: DynamicPropertyRegistry) {
+        fun configure(registry: DynamicPropertyRegistry) {
             registry.add("inventory.service.url") {
                 "http://${mockServerContainer.host}:${mockServerContainer.serverPort}"
             }
@@ -122,7 +121,7 @@ internal class OrderControllerIntegrationTest {
         mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
-        );
+        )
     }
 
     @Test
