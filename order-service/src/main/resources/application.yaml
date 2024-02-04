@@ -13,15 +13,12 @@ inventory.service.url: http://inventory-service
 
 resilience4j:
   circuitbreaker:
-    configs:
-      default:
-        registerHealthIndicator: true
-        automaticTransitionFromOpenToHalfOpenEnabled: true
     instances:
       inventoryClient:
-        baseConfig: default
+        registerHealthIndicator: true
+        automaticTransitionFromOpenToHalfOpenEnabled: true
         slidingWindowType: COUNT_BASED
-        slidingWindowSize: 5
+        slidingWindowSize: 3
         failureRateThreshold: 100
         waitDurationInOpenState: 3s
         permittedNumberOfCallsInHalfOpenState: 3
@@ -30,3 +27,11 @@ resilience4j:
       inventoryClient:
         max-attempts: 3
         wait-duration: 3s
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
