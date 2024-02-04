@@ -8,6 +8,8 @@ import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import io.github.resilience4j.retry.annotation.Retry
 import org.springframework.stereotype.Service
 
 @Service
@@ -15,6 +17,8 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val inventoryServiceClient: InventoryServiceClient
 ) {
+    @CircuitBreaker(name = "inventoryClient")
+    @Retry(name = "inventoryClient", fallbackMethod = "handleCreateOrderRetryFailure")
     fun createOrder(orderRequestBody: OrderRequestBody): Order? {
         var order: Order? = null
 
@@ -36,6 +40,14 @@ class OrderService(
         }
 
         return order
+    }
+
+    fun handleCreateOrderRetryFailure(
+        orderRequestBody: OrderRequestBody,
+        exception: InventoryServiceErrorException
+    ): Order? {
+        println("fallback")
+        throw exception
     }
 
     private fun mapToOrder(orderRequestBody: OrderRequestBody): Order = Order(
