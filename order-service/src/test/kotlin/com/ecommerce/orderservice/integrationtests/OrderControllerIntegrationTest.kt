@@ -9,6 +9,9 @@ import com.ecommerce.orderservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBodyJson
 import com.ecommerce.orderservice.utils.TestUtils.getPostgreSQLContainer
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.github.resilience4j.circuitbreaker.CircuitBreaker
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
+import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.mockserver.client.MockServerClient
@@ -28,13 +31,13 @@ import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.testcontainers.containers.MockServerContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import java.math.BigDecimal
+
+private const val NUMBER_OF_RETRY_CALLS = 3
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -46,6 +49,9 @@ internal class OrderControllerIntegrationTest {
 
     @Autowired
     private lateinit var orderRepository: OrderRepository
+
+    @Autowired
+    private lateinit var circuitBreakerRegistry: CircuitBreakerRegistry
 
     companion object {
         @Container
@@ -201,11 +207,6 @@ internal class OrderControllerIntegrationTest {
         }.andExpect {
             status { isInternalServerError() }
         }
-
-        mockServer.verify(
-            request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
-            exactly(1)
-        )
     }
 
     @Test
@@ -239,10 +240,113 @@ internal class OrderControllerIntegrationTest {
         }.andExpect {
             status { isInternalServerError() }
         }
+    }
+
+    @Test
+    internal fun shouldBeAbleToRetryTheInventoryAPICallWhenInventoryIsNotFound() {
+        val orderRequestBodyJson = createOrderRequestBodyJson()
+
+        val inventoryNotFoundResponseJson = ObjectMapper().writeValueAsString(
+            Response(
+                status = StatusResponses.ERROR,
+                code = HttpStatus.NOT_FOUND,
+                message = "inventory not found",
+                data = null
+            )
+        )
+
+        mockServer
+            .`when`(
+                request()
+                    .withMethod(HttpMethod.GET.name())
+                    .withPath("/inventory/.*")
+            ).respond(
+                response()
+                    .withStatusCode(HttpStatus.NOT_FOUND.value())
+                    .withContentType(APPLICATION_JSON)
+                    .withBody(inventoryNotFoundResponseJson)
+            )
+
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isInternalServerError() }
+        }
 
         mockServer.verify(
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
-            exactly(1)
+            exactly(NUMBER_OF_RETRY_CALLS)
         )
+    }
+
+    @Test
+    internal fun shouldBeAbleToRetryTheInventoryAPICallWhenInventoryServiceIsNotAvailable() {
+        val orderRequestBodyJson = createOrderRequestBodyJson()
+
+        mockServer
+            .`when`(
+                request()
+                    .withMethod(HttpMethod.GET.name())
+                    .withPath("/inventory/.*")
+            ).respond(
+                response()
+                    .withStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value())
+            )
+
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isInternalServerError() }
+        }
+
+        mockServer.verify(
+            request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
+            exactly(NUMBER_OF_RETRY_CALLS)
+        )
+    }
+
+    @Test
+    internal fun shouldHaveClosedStateInCircuitBreakerWhenInventoryServiceReturnsSuccess() {
+        val circuitBreaker = circuitBreakerRegistry.circuitBreaker("inventoryClient")
+        circuitBreaker.state shouldBe CircuitBreaker.State.CLOSED
+
+        val orderRequestBodyJson = createOrderRequestBodyJson()
+
+        val inventorySuccessResponseJson = ObjectMapper().writeValueAsString(
+            Response(
+                status = StatusResponses.SUCCESS,
+                code = HttpStatus.OK,
+                message = "success response",
+                data = InventoryResponse(
+                    id = 1,
+                    skuCode = "test_code",
+                    quantity = 2
+                )
+            )
+        )
+
+        mockServer
+            .`when`(
+                request()
+                    .withMethod(HttpMethod.GET.name())
+                    .withPath("/inventory/.*")
+            )
+            .respond(
+                response()
+                    .withStatusCode(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(inventorySuccessResponseJson)
+            )
+
+        mockMvc.post("/orders") {
+            contentType = MediaType.APPLICATION_JSON
+            content = orderRequestBodyJson
+        }.andExpect {
+            status { isOk() }
+        }
+
+        circuitBreaker.state shouldBe CircuitBreaker.State.CLOSED
     }
 }

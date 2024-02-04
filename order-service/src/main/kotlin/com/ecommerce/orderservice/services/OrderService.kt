@@ -42,11 +42,11 @@ class OrderService(
         return order
     }
 
+    @Suppress("UnusedParameter")
     fun handleCreateOrderRetryFailure(
         orderRequestBody: OrderRequestBody,
         exception: InventoryServiceErrorException
     ): Order? {
-        println("fallback")
         throw exception
     }
 
