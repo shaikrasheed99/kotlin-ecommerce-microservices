@@ -41,6 +41,8 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
     implementation("io.github.resilience4j:resilience4j-spring-boot2:2.2.0")
 
+    implementation("org.springframework.kafka:spring-kafka")
+
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 
     runtimeOnly("org.postgresql:postgresql")
