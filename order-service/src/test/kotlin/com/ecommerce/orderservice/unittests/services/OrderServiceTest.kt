@@ -4,6 +4,7 @@ import com.ecommerce.orderservice.configs.InventoryServiceClient
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.dto.responses.Response
+import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityException
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
@@ -21,15 +22,19 @@ import io.mockk.verify
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.kafka.support.SendResult
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import java.net.URI
+import java.util.concurrent.CompletableFuture
 
 internal class OrderServiceTest : DescribeSpec({
     val mockOrderRepository = mockk<OrderRepository>()
     val mockInventoryServiceClient = mockk<InventoryServiceClient>()
+    val mockKafkaTemplate = mockk<KafkaTemplate<String, OrderPlacedEvent>>()
 
-    val orderService = OrderService(mockOrderRepository, mockInventoryServiceClient)
+    val orderService = OrderService(mockOrderRepository, mockInventoryServiceClient, mockKafkaTemplate)
 
     val order = createOrder()
 
@@ -58,6 +63,9 @@ internal class OrderServiceTest : DescribeSpec({
             )
 
             every { mockOrderRepository.save(any(Order::class)) } returns order
+            every {
+                mockKafkaTemplate.send(any(String::class), any(OrderPlacedEvent::class))
+            } returns CompletableFuture<SendResult<String, OrderPlacedEvent>>()
             every {
                 mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
             } returns inventorySuccessResponse
