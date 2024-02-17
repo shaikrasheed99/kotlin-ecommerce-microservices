@@ -10,8 +10,11 @@ import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
 import com.ecommerce.orderservice.services.OrderService
+import com.ecommerce.orderservice.utils.EntityUtils.getMethodAnnotations
 import com.ecommerce.orderservice.utils.TestUtils.createOrder
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBody
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import io.github.resilience4j.retry.annotation.Retry
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -28,6 +31,8 @@ import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import java.net.URI
 import java.util.concurrent.CompletableFuture
+
+private const val CIRCUIT_BREAKER_INVENTORY_CLIENT = "inventoryClient"
 
 internal class OrderServiceTest : DescribeSpec({
     val mockOrderRepository = mockk<OrderRepository>()
@@ -149,6 +154,25 @@ internal class OrderServiceTest : DescribeSpec({
             verify {
                 mockInventoryServiceClient.getInventoryBySkuCode(orderRequestBody.skuCode)
             }
+        }
+    }
+
+    describe("Create New Order - Circuit Breaker & Retry - annotations") {
+        it("should have Circuit Breaker annotation to the createOrder method") {
+            val methodAnnotations = orderService.getMethodAnnotations("createOrder")
+            val circuitBreakerAnnotation = methodAnnotations.firstOrNull { it is CircuitBreaker } as CircuitBreaker
+
+            circuitBreakerAnnotation shouldNotBe null
+            circuitBreakerAnnotation.name shouldBe CIRCUIT_BREAKER_INVENTORY_CLIENT
+        }
+
+        it("should have Retry annotation to the createOrder method") {
+            val methodAnnotations = orderService.getMethodAnnotations("createOrder")
+            val retryAnnotation = methodAnnotations.firstOrNull { it is Retry } as Retry
+
+            retryAnnotation shouldNotBe null
+            retryAnnotation.name shouldBe CIRCUIT_BREAKER_INVENTORY_CLIENT
+            retryAnnotation.fallbackMethod shouldBe "handleCreateOrderRetryFailure"
         }
     }
 
