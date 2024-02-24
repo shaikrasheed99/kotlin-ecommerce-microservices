@@ -11,7 +11,6 @@ import com.ecommerce.orderservice.models.OrderRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
-import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.stereotype.Service
 
 private const val DEFAULT_KAFKA_TOPIC = "notificationsTopic"
@@ -20,7 +19,7 @@ private const val DEFAULT_KAFKA_TOPIC = "notificationsTopic"
 class OrderService(
     private val orderRepository: OrderRepository,
     private val inventoryServiceClient: InventoryServiceClient,
-    private val kafkaTemplate: KafkaTemplate<String, OrderPlacedEvent>
+    private val kafkaProducer: KafkaProducer
 ) {
     @CircuitBreaker(name = "inventoryClient")
     @Retry(name = "inventoryClient", fallbackMethod = "handleCreateOrderRetryFailure")
@@ -34,7 +33,10 @@ class OrderService(
                 val inventory = mapper.convertValue(it.data, InventoryResponse::class.java)
                 if (orderRequestBody.quantity <= inventory.quantity) {
                     order = orderRepository.save(mapToOrder(orderRequestBody))
-                    kafkaTemplate.send(DEFAULT_KAFKA_TOPIC, mapToOrderPlacedEvent(order))
+                    kafkaProducer.sendOrderPlacedEvent(
+                        DEFAULT_KAFKA_TOPIC,
+                        mapToOrderPlacedEvent(order)
+                    )
                 } else {
                     val exceptionMessage =
                         "Order cannot be created as it's quantity is more than inventory quantity"
