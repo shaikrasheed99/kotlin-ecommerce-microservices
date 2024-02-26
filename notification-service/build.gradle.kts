@@ -21,6 +21,7 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("org.springframework.kafka:spring-kafka:3.1.2")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
