@@ -3,3 +3,15 @@ server.port: 8083
 spring:
   application:
     name: notification-service
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: notificationsId
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json.type.mapping: event:com.ecommerce.notificationservice.events.OrderPlacedEvent
+          deserializer:
+            key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+            value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
