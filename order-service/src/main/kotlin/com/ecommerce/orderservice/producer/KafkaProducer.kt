@@ -1,4 +1,4 @@
-package com.ecommerce.orderservice.services
+package com.ecommerce.orderservice.producer
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
 import org.slf4j.Logger

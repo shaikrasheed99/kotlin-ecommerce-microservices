@@ -9,14 +9,13 @@ import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityExcept
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
-import com.ecommerce.orderservice.services.KafkaProducer
+import com.ecommerce.orderservice.producer.KafkaProducer
 import com.ecommerce.orderservice.services.OrderService
 import com.ecommerce.orderservice.utils.EntityUtils.getMethodAnnotations
 import com.ecommerce.orderservice.utils.TestUtils.createOrder
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBody
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
-import io.kotest.assertions.any
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -29,12 +28,9 @@ import io.mockk.verify
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.kafka.core.KafkaTemplate
-import org.springframework.kafka.support.SendResult
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import java.net.URI
-import java.util.concurrent.CompletableFuture
 
 private const val CIRCUIT_BREAKER_INVENTORY_CLIENT = "inventoryClient"
 

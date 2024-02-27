@@ -8,6 +8,7 @@ import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityExcept
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
+import com.ecommerce.orderservice.producer.KafkaProducer
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry

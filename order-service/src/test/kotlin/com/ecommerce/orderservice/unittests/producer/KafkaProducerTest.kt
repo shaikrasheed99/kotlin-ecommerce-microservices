@@ -1,7 +1,7 @@
-package com.ecommerce.orderservice.unittests.services
+package com.ecommerce.orderservice.unittests.producer
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
-import com.ecommerce.orderservice.services.KafkaProducer
+import com.ecommerce.orderservice.producer.KafkaProducer
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
