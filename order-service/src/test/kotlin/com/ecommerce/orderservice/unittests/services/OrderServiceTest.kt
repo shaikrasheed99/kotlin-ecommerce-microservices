@@ -11,6 +11,7 @@ import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
 import com.ecommerce.orderservice.producer.KafkaProducer
 import com.ecommerce.orderservice.services.OrderService
+import com.ecommerce.orderservice.utils.EntityUtils.getAttributeAnnotations
 import com.ecommerce.orderservice.utils.EntityUtils.getMethodAnnotations
 import com.ecommerce.orderservice.utils.TestUtils.createOrder
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBody
@@ -25,10 +26,12 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.verify
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.test.util.ReflectionTestUtils
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import java.net.URI
 
@@ -44,6 +47,7 @@ internal class OrderServiceTest : DescribeSpec({
         mockInventoryServiceClient,
         mockKafkaProducer
     )
+    ReflectionTestUtils.setField(orderService, "kafkaTopic", "test_topic")
 
     val order = createOrder()
 
@@ -53,6 +57,16 @@ internal class OrderServiceTest : DescribeSpec({
             val serviceAnnotation = classAnnotations.firstOrNull { it is Service } as Service
 
             serviceAnnotation shouldNotBe null
+        }
+    }
+
+    describe("Order Service - attributes") {
+        it("should have Value annotation to the kafkaTopic attribute") {
+            val attributeAnnotations = orderService.getAttributeAnnotations("kafkaTopic")
+            val valueAnnotation = attributeAnnotations.firstOrNull { it is Value } as Value
+
+            valueAnnotation shouldNotBe null
+            valueAnnotation.value shouldBe "\${spring.kafka.topic}"
         }
     }
 

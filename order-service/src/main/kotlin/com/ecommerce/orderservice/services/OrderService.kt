@@ -12,9 +12,8 @@ import com.ecommerce.orderservice.producer.KafkaProducer
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-
-private const val DEFAULT_KAFKA_TOPIC = "notificationsTopic"
 
 @Service
 class OrderService(
@@ -22,6 +21,9 @@ class OrderService(
     private val inventoryServiceClient: InventoryServiceClient,
     private val kafkaProducer: KafkaProducer
 ) {
+    @Value("\${spring.kafka.topic}")
+    private lateinit var kafkaTopic: String
+
     @CircuitBreaker(name = "inventoryClient")
     @Retry(name = "inventoryClient", fallbackMethod = "handleCreateOrderRetryFailure")
     fun createOrder(orderRequestBody: OrderRequestBody): Order? {
@@ -35,7 +37,7 @@ class OrderService(
                 if (orderRequestBody.quantity <= inventory.quantity) {
                     order = orderRepository.save(mapToOrder(orderRequestBody))
                     kafkaProducer.sendOrderPlacedEvent(
-                        DEFAULT_KAFKA_TOPIC,
+                        kafkaTopic,
                         mapToOrderPlacedEvent(order)
                     )
                 } else {

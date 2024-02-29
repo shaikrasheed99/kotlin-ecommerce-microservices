@@ -8,6 +8,7 @@ spring:
     username: postgres
     password: root
   kafka:
+    topic: notificationsTopic
     producer:
       bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
