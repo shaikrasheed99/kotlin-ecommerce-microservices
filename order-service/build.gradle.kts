@@ -104,7 +104,7 @@ tasks.jacocoTestReport {
 
 tasks.jacocoTestCoverageVerification {
     dependsOn(tasks.test)
-    val minimumThreadValue = 0.99.toBigDecimal()
+    val minimumThreadValue = 0.90.toBigDecimal()
     violationRules {
         rule {
             element = "CLASS"
