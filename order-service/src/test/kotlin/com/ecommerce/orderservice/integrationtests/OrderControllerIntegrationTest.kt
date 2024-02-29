@@ -59,7 +59,7 @@ internal class OrderControllerIntegrationTest {
         val postgreSQLContainer = getPostgreSQLContainer()
 
         private val mockServerContainer = MockServerContainer(
-            DockerImageName.parse("mockserver/mockserver:5.15.0")
+            DockerImageName.parse("mockserver/mockserver:latest")
         ).apply { start() }
 
         private val mockServer = MockServerClient(
