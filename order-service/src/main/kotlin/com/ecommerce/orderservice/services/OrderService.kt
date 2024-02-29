@@ -53,7 +53,7 @@ class OrderService(
 
     private fun mapToOrderPlacedEvent(order: Order?): OrderPlacedEvent =
         OrderPlacedEvent(
-            id = order?.id!!,
+            id = order!!.id!!,
             skuCode = order.skuCode
         )
 
