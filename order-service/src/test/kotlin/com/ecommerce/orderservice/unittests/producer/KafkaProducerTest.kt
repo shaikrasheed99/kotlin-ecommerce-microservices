@@ -78,6 +78,12 @@ class KafkaProducerTest : DescribeSpec({
             confirmVerified(mockKafkaTemplate)
         }
     }
+
+    describe("Kafka Producer - logger") {
+        it("should initialize the logger of kafka producer") {
+            KafkaProducer.logger shouldNotBe null
+        }
+    }
 })
 
 private fun createOrderPlacedEvent() = OrderPlacedEvent(
