@@ -120,8 +120,8 @@ internal class OrderControllerIntegrationTest {
             )
         }
 
+        orderRepository.count() shouldBe 1
         verifyGetInventoryBySkuCodeAPICall(mockServer, 1)
-
         assertConsumerRecord(testConsumer)
     }
 
@@ -179,6 +179,8 @@ internal class OrderControllerIntegrationTest {
         }.andExpect {
             status { isInternalServerError() }
         }
+
+        orderRepository.count() shouldBe 0
     }
 
     @Test
@@ -193,6 +195,8 @@ internal class OrderControllerIntegrationTest {
         }.andExpect {
             status { isInternalServerError() }
         }
+
+        orderRepository.count() shouldBe 0
     }
 
     @Test
