@@ -2,16 +2,18 @@ package com.ecommerce.orderservice.integrationtests
 
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
-import com.ecommerce.orderservice.dto.responses.InventoryResponse
-import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.models.OrderRepository
 import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.assertConsumerRecord
 import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.createTestConsumer
+import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeGetInventoryBySkuCodeAPIResponse200
+import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeGetInventoryBySkuCodeAPIResponse404
+import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeGetInventoryBySkuCodeWithInsufficientQuantityAPIResponse200
+import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeInventoryServiceNotAvailableAPIResponse
+import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.verifyGetInventoryBySkuCodeAPICall
 import com.ecommerce.orderservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBodyJson
 import com.ecommerce.orderservice.utils.TestUtils.getPostgreSQLContainer
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.CircuitBreaker
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.kotest.matchers.shouldBe
@@ -20,16 +22,11 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockserver.client.MockServerClient
-import org.mockserver.model.HttpRequest.request
-import org.mockserver.model.HttpResponse.response
-import org.mockserver.model.MediaType.APPLICATION_JSON
-import org.mockserver.verify.VerificationTimes.exactly
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
-import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.kafka.annotation.EnableKafka
@@ -109,31 +106,7 @@ internal class OrderControllerIntegrationTest {
     internal fun shouldBeAbleToCreateNewOrder() {
         val orderRequestBodyJson = createOrderRequestBodyJson()
 
-        val inventorySuccessResponseJson = ObjectMapper().writeValueAsString(
-            Response(
-                status = StatusResponses.SUCCESS,
-                code = HttpStatus.OK,
-                message = "success response",
-                data = InventoryResponse(
-                    id = 1,
-                    skuCode = "test_code",
-                    quantity = 2
-                )
-            )
-        )
-
-        mockServer
-            .`when`(
-                request()
-                    .withMethod(HttpMethod.GET.name())
-                    .withPath("/inventory/.*")
-            )
-            .respond(
-                response()
-                    .withStatusCode(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(inventorySuccessResponseJson)
-            )
+        invokeGetInventoryBySkuCodeAPIResponse200(mockServer)
 
         mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
@@ -147,10 +120,7 @@ internal class OrderControllerIntegrationTest {
             )
         }
 
-        mockServer.verify(
-            request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
-            exactly(1)
-        )
+        verifyGetInventoryBySkuCodeAPICall(mockServer, 1)
 
         assertConsumerRecord(testConsumer)
     }
@@ -201,30 +171,7 @@ internal class OrderControllerIntegrationTest {
     internal fun shouldNotBeAbleToCreateNewOrderWhenInsufficientInventoryQuantity() {
         val orderRequestBodyJson = createOrderRequestBodyJson()
 
-        val insufficientInventoryQuantityJson = ObjectMapper().writeValueAsString(
-            Response(
-                status = StatusResponses.SUCCESS,
-                code = HttpStatus.OK,
-                message = "success response",
-                data = InventoryResponse(
-                    id = 1,
-                    skuCode = "test_code",
-                    quantity = 1
-                )
-            )
-        )
-
-        mockServer
-            .`when`(
-                request()
-                    .withMethod(HttpMethod.GET.name())
-                    .withPath("/inventory/.*")
-            ).respond(
-                response()
-                    .withStatusCode(HttpStatus.OK.value())
-                    .withContentType(APPLICATION_JSON)
-                    .withBody(insufficientInventoryQuantityJson)
-            )
+        invokeGetInventoryBySkuCodeWithInsufficientQuantityAPIResponse200(mockServer)
 
         mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
@@ -238,26 +185,7 @@ internal class OrderControllerIntegrationTest {
     internal fun shouldNotBeAbleToCreateNewOrderWhenInventoryIsNotFoundInInventoryService() {
         val orderRequestBodyJson = createOrderRequestBodyJson()
 
-        val inventoryNotFoundResponseJson = ObjectMapper().writeValueAsString(
-            Response(
-                status = StatusResponses.ERROR,
-                code = HttpStatus.NOT_FOUND,
-                message = "inventory not found",
-                data = null
-            )
-        )
-
-        mockServer
-            .`when`(
-                request()
-                    .withMethod(HttpMethod.GET.name())
-                    .withPath("/inventory/.*")
-            ).respond(
-                response()
-                    .withStatusCode(HttpStatus.NOT_FOUND.value())
-                    .withContentType(APPLICATION_JSON)
-                    .withBody(inventoryNotFoundResponseJson)
-            )
+        invokeGetInventoryBySkuCodeAPIResponse404(mockServer)
 
         mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
@@ -271,26 +199,7 @@ internal class OrderControllerIntegrationTest {
     internal fun shouldBeAbleToRetryTheInventoryAPICallWhenInventoryIsNotFound() {
         val orderRequestBodyJson = createOrderRequestBodyJson()
 
-        val inventoryNotFoundResponseJson = ObjectMapper().writeValueAsString(
-            Response(
-                status = StatusResponses.ERROR,
-                code = HttpStatus.NOT_FOUND,
-                message = "inventory not found",
-                data = null
-            )
-        )
-
-        mockServer
-            .`when`(
-                request()
-                    .withMethod(HttpMethod.GET.name())
-                    .withPath("/inventory/.*")
-            ).respond(
-                response()
-                    .withStatusCode(HttpStatus.NOT_FOUND.value())
-                    .withContentType(APPLICATION_JSON)
-                    .withBody(inventoryNotFoundResponseJson)
-            )
+        invokeGetInventoryBySkuCodeAPIResponse404(mockServer)
 
         mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
@@ -299,25 +208,14 @@ internal class OrderControllerIntegrationTest {
             status { isInternalServerError() }
         }
 
-        mockServer.verify(
-            request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
-            exactly(NUMBER_OF_RETRY_CALLS)
-        )
+        verifyGetInventoryBySkuCodeAPICall(mockServer, NUMBER_OF_RETRY_CALLS)
     }
 
     @Test
     internal fun shouldBeAbleToRetryTheInventoryAPICallWhenInventoryServiceIsNotAvailable() {
         val orderRequestBodyJson = createOrderRequestBodyJson()
 
-        mockServer
-            .`when`(
-                request()
-                    .withMethod(HttpMethod.GET.name())
-                    .withPath("/inventory/.*")
-            ).respond(
-                response()
-                    .withStatusCode(HttpStatus.SERVICE_UNAVAILABLE.value())
-            )
+        invokeInventoryServiceNotAvailableAPIResponse(mockServer)
 
         mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
@@ -326,10 +224,7 @@ internal class OrderControllerIntegrationTest {
             status { isInternalServerError() }
         }
 
-        mockServer.verify(
-            request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
-            exactly(NUMBER_OF_RETRY_CALLS)
-        )
+        verifyGetInventoryBySkuCodeAPICall(mockServer, NUMBER_OF_RETRY_CALLS)
     }
 
     @Test
@@ -339,31 +234,7 @@ internal class OrderControllerIntegrationTest {
 
         val orderRequestBodyJson = createOrderRequestBodyJson()
 
-        val inventorySuccessResponseJson = ObjectMapper().writeValueAsString(
-            Response(
-                status = StatusResponses.SUCCESS,
-                code = HttpStatus.OK,
-                message = "success response",
-                data = InventoryResponse(
-                    id = 1,
-                    skuCode = "test_code",
-                    quantity = 2
-                )
-            )
-        )
-
-        mockServer
-            .`when`(
-                request()
-                    .withMethod(HttpMethod.GET.name())
-                    .withPath("/inventory/.*")
-            )
-            .respond(
-                response()
-                    .withStatusCode(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(inventorySuccessResponseJson)
-            )
+        invokeGetInventoryBySkuCodeAPIResponse200(mockServer)
 
         mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
@@ -371,6 +242,8 @@ internal class OrderControllerIntegrationTest {
         }.andExpect {
             status { isOk() }
         }
+
+        verifyGetInventoryBySkuCodeAPICall(mockServer, 1)
 
         circuitBreaker.state shouldBe CircuitBreaker.State.CLOSED
     }
