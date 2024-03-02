@@ -1,10 +1,11 @@
 package com.ecommerce.notificationservice.unittests.consumer
 
 import com.ecommerce.notificationservice.consumer.KafkaConsumer
-import com.ecommerce.notificationservice.events.OrderPlacedEvent
 import com.ecommerce.notificationservice.models.Notification
 import com.ecommerce.notificationservice.models.NotificationRepository
 import com.ecommerce.notificationservice.utils.EntityUtils.getMethodAnnotations
+import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
+import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -13,9 +14,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
-import java.sql.Timestamp
-import java.time.Instant
-import java.util.UUID
 
 class KafkaConsumerTest : DescribeSpec({
     val mockNotificationRepository = mockk<NotificationRepository>()
@@ -58,19 +56,3 @@ class KafkaConsumerTest : DescribeSpec({
         }
     }
 })
-
-private fun createTestNotification() = Notification(
-    id = UUID.randomUUID(),
-    sender = "test@gmail.com",
-    recipient = "test@gmail.com",
-    isSent = false,
-    orderId = UUID.randomUUID(),
-    skuCode = "test_skucode",
-    createdAt = Timestamp.from(Instant.now())
-)
-
-private fun createTestOrderPlacedEvent(): OrderPlacedEvent =
-    OrderPlacedEvent(
-        id = UUID.randomUUID(),
-        skuCode = "test_skucode"
-    )

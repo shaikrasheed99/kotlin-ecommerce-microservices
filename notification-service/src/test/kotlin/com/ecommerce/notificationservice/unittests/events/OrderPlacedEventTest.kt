@@ -1,6 +1,6 @@
 package com.ecommerce.notificationservice.unittests.events
 
-import com.ecommerce.notificationservice.events.OrderPlacedEvent
+import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import java.util.UUID
@@ -31,8 +31,3 @@ class OrderPlacedEventTest : DescribeSpec({
         }
     }
 })
-
-fun createTestOrderPlacedEvent(): OrderPlacedEvent = OrderPlacedEvent(
-    id = UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10"),
-    skuCode = "test_skuCode"
-)
