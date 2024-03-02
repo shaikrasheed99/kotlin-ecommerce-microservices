@@ -68,7 +68,7 @@ class OrderTest : DescribeSpec({
             tableAnnotation.name shouldBe "orders"
         }
 
-        it("should have Id & GeneratedValue annotations to the Id attribute of Product class") {
+        it("should have Id & GeneratedValue annotations to the Id attribute of Order class") {
             val annotations = order.getAttributeAnnotations("id")
             val idAnnotation = annotations.firstOrNull { it is Id } as Id
             val generatedValueAnnotation = annotations.firstOrNull { it is GeneratedValue } as GeneratedValue
