@@ -4,7 +4,10 @@ import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.dto.responses.Response
+import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.models.OrderRepository
+import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.assertConsumerRecord
+import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.createTestConsumer
 import com.ecommerce.orderservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBodyJson
 import com.ecommerce.orderservice.utils.TestUtils.getPostgreSQLContainer
@@ -12,7 +15,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.CircuitBreaker
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.kotest.matchers.shouldBe
+import org.apache.kafka.clients.consumer.Consumer
 import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockserver.client.MockServerClient
 import org.mockserver.model.HttpRequest.request
@@ -27,6 +32,9 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.kafka.annotation.EnableKafka
+import org.springframework.kafka.test.EmbeddedKafkaBroker
+import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
@@ -39,10 +47,14 @@ import java.math.BigDecimal
 
 private const val NUMBER_OF_RETRY_CALLS = 3
 
+const val DEFAULT_TEST_TOPIC = "testTopic"
+
+@EnableKafka
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 @Testcontainers
+@EmbeddedKafka(topics = [DEFAULT_TEST_TOPIC])
 internal class OrderControllerIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -52,6 +64,11 @@ internal class OrderControllerIntegrationTest {
 
     @Autowired
     private lateinit var circuitBreakerRegistry: CircuitBreakerRegistry
+
+    @Autowired
+    private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
+
+    private lateinit var testConsumer: Consumer<String, OrderPlacedEvent>
 
     companion object {
         @Container
@@ -76,10 +93,16 @@ internal class OrderControllerIntegrationTest {
         }
     }
 
+    @BeforeEach
+    fun setUp() {
+        testConsumer = createTestConsumer(embeddedKafkaBroker)
+    }
+
     @AfterEach
     internal fun tearDown() {
         orderRepository.deleteAll()
         mockServer.reset()
+        testConsumer.close()
     }
 
     @Test
@@ -128,6 +151,8 @@ internal class OrderControllerIntegrationTest {
             request().withMethod(HttpMethod.GET.name()).withPath("/inventory/.*"),
             exactly(1)
         )
+
+        assertConsumerRecord(testConsumer)
     }
 
     @Test

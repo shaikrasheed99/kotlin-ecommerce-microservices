@@ -9,8 +9,8 @@ spring:
     password: root
   kafka:
     topic: notificationsTopic
+    bootstrap-servers: localhost:9092
     producer:
-      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties.spring.json.type.mapping: event:com.ecommerce.orderservice.events.OrderPlacedEvent
