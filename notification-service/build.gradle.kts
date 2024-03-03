@@ -8,6 +8,7 @@ plugins {
 	kotlin("jvm") version "1.9.20"
 	kotlin("plugin.spring") version "1.9.20"
 	kotlin("plugin.jpa") version "1.9.20"
+	jacoco
 }
 
 group = "com.ecommerce"
@@ -79,6 +80,71 @@ configurations.matching { it.name == "detekt" }.all {
 	resolutionStrategy.eachDependency {
 		if (requested.group == "org.jetbrains.kotlin") {
 			useVersion("1.9.0")
+		}
+	}
+}
+
+jacoco {
+	toolVersion = "0.8.9"
+	reportsDirectory.set(layout.buildDirectory.dir("jacoco"))
+}
+
+tasks.test {
+	finalizedBy(tasks.jacocoTestReport, tasks.jacocoTestCoverageVerification)
+}
+
+tasks.jacocoTestReport {
+	dependsOn(tasks.test)
+	classDirectories.setFrom(
+		sourceSets.main.get().output.asFileTree.matching {
+			exclude(
+				"**/NotificationServiceApplication*.*",
+				"**/NotificationTableSchemaCreation*.*",
+				"**/configs"
+			)
+		}
+	)
+	reports {
+		xml.required.set(true)
+		html.required.set(true)
+	}
+}
+
+tasks.jacocoTestCoverageVerification {
+	dependsOn(tasks.test)
+	val minimumThreadValue = 0.99.toBigDecimal()
+	violationRules {
+		rule {
+			element = "CLASS"
+			classDirectories.setFrom(
+				sourceSets.main.get().output.asFileTree.matching {
+					exclude(
+						"**/NotificationServiceApplication*.*",
+						"**/NotificationTableSchemaCreation*.*",
+						"**/configs"
+					)
+				}
+			)
+			limit {
+				counter = "LINE"
+				minimum = minimumThreadValue
+			}
+			limit {
+				counter = "BRANCH"
+				minimum = minimumThreadValue
+			}
+			limit {
+				counter = "METHOD"
+				minimum = minimumThreadValue
+			}
+			limit {
+				counter = "CLASS"
+				minimum = minimumThreadValue
+			}
+			limit {
+				counter = "COMPLEXITY"
+				minimum = minimumThreadValue
+			}
 		}
 	}
 }
