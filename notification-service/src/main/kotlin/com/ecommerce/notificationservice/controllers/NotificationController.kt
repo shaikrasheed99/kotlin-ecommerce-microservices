@@ -1,4 +1,4 @@
-package com.ecommerce.notificationservice
+package com.ecommerce.notificationservice.controllers
 
 import com.ecommerce.notificationservice.constants.MessageResponses
 import com.ecommerce.notificationservice.constants.StatusResponses
