@@ -1,4 +1,4 @@
-package com.ecommerce.orderservice.integrationtests
+package com.ecommerce.orderservice.integrationtests.controllers
 
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses

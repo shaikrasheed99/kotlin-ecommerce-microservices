@@ -1,7 +1,7 @@
 package com.ecommerce.orderservice.utils
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
-import com.ecommerce.orderservice.integrationtests.DEFAULT_TEST_TOPIC
+import com.ecommerce.orderservice.integrationtests.controllers.DEFAULT_TEST_TOPIC
 import io.kotest.matchers.shouldNotBe
 import org.apache.kafka.clients.consumer.Consumer
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
