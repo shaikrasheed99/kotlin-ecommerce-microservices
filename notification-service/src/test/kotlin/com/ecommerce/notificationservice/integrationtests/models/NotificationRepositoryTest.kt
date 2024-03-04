@@ -1,4 +1,4 @@
-package com.ecommerce.notificationservice.integrationtests
+package com.ecommerce.notificationservice.integrationtests.models
 
 import com.ecommerce.notificationservice.models.NotificationRepository
 import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
