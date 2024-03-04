@@ -1,4 +1,4 @@
-package com.ecommerce.inventoryservice.integrationtests
+package com.ecommerce.inventoryservice.integrationtests.models
 
 import com.ecommerce.inventoryservice.models.InventoryRepository
 import com.ecommerce.inventoryservice.utils.TestUtils

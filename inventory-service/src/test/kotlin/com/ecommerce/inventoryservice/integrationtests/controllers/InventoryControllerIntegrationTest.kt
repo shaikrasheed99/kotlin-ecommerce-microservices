@@ -1,4 +1,4 @@
-package com.ecommerce.inventoryservice.integrationtests
+package com.ecommerce.inventoryservice.integrationtests.controllers
 
 import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.constants.StatusResponses
