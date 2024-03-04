@@ -46,7 +46,7 @@ class KafkaConsumerTest : DescribeSpec({
             val kafkaListenerAnnotation = methodAnnotations.firstOrNull { it is KafkaListener } as KafkaListener
 
             kafkaListenerAnnotation shouldNotBe null
-            kafkaListenerAnnotation.topics.first() shouldBe "notificationsTopic"
+            kafkaListenerAnnotation.topics.first() shouldBe "\${spring.kafka.topic}"
         }
     }
 
