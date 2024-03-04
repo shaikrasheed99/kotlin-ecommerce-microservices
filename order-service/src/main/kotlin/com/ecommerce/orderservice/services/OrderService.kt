@@ -19,11 +19,10 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val inventoryServiceClient: InventoryServiceClient,
-    private val kafkaProducer: KafkaProducer
-) {
+    private val kafkaProducer: KafkaProducer,
     @Value("\${spring.kafka.topic}")
-    private lateinit var kafkaTopic: String
-
+    private val kafkaTopic: String
+) {
     @CircuitBreaker(name = "inventoryClient")
     @Retry(name = "inventoryClient", fallbackMethod = "handleCreateOrderRetryFailure")
     fun createOrder(orderRequestBody: OrderRequestBody): Order? {
