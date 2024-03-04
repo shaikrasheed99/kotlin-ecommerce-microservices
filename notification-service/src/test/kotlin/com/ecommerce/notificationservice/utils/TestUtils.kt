@@ -2,6 +2,7 @@ package com.ecommerce.notificationservice.utils
 
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
 import com.ecommerce.notificationservice.models.Notification
+import org.testcontainers.containers.PostgreSQLContainer
 import java.sql.Timestamp
 import java.time.Instant
 import java.util.UUID
@@ -23,4 +24,9 @@ object TestUtils {
         id = UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10"),
         skuCode = "test_skuCode"
     )
+
+    fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
+        PostgreSQLContainer("postgres:latest")
+            .withDatabaseName("notifications")
+            .withInitScript("create-notifications-table.sql")
 }
