@@ -1,13 +1,11 @@
-package com.ecommerce.productservice.integrationtests
+package com.ecommerce.productservice.integrationtests.controllers
 
 import com.ecommerce.productservice.constants.MessageResponses
 import com.ecommerce.productservice.constants.StatusResponses
 import com.ecommerce.productservice.models.Product
 import com.ecommerce.productservice.models.ProductRepository
+import com.ecommerce.productservice.utils.TestUtils
 import com.ecommerce.productservice.utils.TestUtils.assertCommonResponseBody
-import com.ecommerce.productservice.utils.TestUtils.createProduct
-import com.ecommerce.productservice.utils.TestUtils.createProductRequestBodyJson
-import com.ecommerce.productservice.utils.TestUtils.getPostgreSQLContainer
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -40,10 +38,10 @@ internal class ProductControllerIntegrationTest {
     companion object {
         @Container
         @ServiceConnection
-        val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = TestUtils.getPostgreSQLContainer()
     }
 
-    val product = createProduct()
+    val product = TestUtils.createProduct()
 
     @AfterEach
     internal fun tearDown() {
@@ -52,7 +50,7 @@ internal class ProductControllerIntegrationTest {
 
     @Test
     internal fun shouldBeAbleToCreateNewProduct() {
-        val productRequestBodyJson = createProductRequestBodyJson(
+        val productRequestBodyJson = TestUtils.createProductRequestBodyJson(
             name = product.name,
             description = product.description,
             price = product.price
@@ -76,7 +74,7 @@ internal class ProductControllerIntegrationTest {
 
     @Test
     internal fun shouldNotBeAbleToCreateNewProductWhenNameIsBlank() {
-        val productRequestBodyJson = createProductRequestBodyJson(
+        val productRequestBodyJson = TestUtils.createProductRequestBodyJson(
             name = "",
             description = product.description,
             price = product.price
@@ -97,7 +95,7 @@ internal class ProductControllerIntegrationTest {
 
     @Test
     internal fun shouldNotBeAbleToCreateNewProductWhenDescriptionIsBlank() {
-        val productRequestBodyJson = createProductRequestBodyJson(
+        val productRequestBodyJson = TestUtils.createProductRequestBodyJson(
             name = product.name,
             description = "",
             price = product.price
@@ -118,7 +116,7 @@ internal class ProductControllerIntegrationTest {
 
     @Test
     internal fun shouldNotBeAbleToCreateNewProductWhenPriceIsNegative() {
-        val productRequestBodyJson = createProductRequestBodyJson(
+        val productRequestBodyJson = TestUtils.createProductRequestBodyJson(
             name = product.name,
             description = "",
             price = BigDecimal(-10.20)
