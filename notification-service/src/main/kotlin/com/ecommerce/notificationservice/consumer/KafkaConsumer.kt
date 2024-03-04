@@ -12,7 +12,7 @@ import java.time.Instant
 
 @Component
 class KafkaConsumer(private val notificationRepository: NotificationRepository) {
-    @KafkaListener(topics = ["notificationsTopic"])
+    @KafkaListener(topics = ["\${spring.kafka.topic}"])
     fun handleOrderPlacedEvent(orderPlacedEvent: OrderPlacedEvent) {
         logger.info(
             "Received event with order id: ${orderPlacedEvent.id} and skucode: ${orderPlacedEvent.skuCode}"

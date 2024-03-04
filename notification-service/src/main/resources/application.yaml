@@ -8,6 +8,7 @@ spring:
     username: postgres
     password: root
   kafka:
+    topic: notificationsTopic
     consumer:
       bootstrap-servers: localhost:9092
       group-id: notificationsId
