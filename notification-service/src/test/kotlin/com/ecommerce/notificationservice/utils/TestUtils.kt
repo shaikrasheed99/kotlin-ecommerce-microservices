@@ -1,7 +1,10 @@
 package com.ecommerce.notificationservice.utils
 
+import com.ecommerce.notificationservice.constants.StatusResponses
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
 import com.ecommerce.notificationservice.models.Notification
+import org.springframework.http.HttpStatus
+import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.testcontainers.containers.PostgreSQLContainer
 import java.sql.Timestamp
 import java.time.Instant
@@ -29,4 +32,14 @@ object TestUtils {
         PostgreSQLContainer("postgres:latest")
             .withDatabaseName("notifications")
             .withInitScript("create-notifications-table.sql")
+
+    fun MockMvcResultMatchersDsl.assertCommonResponseBody(
+        status: StatusResponses,
+        code: HttpStatus,
+        message: String
+    ) {
+        jsonPath("$.status") { value(status.name) }
+        jsonPath("$.code") { value(code.name) }
+        jsonPath("$.message") { value(message) }
+    }
 }

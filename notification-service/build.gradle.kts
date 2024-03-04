@@ -28,6 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 
 	implementation("org.springframework.kafka:spring-kafka")
