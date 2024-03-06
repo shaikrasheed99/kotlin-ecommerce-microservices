@@ -20,6 +20,26 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Build the application
         run: cd product-service && ./gradlew clean build
+
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Run the test cases
+        run: cd product-service && ./gradlew test
+
+      - name: Check the test coverage
+        run: cd product-service && ./gradlew jacocoTestReport
