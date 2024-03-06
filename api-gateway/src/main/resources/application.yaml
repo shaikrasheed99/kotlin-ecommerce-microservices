@@ -20,4 +20,11 @@ spring:
           filters:
             - RewritePath=/api/product/(?<remaining>.*), /$\{remaining}
 
+        - id: notification-service-route
+          uri: lb://notification-service
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - RewritePath=/api/notification/(?<remaining>.*), /$\{remaining}
+
 eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
