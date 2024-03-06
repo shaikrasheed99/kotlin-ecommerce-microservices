@@ -1,4 +1,4 @@
-name: CI pipeline for product service
+name: '[Product Service] CI pipeline'
 
 on:
   push:
