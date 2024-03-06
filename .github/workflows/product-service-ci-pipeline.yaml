@@ -1,0 +1,24 @@
+name: CI pipeline for product service
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
+      - name: Build the application
+        run: cd product-service && ./gradlew build
