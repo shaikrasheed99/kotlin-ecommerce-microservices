@@ -5,4 +5,13 @@ spring:
   kafka:
     topic: testTopic
     consumer:
+      bootstrap-servers: ${spring.embedded.kafka.brokers}
       group-id: testGroupId
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring:
+          json.type.mapping: event:com.ecommerce.notificationservice.events.OrderPlacedEvent
+          deserializer:
+            key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+            value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
