@@ -5,7 +5,6 @@ spring:
   kafka:
     topic: testTopic
     consumer:
-      bootstrap-servers: ${spring.embedded.kafka.brokers}
       group-id: testGroupId
       key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer

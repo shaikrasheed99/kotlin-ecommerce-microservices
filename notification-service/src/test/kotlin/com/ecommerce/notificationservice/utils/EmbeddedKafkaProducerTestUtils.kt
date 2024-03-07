@@ -12,7 +12,7 @@ import org.springframework.kafka.test.utils.KafkaTestUtils
 object EmbeddedKafkaProducerTestUtils {
     fun createTestProducer(embeddedKafkaBroker: EmbeddedKafkaBroker): Producer<String, OrderPlacedEvent> {
         val producerProps = KafkaTestUtils.producerProps(embeddedKafkaBroker)
-        addKeyAndValueSerializers(producerProps)
+        addAdditionalProperties(embeddedKafkaBroker, producerProps)
 
         val producerFactory = DefaultKafkaProducerFactory<String, OrderPlacedEvent>(producerProps)
         val producer = producerFactory.createProducer()
@@ -20,7 +20,11 @@ object EmbeddedKafkaProducerTestUtils {
         return producer
     }
 
-    private fun addKeyAndValueSerializers(producerProps: MutableMap<String, Any>) {
+    private fun addAdditionalProperties(
+        embeddedKafkaBroker: EmbeddedKafkaBroker,
+        producerProps: MutableMap<String, Any>
+    ) {
+        producerProps[ProducerConfig.BOOTSTRAP_SERVERS_CONFIG] = embeddedKafkaBroker.brokersAsString
         producerProps[ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG] = StringSerializer::class.java
         producerProps[ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG] = JsonSerializer::class.java
     }
