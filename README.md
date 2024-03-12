@@ -2,7 +2,7 @@
 
 ## Architecture Diagram
 
-![Architecture Diagram](architecture-diagram.png)
+![Architecture Diagram](images/architecture-diagram.png)
 
 ## Microservices Architecture Design Patterns
 
