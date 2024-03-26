@@ -42,6 +42,7 @@ dependencies {
     implementation("io.github.resilience4j:resilience4j-spring-boot2:2.2.0")
 
     implementation("org.springframework.kafka:spring-kafka")
+    implementation("io.cloudevents:cloudevents-json-jackson:2.5.0")
 
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 
