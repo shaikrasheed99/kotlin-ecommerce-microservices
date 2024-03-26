@@ -1,8 +1,7 @@
 package com.ecommerce.orderservice.producer
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
-import com.ecommerce.orderservice.utils.CloudEventProcessor.createCloudEvent
-import com.ecommerce.orderservice.utils.CloudEventProcessor.serializeCloudEvent
+import com.ecommerce.orderservice.utils.CloudEventProcessor.createAndSerializeCloudEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -15,12 +14,11 @@ class EventProducer(private val kafkaTemplate: KafkaTemplate<String, String>) {
         logger.info("Sending event: $orderPlacedEvent to topic: $topic")
 
         val eventJsonString = convertEventToJsonString(orderPlacedEvent)
-        val cloudEvent = createCloudEvent(eventJsonString)
-        val message = serializeCloudEvent(cloudEvent)
+        val message = createAndSerializeCloudEvent(eventJsonString)
 
         kafkaTemplate.send(topic, message)
 
-        logger.info("Produced the event with id: ${cloudEvent.id} to topic: $topic")
+        logger.info("Produced event: $orderPlacedEvent to topic: $topic")
     }
 
     private fun convertEventToJsonString(orderPlacedEvent: OrderPlacedEvent): String {

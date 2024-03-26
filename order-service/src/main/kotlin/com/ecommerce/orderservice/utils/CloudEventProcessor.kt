@@ -16,6 +16,13 @@ private const val ORDER_PLACED_EVENT_TYPE = "order_placed_event"
 private const val ORDER_SERVICE = "order_service"
 
 object CloudEventProcessor {
+    fun createAndSerializeCloudEvent(event: String): String {
+        val cloudEvent = createCloudEvent(event)
+        val message = serializeCloudEvent(cloudEvent)
+
+        return message
+    }
+
     fun createCloudEvent(event: String): CloudEvent {
         logger.info("Creating cloud event for event: $event")
 
@@ -30,7 +37,7 @@ object CloudEventProcessor {
             .build()
     }
 
-    fun serializeCloudEvent(cloudEvent: CloudEvent): String {
+    private fun serializeCloudEvent(cloudEvent: CloudEvent): String {
         logger.info("Serializing the cloud event with id: ${cloudEvent.id}")
 
         return EventFormatProvider
