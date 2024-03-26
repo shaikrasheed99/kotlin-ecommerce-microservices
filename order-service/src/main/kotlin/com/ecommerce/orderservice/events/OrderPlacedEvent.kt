@@ -3,6 +3,6 @@ package com.ecommerce.orderservice.events
 import java.util.UUID
 
 data class OrderPlacedEvent(
-    var id: UUID,
+    var orderId: UUID,
     var skuCode: String,
 )
