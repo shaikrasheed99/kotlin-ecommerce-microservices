@@ -2,6 +2,7 @@ package com.ecommerce.orderservice.unittests.producer
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.producer.EventProducer
+import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -20,7 +21,7 @@ import java.util.concurrent.CompletableFuture
 private const val TEST_KAFKA_TOPIC = "testTopic"
 
 class EventProducerTest : DescribeSpec({
-    val mockKafkaTemplate = mockk<KafkaTemplate<String, OrderPlacedEvent>>()
+    val mockKafkaTemplate = mockk<KafkaTemplate<String, String>>()
 
     val eventProducer = EventProducer(mockKafkaTemplate)
 
@@ -38,19 +39,19 @@ class EventProducerTest : DescribeSpec({
             val orderPlacedEvent = createOrderPlacedEvent()
 
             val topicSlot = slot<String>()
-            val eventSlot = slot<OrderPlacedEvent>()
+            val messageSlot = slot<String>()
 
             every {
-                mockKafkaTemplate.send(capture(topicSlot), capture(eventSlot))
-            } returns CompletableFuture<SendResult<String, OrderPlacedEvent>>()
+                mockKafkaTemplate.send(capture(topicSlot), capture(messageSlot))
+            } returns CompletableFuture<SendResult<String, String>>()
 
             eventProducer.sendOrderPlacedEvent(TEST_KAFKA_TOPIC, orderPlacedEvent)
 
             topicSlot.captured shouldBe TEST_KAFKA_TOPIC
-            eventSlot.captured shouldBe orderPlacedEvent
+            messageSlot.captured.shouldContainJsonKeyValue("$.data.skuCode", orderPlacedEvent.skuCode)
 
             verify {
-                mockKafkaTemplate.send(TEST_KAFKA_TOPIC, orderPlacedEvent)
+                mockKafkaTemplate.send(TEST_KAFKA_TOPIC, any(String::class))
             }
 
             confirmVerified(mockKafkaTemplate)
@@ -64,7 +65,7 @@ class EventProducerTest : DescribeSpec({
             val exception = Exception("exception from kafka template")
 
             every {
-                mockKafkaTemplate.send(TEST_KAFKA_TOPIC, orderPlacedEvent)
+                mockKafkaTemplate.send(TEST_KAFKA_TOPIC, any(String::class))
             } throws exception
 
             shouldThrow<Exception> {
@@ -72,7 +73,7 @@ class EventProducerTest : DescribeSpec({
             }
 
             verify {
-                mockKafkaTemplate.send(TEST_KAFKA_TOPIC, orderPlacedEvent)
+                mockKafkaTemplate.send(TEST_KAFKA_TOPIC, any(String::class))
             }
 
             confirmVerified(mockKafkaTemplate)
