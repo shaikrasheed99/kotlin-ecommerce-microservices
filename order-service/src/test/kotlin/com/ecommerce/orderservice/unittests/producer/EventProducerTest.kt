@@ -1,7 +1,7 @@
 package com.ecommerce.orderservice.unittests.producer
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
-import com.ecommerce.orderservice.producer.KafkaProducer
+import com.ecommerce.orderservice.producer.EventProducer
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -19,14 +19,14 @@ import java.util.concurrent.CompletableFuture
 
 private const val TEST_KAFKA_TOPIC = "testTopic"
 
-class KafkaProducerTest : DescribeSpec({
+class EventProducerTest : DescribeSpec({
     val mockKafkaTemplate = mockk<KafkaTemplate<String, OrderPlacedEvent>>()
 
-    val kafkaProducer = KafkaProducer(mockKafkaTemplate)
+    val eventProducer = EventProducer(mockKafkaTemplate)
 
     describe("Kafka Producer - annotations") {
         it("should have Service annotation to the Kafka Producer class") {
-            val classAnnotations = kafkaProducer.javaClass.annotations
+            val classAnnotations = eventProducer.javaClass.annotations
             val serviceAnnotation = classAnnotations.firstOrNull { it is Service } as Service
 
             serviceAnnotation shouldNotBe null
@@ -44,7 +44,7 @@ class KafkaProducerTest : DescribeSpec({
                 mockKafkaTemplate.send(capture(topicSlot), capture(eventSlot))
             } returns CompletableFuture<SendResult<String, OrderPlacedEvent>>()
 
-            kafkaProducer.sendOrderPlacedEvent(TEST_KAFKA_TOPIC, orderPlacedEvent)
+            eventProducer.sendOrderPlacedEvent(TEST_KAFKA_TOPIC, orderPlacedEvent)
 
             topicSlot.captured shouldBe TEST_KAFKA_TOPIC
             eventSlot.captured shouldBe orderPlacedEvent
@@ -68,7 +68,7 @@ class KafkaProducerTest : DescribeSpec({
             } throws exception
 
             shouldThrow<Exception> {
-                kafkaProducer.sendOrderPlacedEvent(TEST_KAFKA_TOPIC, orderPlacedEvent)
+                eventProducer.sendOrderPlacedEvent(TEST_KAFKA_TOPIC, orderPlacedEvent)
             }
 
             verify {
@@ -81,7 +81,7 @@ class KafkaProducerTest : DescribeSpec({
 
     describe("Kafka Producer - logger") {
         it("should initialize the logger of kafka producer") {
-            KafkaProducer.logger shouldNotBe null
+            EventProducer.logger shouldNotBe null
         }
     }
 })

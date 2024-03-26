@@ -9,7 +9,7 @@ import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityExcept
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
-import com.ecommerce.orderservice.producer.KafkaProducer
+import com.ecommerce.orderservice.producer.EventProducer
 import com.ecommerce.orderservice.services.OrderService
 import com.ecommerce.orderservice.utils.EntityUtils.getMethodAnnotations
 import com.ecommerce.orderservice.utils.TestUtils.createOrder
@@ -37,13 +37,13 @@ private const val CIRCUIT_BREAKER_INVENTORY_CLIENT = "inventoryClient"
 internal class OrderServiceTest : DescribeSpec({
     val mockOrderRepository = mockk<OrderRepository>()
     val mockInventoryServiceClient = mockk<InventoryServiceClient>()
-    val mockKafkaProducer = mockk<KafkaProducer>()
+    val mockEventProducer = mockk<EventProducer>()
     val kafkaTopic = "testTopic"
 
     val orderService = OrderService(
         mockOrderRepository,
         mockInventoryServiceClient,
-        mockKafkaProducer,
+        mockEventProducer,
         kafkaTopic
     )
 
@@ -75,7 +75,7 @@ internal class OrderServiceTest : DescribeSpec({
 
             every { mockOrderRepository.save(any(Order::class)) } returns order
             every {
-                mockKafkaProducer.sendOrderPlacedEvent(any(String::class), any(OrderPlacedEvent::class))
+                mockEventProducer.sendOrderPlacedEvent(any(String::class), any(OrderPlacedEvent::class))
             } just runs
             every {
                 mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
@@ -90,7 +90,7 @@ internal class OrderServiceTest : DescribeSpec({
 
             verify {
                 mockOrderRepository.save(any(Order::class))
-                mockKafkaProducer.sendOrderPlacedEvent(any(String::class), any(OrderPlacedEvent::class))
+                mockEventProducer.sendOrderPlacedEvent(any(String::class), any(OrderPlacedEvent::class))
                 mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
             }
         }

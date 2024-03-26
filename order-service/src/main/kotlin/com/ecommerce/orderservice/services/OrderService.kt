@@ -8,7 +8,7 @@ import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityExcept
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
-import com.ecommerce.orderservice.producer.KafkaProducer
+import com.ecommerce.orderservice.producer.EventProducer
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val inventoryServiceClient: InventoryServiceClient,
-    private val kafkaProducer: KafkaProducer,
+    private val eventProducer: EventProducer,
     @Value("\${spring.kafka.topic}")
     private val kafkaTopic: String
 ) {
@@ -35,7 +35,7 @@ class OrderService(
                 val inventory = mapper.convertValue(it.data, InventoryResponse::class.java)
                 if (orderRequestBody.quantity <= inventory.quantity) {
                     order = orderRepository.save(mapToOrder(orderRequestBody))
-                    kafkaProducer.sendOrderPlacedEvent(
+                    eventProducer.sendOrderPlacedEvent(
                         kafkaTopic,
                         mapToOrderPlacedEvent(order)
                     )
