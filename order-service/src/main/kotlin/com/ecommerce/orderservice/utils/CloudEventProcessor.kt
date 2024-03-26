@@ -12,7 +12,7 @@ import java.nio.charset.StandardCharsets
 import java.time.OffsetDateTime
 import java.util.UUID
 
-private const val ORDER_PLACED_EVENT_TYPE = "order_placed_event"
+private const val ORDER_PLACED_EVENT_TYPE = "order_placed"
 private const val ORDER_SERVICE = "order_service"
 
 object CloudEventProcessor {
@@ -23,7 +23,7 @@ object CloudEventProcessor {
         return message
     }
 
-    fun createCloudEvent(event: String): CloudEvent {
+    private fun createCloudEvent(event: String): CloudEvent {
         logger.info("Creating cloud event for event: $event")
 
         val currentTime = OffsetDateTime.now()
