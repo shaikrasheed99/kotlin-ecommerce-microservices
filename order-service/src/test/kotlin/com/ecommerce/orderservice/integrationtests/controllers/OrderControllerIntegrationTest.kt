@@ -2,7 +2,6 @@ package com.ecommerce.orderservice.integrationtests.controllers
 
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
-import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.models.OrderRepository
 import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.assertConsumerRecord
 import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.createTestConsumer
