@@ -65,7 +65,7 @@ internal class OrderControllerIntegrationTest {
     @Autowired
     private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
 
-    private lateinit var testConsumer: Consumer<String, OrderPlacedEvent>
+    private lateinit var testConsumer: Consumer<String, String>
 
     companion object {
         @Container
