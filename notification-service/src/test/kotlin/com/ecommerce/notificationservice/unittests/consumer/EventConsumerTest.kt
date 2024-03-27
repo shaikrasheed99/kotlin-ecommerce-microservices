@@ -1,6 +1,6 @@
 package com.ecommerce.notificationservice.unittests.consumer
 
-import com.ecommerce.notificationservice.consumer.KafkaConsumer
+import com.ecommerce.notificationservice.consumer.EventConsumer
 import com.ecommerce.notificationservice.models.Notification
 import com.ecommerce.notificationservice.models.NotificationRepository
 import com.ecommerce.notificationservice.utils.EntityUtils.getMethodAnnotations
@@ -15,13 +15,13 @@ import io.mockk.verify
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
 
-class KafkaConsumerTest : DescribeSpec({
+class EventConsumerTest : DescribeSpec({
     val mockNotificationRepository = mockk<NotificationRepository>()
-    val kafkaConsumer = KafkaConsumer(mockNotificationRepository)
+    val eventConsumer = EventConsumer(mockNotificationRepository)
 
     describe("Kafka Consumer - annotations") {
-        it("should have Component annotation to the kafka consumer class") {
-            val annotations = kafkaConsumer.javaClass.annotations
+        it("should have Component annotation to the event consumer class") {
+            val annotations = eventConsumer.javaClass.annotations
             val componentAnnotation = annotations.firstOrNull { it is Component } as Component
 
             componentAnnotation shouldNotBe null
@@ -34,7 +34,7 @@ class KafkaConsumerTest : DescribeSpec({
             val notification = createTestNotification()
             every { mockNotificationRepository.save(any(Notification::class)) } returns notification
 
-            kafkaConsumer.handleOrderPlacedEvent(orderPlacedEvent)
+            eventConsumer.handleOrderPlacedEvent(orderPlacedEvent)
 
             verify { mockNotificationRepository.save(any(Notification::class)) }
         }
@@ -42,7 +42,7 @@ class KafkaConsumerTest : DescribeSpec({
 
     describe("handleOrderPlacedEvent - annotations") {
         it("should have KafkaListener annotation to the handleOrderPlacedEvent method") {
-            val methodAnnotations = kafkaConsumer.getMethodAnnotations("handleOrderPlacedEvent")
+            val methodAnnotations = eventConsumer.getMethodAnnotations("handleOrderPlacedEvent")
             val kafkaListenerAnnotation = methodAnnotations.firstOrNull { it is KafkaListener } as KafkaListener
 
             kafkaListenerAnnotation shouldNotBe null
@@ -51,8 +51,8 @@ class KafkaConsumerTest : DescribeSpec({
     }
 
     describe("Kafka Consumer - logger") {
-        it("should initialize the logger of kafka consumer") {
-            KafkaConsumer.logger shouldNotBe null
+        it("should initialize the logger of event consumer") {
+            EventConsumer.logger shouldNotBe null
         }
     }
 })

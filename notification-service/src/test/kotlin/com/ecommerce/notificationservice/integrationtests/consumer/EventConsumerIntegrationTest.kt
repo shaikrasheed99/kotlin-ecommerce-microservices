@@ -22,7 +22,7 @@ const val DEFAULT_TEST_TOPIC = "testTopic"
 @SpringBootTest
 @EmbeddedKafka
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class KafkaConsumerIntegrationTest {
+class EventConsumerIntegrationTest {
     @Autowired
     private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
 

@@ -11,7 +11,7 @@ import java.sql.Timestamp
 import java.time.Instant
 
 @Component
-class KafkaConsumer(private val notificationRepository: NotificationRepository) {
+class EventConsumer(private val notificationRepository: NotificationRepository) {
     @KafkaListener(topics = ["\${spring.kafka.topic}"])
     fun handleOrderPlacedEvent(orderPlacedEvent: OrderPlacedEvent) {
         logger.info(
