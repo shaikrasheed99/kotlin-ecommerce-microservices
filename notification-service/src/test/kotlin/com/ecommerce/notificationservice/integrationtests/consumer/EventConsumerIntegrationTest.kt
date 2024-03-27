@@ -48,7 +48,7 @@ class EventConsumerIntegrationTest {
             val notification = notificationRepository.findRecentNotification()
 
             if (notification.isNotEmpty()) {
-                notification[0].orderId shouldBe orderPlacedEvent.id
+                notification[0].orderId shouldBe orderPlacedEvent.orderId
                 notification[0].skuCode shouldBe orderPlacedEvent.skuCode
             }
         }

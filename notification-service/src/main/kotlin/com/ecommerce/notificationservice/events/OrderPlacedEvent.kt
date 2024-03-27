@@ -5,7 +5,7 @@ import java.util.UUID
 
 data class OrderPlacedEvent(
     @JsonProperty("orderId")
-    var id: UUID,
+    var orderId: UUID,
     @JsonProperty("skuCode")
     var skuCode: String,
 )

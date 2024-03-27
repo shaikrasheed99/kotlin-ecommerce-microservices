@@ -37,7 +37,7 @@ class EventConsumer(private val notificationRepository: NotificationRepository) 
         val orderPlacedEvent = deserializeOrderPlacedEvent(payload)
 
         logger.info(
-            "Received event with order id: ${orderPlacedEvent.id} and skucode: ${orderPlacedEvent.skuCode}"
+            "Received event with order id: ${orderPlacedEvent.orderId} and skucode: ${orderPlacedEvent.skuCode}"
         )
 
         val notification = mapToNotification(orderPlacedEvent)
@@ -59,7 +59,7 @@ class EventConsumer(private val notificationRepository: NotificationRepository) 
             sender = "ecommerce.microservices@gmail.com",
             recipient = "test@gmail.com",
             isSent = false,
-            orderId = orderPlacedEvent.id,
+            orderId = orderPlacedEvent.orderId,
             skuCode = orderPlacedEvent.skuCode,
             createdAt = Timestamp.from(Instant.now())
         )
