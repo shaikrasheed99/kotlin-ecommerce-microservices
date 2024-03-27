@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.util.UUID
 
 data class OrderPlacedEvent(
-    @JsonProperty("id")
+    @JsonProperty("orderId")
     var id: UUID,
     @JsonProperty("skuCode")
     var skuCode: String,
