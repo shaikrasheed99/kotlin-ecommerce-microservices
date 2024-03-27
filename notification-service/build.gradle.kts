@@ -30,8 +30,10 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 	implementation("com.fasterxml.jackson.core:jackson-databind")
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	implementation("org.springframework.kafka:spring-kafka")
+	implementation("io.cloudevents:cloudevents-json-jackson:2.5.0")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
 
