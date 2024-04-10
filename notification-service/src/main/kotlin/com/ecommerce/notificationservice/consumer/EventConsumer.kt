@@ -29,7 +29,7 @@ class EventConsumer(private val notificationRepository: NotificationRepository) 
         val cloudEvent = deserializeCloudEvent(payload)
 
         when (cloudEvent.type) {
-            "$ORDER_PLACED" -> handleOrderPlacedEvent(payload)
+            ORDER_PLACED.type -> handleOrderPlacedEvent(payload)
         }
     }
 
