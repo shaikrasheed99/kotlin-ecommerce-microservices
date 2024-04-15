@@ -20,7 +20,7 @@ import java.time.Instant
 @Component
 class EventConsumer(private val notificationRepository: NotificationRepository) {
     @KafkaListener(topics = ["\${spring.kafka.topic}"])
-    fun consumeEvent(
+    fun consume(
         payload: String,
         @Header(KafkaHeaders.RECEIVED_TOPIC) topic: String
     ) {
@@ -33,7 +33,7 @@ class EventConsumer(private val notificationRepository: NotificationRepository) 
         }
     }
 
-    fun handleOrderPlacedEvent(payload: String) {
+    private fun handleOrderPlacedEvent(payload: String) {
         val orderPlacedEvent = deserializeOrderPlacedEvent(payload)
 
         logger.info(
