@@ -3,8 +3,7 @@ package com.ecommerce.notificationservice.consumer
 import com.ecommerce.notificationservice.constants.EventTypes.ORDER_PLACED
 import com.ecommerce.notificationservice.events.EventData
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
-import com.ecommerce.notificationservice.models.Notification
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.services.NotificationService
 import com.ecommerce.notificationservice.utils.CloudEventProcessor.deserializeCloudEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -14,11 +13,9 @@ import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.handler.annotation.Header
 import org.springframework.stereotype.Component
-import java.sql.Timestamp
-import java.time.Instant
 
 @Component
-class EventConsumer(private val notificationRepository: NotificationRepository) {
+class EventConsumer(private val notificationService: NotificationService) {
     @KafkaListener(topics = ["\${spring.kafka.topic}"])
     fun consume(
         payload: String,
@@ -40,8 +37,7 @@ class EventConsumer(private val notificationRepository: NotificationRepository) 
             "Received event with order id: ${orderPlacedEvent.orderId} and skucode: ${orderPlacedEvent.skuCode}"
         )
 
-        val notification = mapToNotification(orderPlacedEvent)
-        notificationRepository.save(notification)
+        notificationService.saveNotificationWith(orderPlacedEvent)
     }
 
     private fun deserializeOrderPlacedEvent(payload: String): OrderPlacedEvent {
@@ -52,17 +48,6 @@ class EventConsumer(private val notificationRepository: NotificationRepository) 
 
         return eventData.data
     }
-
-    private fun mapToNotification(orderPlacedEvent: OrderPlacedEvent): Notification =
-        Notification(
-            id = null,
-            sender = "ecommerce.microservices@gmail.com",
-            recipient = "test@gmail.com",
-            isSent = false,
-            orderId = orderPlacedEvent.orderId,
-            skuCode = orderPlacedEvent.skuCode,
-            createdAt = Timestamp.from(Instant.now())
-        )
 
     companion object {
         val logger: Logger = LoggerFactory.getLogger(this::class.java)
