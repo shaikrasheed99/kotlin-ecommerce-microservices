@@ -9,6 +9,7 @@ import com.ecommerce.notificationservice.utils.EntityUtils.getMethodAnnotations
 import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -52,6 +53,19 @@ class EventConsumerTest : DescribeSpec({
             eventConsumer.consume(payload, TEST_TOPIC)
 
             verify { mockNotificationService.saveNotificationWith(any(OrderPlacedEvent::class)) }
+        }
+
+        it("should be able to skip events which are not order placed events") {
+            val orderPlacedEventJson = mapper.writeValueAsString(createTestOrderPlacedEvent())
+            val payload = createAndSerializeCloudEvent(
+                event = orderPlacedEventJson,
+                eventType = "testEventType",
+                source = TEST_SOURCE
+            )
+
+            shouldNotThrowAny {
+                eventConsumer.consume(payload, TEST_TOPIC)
+            }
         }
     }
 
