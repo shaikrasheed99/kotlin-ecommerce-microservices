@@ -1,9 +1,9 @@
 package com.ecommerce.notificationservice.integrationtests.consumer
 
-import com.ecommerce.notificationservice.events.OrderPlacedEvent
 import com.ecommerce.notificationservice.models.NotificationRepository
 import com.ecommerce.notificationservice.utils.EmbeddedKafkaProducerTestUtils.createTestProducer
 import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.matchers.shouldBe
 import org.apache.kafka.clients.producer.Producer
 import org.apache.kafka.clients.producer.ProducerRecord
@@ -29,7 +29,9 @@ class EventConsumerIntegrationTest {
     @Autowired
     private lateinit var notificationRepository: NotificationRepository
 
-    private lateinit var testProducer: Producer<String, OrderPlacedEvent>
+    private lateinit var testProducer: Producer<String, String>
+
+    private val mapper = ObjectMapper()
 
     @BeforeEach
     fun setUp() {
@@ -40,16 +42,17 @@ class EventConsumerIntegrationTest {
     @Test
     fun shouldBeAbleToConsumeOrderPlacedEvents() {
         val orderPlacedEvent = createTestOrderPlacedEvent()
+        val payload = mapper.writeValueAsString(orderPlacedEvent)
         val testKey = "testKey"
 
-        testProducer.send(ProducerRecord(DEFAULT_TEST_TOPIC, testKey, orderPlacedEvent))
+        testProducer.send(ProducerRecord(DEFAULT_TEST_TOPIC, testKey, payload))
 
         await().atMost(Duration.ofSeconds(30)).untilAsserted {
             val notification = notificationRepository.findRecentNotification()
 
             if (notification.isNotEmpty()) {
                 notification[0].orderId shouldBe orderPlacedEvent.orderId
-                notification[0].skuCode shouldBe orderPlacedEvent.skuCode
+                notification[0].skuCode shouldBe "test"
             }
         }
     }
