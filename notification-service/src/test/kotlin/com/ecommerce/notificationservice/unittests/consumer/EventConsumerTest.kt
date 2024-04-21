@@ -2,11 +2,10 @@ package com.ecommerce.notificationservice.unittests.consumer
 
 import com.ecommerce.notificationservice.constants.EventTypes
 import com.ecommerce.notificationservice.consumer.EventConsumer
-import com.ecommerce.notificationservice.models.Notification
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.events.OrderPlacedEvent
+import com.ecommerce.notificationservice.services.NotificationService
 import com.ecommerce.notificationservice.utils.EmbeddedKafkaProducerTestUtils.createAndSerializeCloudEvent
 import com.ecommerce.notificationservice.utils.EntityUtils.getMethodAnnotations
-import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
 import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
@@ -15,7 +14,9 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
+import io.mockk.just
 import io.mockk.mockk
+import io.mockk.runs
 import io.mockk.verify
 import org.springframework.kafka.annotation.KafkaListener
 import org.springframework.stereotype.Component
@@ -24,8 +25,8 @@ private const val TEST_TOPIC = "testTopic"
 private const val TEST_SOURCE = "test_source"
 
 class EventConsumerTest : DescribeSpec({
-    val mockNotificationRepository = mockk<NotificationRepository>()
-    val eventConsumer = EventConsumer(mockNotificationRepository)
+    val mockNotificationService = mockk<NotificationService>()
+    val eventConsumer = EventConsumer(mockNotificationService)
 
     val mapper = ObjectMapper()
 
@@ -46,12 +47,11 @@ class EventConsumerTest : DescribeSpec({
                 eventType = EventTypes.ORDER_PLACED.type,
                 source = TEST_SOURCE
             )
-            val notification = createTestNotification()
-            every { mockNotificationRepository.save(any(Notification::class)) } returns notification
+            every { mockNotificationService.saveNotificationWith(any(OrderPlacedEvent::class)) } just runs
 
             eventConsumer.consume(payload, TEST_TOPIC)
 
-            verify { mockNotificationRepository.save(any(Notification::class)) }
+            verify { mockNotificationService.saveNotificationWith(any(OrderPlacedEvent::class)) }
         }
     }
 
@@ -69,7 +69,7 @@ class EventConsumerTest : DescribeSpec({
             }
         }
 
-        it("should be able to throw Exception when repository layer throws any exception") {
+        it("should be able to throw Exception when service layer throws any exception") {
             val orderPlacedEventJson = mapper.writeValueAsString(createTestOrderPlacedEvent())
             val payload = createAndSerializeCloudEvent(
                 event = orderPlacedEventJson,
@@ -77,7 +77,7 @@ class EventConsumerTest : DescribeSpec({
                 source = TEST_SOURCE
             )
             val exception = Exception("exception from notification repository layer")
-            every { mockNotificationRepository.save(any(Notification::class)) } throws exception
+            every { mockNotificationService.saveNotificationWith(any(OrderPlacedEvent::class)) } throws exception
 
             val thrownException = shouldThrow<Exception> {
                 eventConsumer.consume(payload, TEST_TOPIC)
@@ -85,7 +85,7 @@ class EventConsumerTest : DescribeSpec({
 
             thrownException.message shouldBe exception.message
 
-            verify { mockNotificationRepository.save(any(Notification::class)) }
+            verify { mockNotificationService.saveNotificationWith(any(OrderPlacedEvent::class)) }
         }
     }
 
