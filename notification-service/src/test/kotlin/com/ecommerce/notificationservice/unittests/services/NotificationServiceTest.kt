@@ -1,12 +1,15 @@
 package com.ecommerce.notificationservice.unittests.services
 
+import com.ecommerce.notificationservice.models.Notification
 import com.ecommerce.notificationservice.models.NotificationRepository
 import com.ecommerce.notificationservice.services.NotificationService
 import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
+import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -59,6 +62,35 @@ class NotificationServiceTest : DescribeSpec({
 
             verify {
                 mockNotificationRepository.findRecentNotification()
+            }
+        }
+    }
+
+    describe("Save Notification with Order Placed Event") {
+        it("should be able to save notification with order placed event data") {
+            val orderPlacedEvent = createTestOrderPlacedEvent()
+            val notification = createTestNotification()
+
+            every { mockNotificationRepository.save(any(Notification::class)) } returns notification
+
+            notificationService.saveNotificationWith(orderPlacedEvent)
+
+            verify { mockNotificationRepository.save(any(Notification::class)) }
+        }
+    }
+
+    describe("Save Notification with Order Placed Event - Error scenarios") {
+        it("should be able to throw Exception when repository throws exception") {
+            val orderPlacedEvent = createTestOrderPlacedEvent()
+            val exception = Exception("exception from repository layer")
+            every { mockNotificationRepository.save(any(Notification::class)) } throws exception
+
+            shouldThrow<Exception> {
+                notificationService.saveNotificationWith(orderPlacedEvent)
+            }
+
+            verify {
+                mockNotificationRepository.save(any(Notification::class))
             }
         }
     }
