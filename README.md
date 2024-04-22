@@ -36,13 +36,14 @@ In this project, I have implemented several design patterns commonly used in mic
 
 3. Build & Start each service.
     - Before starting any service, make sure your postgresql database in your local is started.
-    - For each service, open a new terminal and execute the below gradle commands one by one.
-    - Follow the below sequence of commands in new terminal for every service. 
-       ```bash
-      cd <each service>
-      ./gradlew clean build
-      ./gradlew bootrun
+    - Open a new terminal and execute the below command to start all the services at once.
+    - ```bash
+      ./start-all-services.sh 
        ```
+   - Execute the below command to stop all the services at once.
+   - ```bash
+      ./stop-all-services.sh 
+       ```    
 
     | Services             | Health API to validate                             | Expected success response                  |
     |----------------------|----------------------------------------------------|--------------------------------------------|
