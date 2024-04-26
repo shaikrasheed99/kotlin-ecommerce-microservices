@@ -32,6 +32,9 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
 
+	implementation("org.springframework.kafka:spring-kafka")
+	implementation("io.cloudevents:cloudevents-json-jackson:2.5.0")
+
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 
 	runtimeOnly("org.postgresql:postgresql")
@@ -39,6 +42,7 @@ dependencies {
 	testImplementation("io.mockk:mockk:1.13.9")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("com.h2database:h2")
+	testImplementation("org.springframework.kafka:spring-kafka-test")
 
 	testImplementation("io.kotest:kotest-runner-junit5:5.6.2")
 	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
