@@ -15,10 +15,12 @@ object TestUtils {
             .withDatabaseName("inventory")
             .withInitScript("create-inventory-table.sql")
 
-    fun createInventory() = Inventory(
+    fun createInventory(
+        quantity: Int = 10
+    ) = Inventory(
         id = 1,
         skuCode = "test_code",
-        quantity = 10
+        quantity = quantity
     )
 
     fun MockMvcResultMatchersDsl.assertCommonResponseBody(

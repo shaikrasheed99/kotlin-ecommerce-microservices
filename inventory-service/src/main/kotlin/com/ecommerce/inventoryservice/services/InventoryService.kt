@@ -5,7 +5,6 @@ import com.ecommerce.inventoryservice.exceptions.InventoryNotFoundException
 import com.ecommerce.inventoryservice.models.Inventory
 import com.ecommerce.inventoryservice.models.InventoryRepository
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class InventoryService(private val inventoryRepository: InventoryRepository) {

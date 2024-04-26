@@ -1,2 +1,10 @@
 eureka.client.enabled: false
 spring.cloud.loadbalancer.enabled: false
+
+spring:
+  kafka:
+    topic: testTopic
+    consumer:
+      group-id: testGroupId
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer

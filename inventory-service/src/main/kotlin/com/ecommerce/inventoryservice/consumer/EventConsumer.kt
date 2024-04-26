@@ -1,9 +1,9 @@
 package com.ecommerce.inventoryservice.consumer
 
 import com.ecommerce.inventoryservice.constants.EventTypes.ORDER_PLACED
-import com.ecommerce.inventoryservice.services.InventoryService
 import com.ecommerce.inventoryservice.events.EventData
 import com.ecommerce.inventoryservice.events.OrderPlacedEvent
+import com.ecommerce.inventoryservice.services.InventoryService
 import com.ecommerce.inventoryservice.utils.CloudEventProcessor.deserializeCloudEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
