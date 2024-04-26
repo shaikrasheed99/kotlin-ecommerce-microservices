@@ -11,7 +11,7 @@ spring:
     topic: notificationsTopic
     consumer:
       bootstrap-servers: localhost:9092
-      group-id: notificationsId
+      group-id: notification-consumer-group
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
