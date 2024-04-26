@@ -5,6 +5,7 @@ import com.ecommerce.inventoryservice.exceptions.InventoryNotFoundException
 import com.ecommerce.inventoryservice.models.Inventory
 import com.ecommerce.inventoryservice.models.InventoryRepository
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class InventoryService(private val inventoryRepository: InventoryRepository) {
@@ -14,5 +15,12 @@ class InventoryService(private val inventoryRepository: InventoryRepository) {
             .orElseThrow {
                 InventoryNotFoundException("${MessageResponses.INVENTORY_NOT_FOUND.message} with skuCode $skuCode")
             }
+    }
+
+    fun updateInventoryQuantityBySkucode(skuCode: String, quantity: Int) {
+        val inventoryBySkuCode = getInventoryBySkuCode(skuCode)
+        inventoryBySkuCode.quantity -= quantity
+
+        inventoryRepository.save(inventoryBySkuCode)
     }
 }
