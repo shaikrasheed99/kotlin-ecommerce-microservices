@@ -50,6 +50,7 @@ class EventProducerTest : DescribeSpec({
             topicSlot.captured shouldBe TEST_KAFKA_TOPIC
             messageSlot.captured.shouldContainJsonKeyValue("$.data.orderId", orderPlacedEvent.orderId.toString())
             messageSlot.captured.shouldContainJsonKeyValue("$.data.skuCode", orderPlacedEvent.skuCode)
+            messageSlot.captured.shouldContainJsonKeyValue("$.data.quantity", orderPlacedEvent.quantity)
 
             verify {
                 mockKafkaTemplate.send(TEST_KAFKA_TOPIC, any(String::class))
@@ -90,5 +91,6 @@ class EventProducerTest : DescribeSpec({
 
 private fun createOrderPlacedEvent() = OrderPlacedEvent(
     orderId = UUID.randomUUID(),
-    skuCode = "test skucode"
+    skuCode = "test skucode",
+    quantity = 10
 )

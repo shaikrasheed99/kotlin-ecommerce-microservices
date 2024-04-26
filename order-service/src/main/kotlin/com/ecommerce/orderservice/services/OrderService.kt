@@ -55,7 +55,8 @@ class OrderService(
     private fun mapToOrderPlacedEvent(order: Order?): OrderPlacedEvent =
         OrderPlacedEvent(
             orderId = order!!.id!!,
-            skuCode = order.skuCode
+            skuCode = order.skuCode,
+            quantity = order.quantity
         )
 
     @Suppress("UnusedParameter")

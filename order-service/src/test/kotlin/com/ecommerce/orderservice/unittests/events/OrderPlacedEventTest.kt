@@ -12,6 +12,7 @@ class OrderPlacedEventTest : DescribeSpec({
 
             orderPlacedEvent.orderId shouldBe UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10")
             orderPlacedEvent.skuCode shouldBe "test_skuCode"
+            orderPlacedEvent.quantity shouldBe 10
         }
     }
 
@@ -29,10 +30,18 @@ class OrderPlacedEventTest : DescribeSpec({
 
             orderPlacedEvent.skuCode shouldBe "another skuCode"
         }
+
+        it("should be able to change Quantity attribute of the order placed event") {
+            val orderPlacedEvent = createTestOrderPlacedEvent()
+            orderPlacedEvent.quantity = 20
+
+            orderPlacedEvent.quantity shouldBe 20
+        }
     }
 })
 
 fun createTestOrderPlacedEvent(): OrderPlacedEvent = OrderPlacedEvent(
     orderId = UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10"),
-    skuCode = "test_skuCode"
+    skuCode = "test_skuCode",
+    quantity = 10
 )
