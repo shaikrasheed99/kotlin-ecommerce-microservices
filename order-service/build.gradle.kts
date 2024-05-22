@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
@@ -166,4 +167,16 @@ configurations.matching { it.name == "detekt" }.all {
             useVersion("1.9.0")
         }
     }
+}
+
+springBoot {
+    buildInfo()
+}
+
+tasks.named<BootBuildImage>("bootBuildImage") {
+    imageName = "shaikrasheed99/order-service:latest"
+    builder = "paketobuildpacks/builder:base"
+    environment = mapOf(
+        "BP_JVM_VERSION" to "17"
+    )
 }
