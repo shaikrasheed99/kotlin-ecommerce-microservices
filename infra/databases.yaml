@@ -19,7 +19,7 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=inventory
     ports:
-      - "15432:5433"
+      - "15433:5432"
 
   notification-service-db:
     image: postgres:16-alpine
@@ -29,4 +29,4 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=notifications
     ports:
-      - "15432:5434"
+      - "15434:5432"
