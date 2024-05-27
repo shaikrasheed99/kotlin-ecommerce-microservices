@@ -48,3 +48,18 @@ services:
     depends_on:
       - discovery-server
       - inventory-service-db
+
+  notification-service:
+    image: shaikrasheed99/notification-service
+    container_name: notification-service
+    ports:
+      - "8083:8083"
+    environment:
+      - DB_URL=jdbc:postgresql://notification-service-db:5434/notifications
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - EUREKA_SERVER_URL=http://discovery-server:8761/eureka
+    restart: unless-stopped
+    depends_on:
+      - discovery-server
+      - notification-service-db
