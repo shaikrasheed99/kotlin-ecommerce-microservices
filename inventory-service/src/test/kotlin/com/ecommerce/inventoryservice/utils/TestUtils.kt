@@ -13,7 +13,7 @@ import java.util.UUID
 
 object TestUtils {
     fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
-        PostgreSQLContainer("postgres:latest")
+        PostgreSQLContainer("postgres:16-alpine")
             .withDatabaseName("inventory")
             .withInitScript("create-inventory-table.sql")
 
