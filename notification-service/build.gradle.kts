@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 
 plugins {
 	id("org.springframework.boot") version "3.1.0"
@@ -155,4 +156,16 @@ tasks.jacocoTestCoverageVerification {
 			}
 		}
 	}
+}
+
+springBoot {
+	buildInfo()
+}
+
+tasks.named<BootBuildImage>("bootBuildImage") {
+	imageName = "shaikrasheed99/notification-service:latest"
+	builder = "paketobuildpacks/builder:base"
+	environment = mapOf(
+		"BP_JVM_VERSION" to "17"
+	)
 }
