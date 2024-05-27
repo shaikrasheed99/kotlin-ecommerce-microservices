@@ -29,7 +29,7 @@ object TestUtils {
     )
 
     fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
-        PostgreSQLContainer("postgres:latest")
+        PostgreSQLContainer("postgres:16-alpine")
             .withDatabaseName("notifications")
             .withInitScript("create-notifications-table.sql")
 
