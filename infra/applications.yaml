@@ -17,6 +17,7 @@ services:
       - DB_URL=jdbc:postgresql://order-service-db:5432/orders
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
+      - EUREKA_SERVER_URL=http://discovery-server:8761/eureka
     restart: unless-stopped
     depends_on:
       - discovery-server
