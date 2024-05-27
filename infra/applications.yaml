@@ -40,7 +40,7 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - DB_URL=jdbc:postgresql://inventory-service-db:5433/inventory
+      - DB_URL=jdbc:postgresql://inventory-service-db:5432/inventory
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - EUREKA_SERVER_URL=http://discovery-server:8761/eureka
@@ -55,7 +55,7 @@ services:
     ports:
       - "8083:8083"
     environment:
-      - DB_URL=jdbc:postgresql://notification-service-db:5434/notifications
+      - DB_URL=jdbc:postgresql://notification-service-db:5432/notifications
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
       - EUREKA_SERVER_URL=http://discovery-server:8761/eureka
