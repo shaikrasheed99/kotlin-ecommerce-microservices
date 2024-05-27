@@ -8,7 +8,7 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:root}
   kafka:
-    topic: notificationsTopic
+    topic: orderPlaced
     consumer:
       bootstrap-servers: ${KAFKA_BROKER_URL:localhost:9092}
       group-id: notification-consumer-group
