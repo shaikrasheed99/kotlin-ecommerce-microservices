@@ -14,7 +14,7 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
 
-eureka.client.serviceUrl.defaultZone: http://localhost:8761/eureka
+eureka.client.serviceUrl.defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
 inventory.service.url: http://inventory-service
 
 resilience4j:
