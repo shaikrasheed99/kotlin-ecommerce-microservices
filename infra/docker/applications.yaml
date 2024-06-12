@@ -14,7 +14,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - EUREKA_SERVER_URL=http://discovery-server:8761/eureka
+      - EUREKA_HOST=discovery-server
+      - EUREKA_PORT=8761
     restart: unless-stopped
     depends_on:
       - discovery-server
