@@ -45,10 +45,12 @@ services:
     ports:
       - "8084:8084"
     environment:
-      - DB_URL=jdbc:postgresql://inventory-service-db:5432/inventory
+      - DB_HOST=inventory-service-db
+      - DB_PORT=5432
       - DB_USERNAME=postgres
       - DB_PASSWORD=postgres
-      - EUREKA_SERVER_URL=http://discovery-server:8761/eureka
+      - EUREKA_HOST=discovery-server
+      - EUREKA_PORT=8761
       - KAFKA_BROKER_URL=kafka:29092
     restart: unless-stopped
     depends_on:
