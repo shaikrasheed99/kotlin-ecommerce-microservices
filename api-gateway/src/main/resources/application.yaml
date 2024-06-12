@@ -27,4 +27,4 @@ spring:
           filters:
             - RewritePath=/api/notification/(?<remaining>.*), /$\{remaining}
 
-eureka.client.serviceUrl.defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka}
+eureka.client.serviceUrl.defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka
