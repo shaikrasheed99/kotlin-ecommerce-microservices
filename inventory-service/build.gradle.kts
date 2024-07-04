@@ -35,7 +35,7 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
 
 	implementation("org.springframework.kafka:spring-kafka")
-	implementation("io.cloudevents:cloudevents-json-jackson:2.5.0")
+	implementation("io.cloudevents:cloudevents-json-jackson:4.0.1")
 
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
 
