@@ -61,7 +61,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
     testImplementation("org.testcontainers:junit-jupiter")
     testImplementation("org.testcontainers:postgresql")
-    testImplementation("org.testcontainers:mockserver:1.19.3")
+    testImplementation("org.testcontainers:mockserver:1.19.8")
 
     testImplementation("org.springframework.kafka:spring-kafka-test")
 }
