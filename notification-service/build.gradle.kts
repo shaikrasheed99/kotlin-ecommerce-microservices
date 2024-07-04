@@ -35,7 +35,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 	implementation("org.springframework.kafka:spring-kafka")
-	implementation("io.cloudevents:cloudevents-json-jackson:2.5.0")
+	implementation("io.cloudevents:cloudevents-json-jackson:4.0.1")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
 
