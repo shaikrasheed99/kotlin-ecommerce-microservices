@@ -27,7 +27,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
-	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.0.3")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.2")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
