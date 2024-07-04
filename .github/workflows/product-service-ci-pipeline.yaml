@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-    if: contains(github.event.head_commit.message, '[Product-service]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to repo
@@ -25,7 +24,6 @@ jobs:
         run: cd product-service && ./gradlew clean build
 
   tests:
-    if: contains(github.event.head_commit.message, '[Product-service]')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to repo
