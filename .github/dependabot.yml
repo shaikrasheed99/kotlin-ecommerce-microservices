@@ -4,19 +4,33 @@ updates:
     directory: "/api-gateway"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[API-Gateway] "
+
   - package-ecosystem: "gradle"
     directory: "/discovery-server"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[Discovery-server] "
+
   - package-ecosystem: "gradle"
     directory: "/order-service"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[Order-service] "
+
   - package-ecosystem: "gradle"
     directory: "/inventory-service"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[Inventory-service] "
+
   - package-ecosystem: "gradle"
     directory: "/notification-service"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "[Notification-service] "
