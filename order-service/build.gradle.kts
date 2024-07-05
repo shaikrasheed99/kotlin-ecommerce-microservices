@@ -96,7 +96,8 @@ tasks.jacocoTestReport {
             exclude(
                 "**/OrderServiceApplication*.*",
                 "**/OrderTableSchemaCreation*.*",
-                "**/configs"
+                "**/configs",
+                "**/constants"
             )
         }
     )
@@ -117,7 +118,8 @@ tasks.jacocoTestCoverageVerification {
                     exclude(
                         "**/OrderServiceApplication*.*",
                         "**/OrderTableSchemaCreation*.*",
-                        "**/configs"
+                        "**/configs",
+                        "**/constants"
                     )
                 }
             )
