@@ -80,7 +80,8 @@ tasks.jacocoTestReport {
 		sourceSets.main.get().output.asFileTree.matching {
 			exclude(
 				"**/InventoryServiceApplication*.*",
-				"**/InventoryTableSchemaCreation*.*"
+				"**/InventoryTableSchemaCreation*.*",
+				"**/constants"
 			)
 		}
 	)
@@ -100,7 +101,8 @@ tasks.jacocoTestCoverageVerification {
 				sourceSets.main.get().output.asFileTree.matching {
 					exclude(
 						"**/InventoryServiceApplication*.*",
-						"**/InventoryTableSchemaCreation*.*"
+						"**/InventoryTableSchemaCreation*.*",
+						"**/constants"
 					)
 				}
 			)
