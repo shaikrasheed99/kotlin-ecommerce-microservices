@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'discovery-server/**'
   pull_request:
+    paths:
+      - 'discovery-server/**'
 
 jobs:
   build:
