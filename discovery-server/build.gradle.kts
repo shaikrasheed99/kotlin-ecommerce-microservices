@@ -21,7 +21,7 @@ repositories {
 	mavenCentral()
 }
 
-extra["springCloudVersion"] = "2023.0.0"
+extra["springCloudVersion"] = "2023.0.1"
 
 dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
