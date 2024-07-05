@@ -89,7 +89,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 configurations.matching { it.name == "detekt" }.all {
 	resolutionStrategy.eachDependency {
 		if (requested.group == "org.jetbrains.kotlin") {
-			useVersion("1.9.0")
+			useVersion("1.9.23")
 		}
 	}
 }
