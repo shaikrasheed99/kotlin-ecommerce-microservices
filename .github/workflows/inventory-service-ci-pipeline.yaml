@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'inventory-service/**'
   pull_request:
+    paths:
+      - 'inventory-service/**'
 
 jobs:
   build:
