@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'order-service/**'
   pull_request:
+    paths:
+      - 'order-service/**'
 
 jobs:
   build:
