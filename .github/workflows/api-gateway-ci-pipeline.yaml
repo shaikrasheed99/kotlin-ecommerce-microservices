@@ -4,7 +4,11 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'api-gateway/**'
   pull_request:
+    paths:
+      - 'api-gateway/**'
 
 jobs:
   build:
