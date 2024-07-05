@@ -109,7 +109,8 @@ tasks.jacocoTestReport {
 			exclude(
 				"**/NotificationServiceApplication*.*",
 				"**/NotificationTableSchemaCreation*.*",
-				"**/configs"
+				"**/configs",
+				"**/constants"
 			)
 		}
 	)
@@ -130,7 +131,8 @@ tasks.jacocoTestCoverageVerification {
 					exclude(
 						"**/NotificationServiceApplication*.*",
 						"**/NotificationTableSchemaCreation*.*",
-						"**/configs"
+						"**/configs",
+						"**/constants"
 					)
 				}
 			)
