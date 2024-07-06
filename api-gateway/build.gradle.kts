@@ -21,6 +21,8 @@ repositories {
 	mavenCentral()
 }
 
+val eurekaClientVersion = "4.1.2"
+
 extra["springCloudVersion"] = "2023.0.1"
 
 dependencies {
@@ -28,7 +30,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
-	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:4.1.2")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$eurekaClientVersion")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
