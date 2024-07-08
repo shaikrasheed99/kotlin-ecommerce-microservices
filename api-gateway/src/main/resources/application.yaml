@@ -13,13 +13,6 @@ spring:
           filters:
             - RewritePath=/api/inventory/(?<remaining>.*), /$\{remaining}
 
-        - id: product-service-route
-          uri: lb://product-service
-          predicates:
-            - Path=/api/product/**
-          filters:
-            - RewritePath=/api/product/(?<remaining>.*), /$\{remaining}
-
         - id: notification-service-route
           uri: lb://notification-service
           predicates:
