@@ -6,10 +6,6 @@ cd api-gateway
 ./gradlew bootrun &
 cd ..
 
-cd product-service
-./gradlew bootrun &
-cd ..
-
 cd inventory-service
 ./gradlew bootrun &
 cd ..
