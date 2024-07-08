@@ -25,7 +25,7 @@ repositories {
     mavenCentral()
 }
 
-val kotlinXJsonVersion = "1.2.2"
+val kotlinXJsonVersion = "1.7.1"
 val eurekaClientVersion = "4.0.3"
 val cloudEventsJsonVersion = "2.5.0"
 val detektVersion = "1.23.1"
