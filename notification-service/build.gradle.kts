@@ -30,8 +30,8 @@ val cloudEventsJsonVersion = "4.0.1"
 val detektVersion = "1.23.6"
 val mockkVersion = "1.13.11"
 val kotestJunit5Version = "5.9.1"
-val kotestSpringVersion = "1.1.3"
-val kotestJsonVersion = "4.6.3"
+val kotestSpringVersion = "1.3.0"
+val kotestJsonVersion = "5.9.1"
 val awaitilityVersion = "4.2.1"
 
 dependencies {
