@@ -21,7 +21,7 @@ repositories {
 	mavenCentral()
 }
 
-val eurekaClientVersion = "4.1.2"
+val eurekaClientVersion = "4.1.3"
 
 extra["springCloudVersion"] = "2023.0.1"
 
