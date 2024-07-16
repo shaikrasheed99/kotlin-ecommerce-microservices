@@ -4,7 +4,7 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
-    id("org.springframework.boot") version "3.1.0"
+    id("org.springframework.boot") version "3.3.1"
     id("io.spring.dependency-management") version "1.1.6"
     id("io.gitlab.arturbosch.detekt") version "1.23.6"
 
@@ -26,7 +26,7 @@ repositories {
 }
 
 val kotlinXJsonVersion = "1.7.1"
-val eurekaClientVersion = "4.0.3"
+val eurekaClientVersion = "4.1.3"
 val cloudEventsJsonVersion = "2.5.0"
 val detektVersion = "1.23.1"
 val mockkVersion = "1.13.11"
