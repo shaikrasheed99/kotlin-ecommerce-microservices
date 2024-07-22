@@ -34,7 +34,7 @@ val kotestJunit5Version = "5.9.1"
 val kotestSpringVersion = "1.3.0"
 val kotestJsonVersion = "5.9.1"
 val resilience4jVersion = "2.2.0"
-val testcontainersMockserverVersion = "1.19.8"
+val testcontainersMockserverVersion = "1.20.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
