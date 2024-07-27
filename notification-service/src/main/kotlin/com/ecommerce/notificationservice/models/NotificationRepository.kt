@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.Query
 import java.util.UUID
 
 interface NotificationRepository : JpaRepository<Notification, UUID> {
-    @Query(value = "SELECT * FROM notifications ORDER BY created_at DESC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT n FROM Notification as n ORDER BY n.createdAt DESC LIMIT 1")
     fun findRecentNotification(): List<Notification>
 }
