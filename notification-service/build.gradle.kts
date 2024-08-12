@@ -32,7 +32,7 @@ val mockkVersion = "1.13.11"
 val kotestJunit5Version = "5.9.1"
 val kotestSpringVersion = "1.3.0"
 val kotestJsonVersion = "5.9.1"
-val awaitilityVersion = "4.2.1"
+val awaitilityVersion = "4.2.2"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
