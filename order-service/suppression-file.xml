@@ -14,4 +14,11 @@
         <filePath regex="true">.*mockserver-core-5.15.0.jar</filePath>
         <cve>CVE-2021-32827</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Suppressing CVE for xmlunit-core-2.9.1.jar
+        ]]></notes>
+        <filePath regex="true">.*xmlunit-core-2.9.1.jar</filePath>
+        <cve>CVE-2024-31573</cve>
+    </suppress>
 </suppressions>
