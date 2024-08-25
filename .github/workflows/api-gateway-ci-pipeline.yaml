@@ -26,3 +26,10 @@ jobs:
 
       - name: Build the application
         run: cd api-gateway && ./gradlew clean build
+
+  vulnerability-scanner:
+    uses: ./.github/workflows/vulnerability-scanner.yaml
+    with:
+      path: 'api-gateway'
+      format: 'HTML'
+      out: 'dependency-checker-reports'
