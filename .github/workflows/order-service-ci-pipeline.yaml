@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'order-service/**'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -45,3 +46,10 @@ jobs:
 
       - name: Check the test coverage
         run: cd order-service && ./gradlew jacocoTestReport
+
+  vulnerability-scanner:
+    uses: ./.github/workflows/vulnerability-scanner.yaml
+    with:
+      path: 'order-service'
+      format: 'HTML'
+      out: 'dependency-checker-reports'
