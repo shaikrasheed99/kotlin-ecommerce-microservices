@@ -6,6 +6,7 @@ plugins {
 	id("org.springframework.boot") version "3.3.1"
 	id("io.spring.dependency-management") version "1.1.6"
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
+	id("org.owasp.dependencycheck") version "8.4.0"
 
 	kotlin("jvm") version "2.0.0"
 	kotlin("plugin.spring") version "2.0.0"
@@ -62,6 +63,10 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
 	testImplementation("org.testcontainers:postgresql")
+}
+
+dependencyCheck {
+	suppressionFile = "./suppression-file.xml"
 }
 
 tasks.withType<KotlinCompile> {
