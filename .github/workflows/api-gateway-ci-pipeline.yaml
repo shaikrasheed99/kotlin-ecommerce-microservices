@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'api-gateway/**'
+  workflow_dispatch:
 
 jobs:
   build:
