@@ -9,9 +9,9 @@
     </suppress>
     <suppress>
         <notes><![CDATA[
-        Suppressing CVE for mockserver-core-5.15.0.jar
+        Suppressing CVE for mockserver 5.15.0.jar libraries
         ]]></notes>
-        <filePath regex="true">.*mockserver-core-5.15.0.jar</filePath>
+        <filePath regex="true">.*mockserver-.*5.15.0.jar</filePath>
         <cve>CVE-2021-32827</cve>
     </suppress>
     <suppress>
