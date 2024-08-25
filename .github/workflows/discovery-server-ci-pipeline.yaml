@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - 'discovery-server/**'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -26,3 +27,10 @@ jobs:
 
       - name: Build the application
         run: cd discovery-server && ./gradlew clean build
+
+  vulnerability-scanner:
+    uses: ./.github/workflows/vulnerability-scanner.yaml
+    with:
+      path: 'discovery-server'
+      format: 'HTML'
+      out: 'dependency-checker-reports'
