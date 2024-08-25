@@ -7,4 +7,11 @@
         <filePath regex="true">.*commons-jxpath-1.3.jar</filePath>
         <cve>CVE-2022-41852</cve>
     </suppress>
+    <suppress>
+        <notes><![CDATA[
+        Suppressing CVE for mockserver-core-5.15.0.jar
+        ]]></notes>
+        <filePath regex="true">.*mockserver-core-5.15.0.jar</filePath>
+        <cve>CVE-2021-32827</cve>
+    </suppress>
 </suppressions>
