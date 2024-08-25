@@ -26,6 +26,8 @@ val eurekaClientVersion = "4.1.3"
 extra["springCloudVersion"] = "2023.0.1"
 
 dependencies {
+	implementation("org.springframework:spring-web:6.1.12")
+
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
