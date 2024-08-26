@@ -1,0 +1,89 @@
+name: DAST Scanner
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: 'Path to the project directory'
+        required: true
+        type: string
+      out:
+        description: 'Output directory for the report'
+        required: true
+        type: string
+      hasDependencyOnPostgresAndKafka:
+        description: 'Flag for the hasDependencyOnPostgresAndKafka'
+        required: true
+        type: boolean
+      dbName:
+        description: 'Database name of the service'
+        required: false
+        type: string
+
+jobs:
+  dast-scanner:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        if: ${{ inputs.hasDependencyOnPostgresAndKafka == 'true' }}
+        image: postgres:alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: ${{ inputs.dbName }}
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+      kafka:
+        if: ${{ inputs.hasDependencyOnPostgresAndKafka == 'true' }}
+        image: wurstmeister/kafka:latest
+        ports:
+          - 29092:29092
+        env:
+          KAFKA_BROKER_ID: 1
+          KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+          KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+          KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:29092
+          KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Build the application
+        run: cd ${{ inputs.path }} && ./gradlew clean build
+
+      - name: Start the application
+        run: cd ${{ inputs.path }} && ./gradlew bootRun &
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+          KAFKA_BROKER_URL: localhost:29092
+
+      - name: Wait for the application to start
+        run: sleep 60
+
+      - name: Run OWASP ZAP
+        uses: zaproxy/action-full-scan@v0.2.0
+        with:
+          target: 'http://localhost:8081'
+          fail_action: false
+          report_format: 'html'
+          report_path: ${{ inputs.path }}/${{ inputs.out }}.html
+
+      - name: Stop the application
+        run: pkill -f 'java -jar'
