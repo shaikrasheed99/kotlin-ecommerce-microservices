@@ -11,6 +11,10 @@ on:
         description: 'Output directory for the report'
         required: true
         type: string
+      port:
+        description: 'Port number of the service'
+        required: true
+        type: number
       hasDependencyOnPostgresAndKafka:
         description: 'Flag for the hasDependencyOnPostgresAndKafka'
         required: true
@@ -25,7 +29,6 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        if: ${{ inputs.hasDependencyOnPostgresAndKafka == 'true' }}
         image: postgres:alpine
         ports:
           - 5432:5432
@@ -40,7 +43,6 @@ jobs:
           --health-retries=5
 
       kafka:
-        if: ${{ inputs.hasDependencyOnPostgresAndKafka == 'true' }}
         image: wurstmeister/kafka:latest
         ports:
           - 29092:29092
@@ -80,7 +82,7 @@ jobs:
       - name: Run OWASP ZAP
         uses: zaproxy/action-full-scan@v0.2.0
         with:
-          target: 'http://localhost:8081'
+          target: 'http://localhost:${{ inputs.port }}'
           fail_action: false
           report_format: 'html'
           report_path: ${{ inputs.path }}/${{ inputs.out }}.html
