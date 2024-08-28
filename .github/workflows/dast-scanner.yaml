@@ -59,14 +59,39 @@ jobs:
       - name: Build the application
         run: cd ${{ inputs.path }} && ./gradlew clean build
 
+      - name: Create log file
+        run: |
+          touch app.log
+          chmod 777 app.log
+
       - name: Start the application
-        run: cd ${{ inputs.path }} && ./gradlew bootRun &
+        run: cd ${{ inputs.path }} && ./gradlew bootRun > app.log 2>&1 &
         env:
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
           KAFKA_BROKER_URL: localhost:29092
+
+      - name: List files in notification-service directory
+        run: ls -R ${{ inputs.path }}
+
+      - name: Show application logs
+        run: tail -n 50 app.log || echo "No logs available"
+
+      - name: Wait for application to be up
+        run: |
+          for i in {1..30}; do
+            if curl -s http://localhost:${{ inputs.port }}/actuator/health > /dev/null; then
+              echo "Application is up!";
+              exit 0;
+            else
+              echo "Waiting for application to start... ($i/30)";
+              sleep 10;
+            fi
+          done
+          echo "Application did not start in time.";
+          exit 1;
 
       - name: Run OWASP ZAP Scanner
         uses: zaproxy/action-full-scan@v0.10.0
