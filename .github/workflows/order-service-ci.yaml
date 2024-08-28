@@ -57,3 +57,4 @@ jobs:
     with:
       path: 'order-service'
       port: 8081
+      dbName: orders
