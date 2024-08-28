@@ -51,3 +51,9 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'order-service'
+
+  dast-scanner:
+    uses: ./.github/workflows/dast-scanner.yaml
+    with:
+      path: 'order-service'
+      port: 8081

@@ -51,3 +51,9 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'notification-service'
+
+  dast-scanner:
+    uses: ./.github/workflows/dast-scanner.yaml
+    with:
+      path: 'notification-service'
+      port: 8083

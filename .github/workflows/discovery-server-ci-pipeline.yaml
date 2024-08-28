@@ -32,3 +32,9 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'discovery-server'
+
+  dast-scanner:
+    uses: ./.github/workflows/dast-scanner.yaml
+    with:
+      path: 'discovery-server'
+      port: 8761

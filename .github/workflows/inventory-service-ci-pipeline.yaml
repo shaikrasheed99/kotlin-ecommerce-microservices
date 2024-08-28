@@ -51,3 +51,9 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'inventory-service'
+
+  dast-scanner:
+    uses: ./.github/workflows/dast-scanner.yaml
+    with:
+      path: 'inventory-service'
+      port: 8084
