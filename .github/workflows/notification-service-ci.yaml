@@ -18,23 +18,9 @@ jobs:
       path: 'notification-service'
 
   tests:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout to repo
-        uses: actions/checkout@v4
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'corretto'
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Run the test cases
-        run: cd notification-service && ./gradlew test
-
-      - name: Check the test coverage
-        run: cd notification-service && ./gradlew jacocoTestReport
+    uses: ./.github/workflows/service-tests.yaml
+    with:
+      path: 'notification-service'
 
   vulnerability-scanner:
     uses: ./.github/workflows/vulnerability-scanner.yaml
