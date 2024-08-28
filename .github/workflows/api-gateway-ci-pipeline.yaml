@@ -39,6 +39,4 @@ jobs:
     uses: ./.github/workflows/dast-scanner.yaml
     with:
       path: 'api-gateway'
-      out: 'dast-scanner-reports'
       port: 8080
-      hasDependencyOnPostgresAndKafka: false
