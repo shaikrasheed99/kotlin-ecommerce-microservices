@@ -1,0 +1,43 @@
+name: Service Tests pipeline
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        description: 'Path to the project directory'
+        required: true
+        type: string
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Run the test cases
+        run: cd ${{ inputs.path }} && ./gradlew test
+
+      - name: Publish Tests results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Publish Tests results
+          path: ${{ inputs.path }}/build/reports/tests/index.html
+
+      - name: Check the test coverage
+        run: cd ${{ inputs.path }} && ./gradlew jacocoTestReport
+
+      - name: Publish Tests Coverage reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Publish Tests Coverage reports
+          path: ${{ inputs.path }}/build/jacoco/test/html/index.html
