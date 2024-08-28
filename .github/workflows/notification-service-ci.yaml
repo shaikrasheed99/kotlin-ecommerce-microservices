@@ -13,20 +13,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout to repo
-        uses: actions/checkout@v4
-
-      - name: Setup Java JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'corretto'
-          java-version: '17'
-          cache: 'gradle'
-
-      - name: Build the application
-        run: cd notification-service && ./gradlew clean build
+    uses: ./.github/workflows/service-build.yaml
+    with:
+      path: 'notification-service'
 
   tests:
     runs-on: ubuntu-latest
