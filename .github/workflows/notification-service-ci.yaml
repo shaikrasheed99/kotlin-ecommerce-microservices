@@ -57,3 +57,4 @@ jobs:
     with:
       path: 'notification-service'
       port: 8083
+      dbName: notifications
