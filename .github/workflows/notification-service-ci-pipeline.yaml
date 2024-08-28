@@ -51,5 +51,3 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'notification-service'
-      format: 'HTML'
-      out: 'dependency-checker-reports'

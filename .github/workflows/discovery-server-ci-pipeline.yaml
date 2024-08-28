@@ -32,5 +32,3 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'discovery-server'
-      format: 'HTML'
-      out: 'dependency-checker-reports'
