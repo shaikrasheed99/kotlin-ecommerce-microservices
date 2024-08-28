@@ -32,8 +32,6 @@ jobs:
     uses: ./.github/workflows/vulnerability-scanner.yaml
     with:
       path: 'api-gateway'
-      format: 'HTML'
-      out: 'dependency-checker-reports'
 
   dast-scanner:
     uses: ./.github/workflows/dast-scanner.yaml
