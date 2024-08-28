@@ -30,7 +30,7 @@ jobs:
         if: always()
         with:
           name: Publish Tests results
-          path: ${{ inputs.path }}/build/reports/tests/index.html
+          path: ${{ inputs.path }}/build/reports/tests/test
 
       - name: Check the test coverage
         run: cd ${{ inputs.path }} && ./gradlew jacocoTestReport
@@ -40,4 +40,4 @@ jobs:
         if: always()
         with:
           name: Publish Tests Coverage reports
-          path: ${{ inputs.path }}/build/jacoco/test/html/index.html
+          path: ${{ inputs.path }}/build/jacoco/test/html
