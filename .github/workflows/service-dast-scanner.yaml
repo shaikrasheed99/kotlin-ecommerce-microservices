@@ -1,4 +1,4 @@
-name: DAST Scanner
+name: Service DAST Scanner
 
 on:
   workflow_call:
