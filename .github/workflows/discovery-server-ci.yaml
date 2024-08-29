@@ -22,6 +22,11 @@ jobs:
     with:
       path: 'discovery-server'
 
+  image-vulnerability-scanner:
+    uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    with:
+      path: 'discovery-server'
+
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
     with:

@@ -27,6 +27,11 @@ jobs:
     with:
       path: 'order-service'
 
+  image-vulnerability-scanner:
+    uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    with:
+      path: 'order-service'
+
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
     with:

@@ -27,6 +27,11 @@ jobs:
     with:
       path: 'notification-service'
 
+  image-vulnerability-scanner:
+    uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    with:
+      path: 'notification-service'
+
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
     with:
