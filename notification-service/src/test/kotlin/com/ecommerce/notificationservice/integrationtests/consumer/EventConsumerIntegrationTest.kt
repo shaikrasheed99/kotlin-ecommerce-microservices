@@ -48,7 +48,7 @@ class EventConsumerIntegrationTest {
         testProducer.send(ProducerRecord(DEFAULT_TEST_TOPIC, testKey, payload))
 
         await().atMost(Duration.ofSeconds(30)).untilAsserted {
-            val notification = notificationRepository.findRecentNotification()
+            val notification = notificationRepository.findFirstByOrderByCreatedAtDesc()
 
             if (notification.isNotEmpty()) {
                 notification[0].orderId shouldBe orderPlacedEvent.orderId

@@ -31,14 +31,14 @@ class NotificationServiceTest : DescribeSpec({
         it("should be able to get recent notification") {
             val notifications = listOf(createTestNotification())
 
-            every { mockNotificationRepository.findRecentNotification() } returns notifications
+            every { mockNotificationRepository.findFirstByOrderByCreatedAtDesc() } returns notifications
 
             val recentNotification = notificationService.getRecentNotification()
 
             recentNotification[0]
 
             verify {
-                mockNotificationRepository.findRecentNotification()
+                mockNotificationRepository.findFirstByOrderByCreatedAtDesc()
             }
 
             recentNotification[0].id shouldBe notifications[0].id
@@ -53,14 +53,14 @@ class NotificationServiceTest : DescribeSpec({
     describe("Get Recent Notification - Error scenarios") {
         it("should be able to throw Exception when it is thrown from repository") {
             val exception = Exception("exception from repository layer")
-            every { mockNotificationRepository.findRecentNotification() } throws exception
+            every { mockNotificationRepository.findFirstByOrderByCreatedAtDesc() } throws exception
 
             shouldThrow<Exception> {
                 notificationService.getRecentNotification()
             }
 
             verify {
-                mockNotificationRepository.findRecentNotification()
+                mockNotificationRepository.findFirstByOrderByCreatedAtDesc()
             }
         }
     }

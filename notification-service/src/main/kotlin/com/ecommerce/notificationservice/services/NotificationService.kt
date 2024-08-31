@@ -10,7 +10,7 @@ import java.time.Instant
 @Service
 class NotificationService(private val notificationRepository: NotificationRepository) {
     fun getRecentNotification(): List<Notification> {
-        return notificationRepository.findRecentNotification()
+        return notificationRepository.findFirstByOrderByCreatedAtDesc()
     }
 
     fun saveNotificationWith(orderPlacedEvent: OrderPlacedEvent) {

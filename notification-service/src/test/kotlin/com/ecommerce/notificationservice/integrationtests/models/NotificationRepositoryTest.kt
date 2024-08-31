@@ -33,14 +33,18 @@ class NotificationRepositoryTest {
 
     @Test
     internal fun shouldBeAbleToReturnRecentNotification() {
-        val notification = createTestNotification()
+        val notification = createTestNotification(
+            skuCode = "first_notification_skuCode"
+        )
         notificationRepository.save(notification)
 
-        val notifications = notificationRepository.findRecentNotification()
+        val recentNotification = createTestNotification(
+            skuCode = "recent_notification_skuCode"
+        )
+        notificationRepository.save(recentNotification)
 
-        notifications[0].sender shouldBe notification.sender
-        notifications[0].recipient shouldBe notification.recipient
-        notifications[0].orderId shouldBe notification.orderId
-        notifications[0].skuCode shouldBe notification.skuCode
+        val notifications = notificationRepository.findFirstByOrderByCreatedAtDesc()
+
+        notifications[0].skuCode shouldBe recentNotification.skuCode
     }
 }
