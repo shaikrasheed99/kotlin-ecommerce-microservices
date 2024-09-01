@@ -16,3 +16,12 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 eureka.client.serviceUrl.defaultZone: http://${EUREKA_HOST:localhost}:${EUREKA_PORT:8761}/eureka
+
+management:
+  endpoint:
+    health:
+      show-details: never
+  endpoints:
+    web:
+      exposure:
+        include: health
