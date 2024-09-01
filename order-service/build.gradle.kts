@@ -36,6 +36,7 @@ val kotestSpringVersion = "1.3.0"
 val kotestJsonVersion = "5.9.1"
 val resilience4jVersion = "2.2.0"
 val testcontainersMockserverVersion = "1.19.8"
+val mockserverNettyVersion = "5.15.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -48,7 +49,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.mock-server:mockserver-netty:5.15.0")
+    implementation("org.mock-server:mockserver-netty:$mockserverNettyVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinXJsonVersion")
     implementation("com.h2database:h2")
 
