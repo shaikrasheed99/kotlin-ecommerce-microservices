@@ -1,10 +1,11 @@
 package com.ecommerce.orderservice.integrationtests.controllers
 
+import com.ecommerce.orderservice.constants.Events
 import com.ecommerce.orderservice.constants.MessageResponses
 import com.ecommerce.orderservice.constants.StatusResponses
+import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
-import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.assertConsumerRecord
-import com.ecommerce.orderservice.utils.EmbeddedKafkaConsumerTestUtils.createTestConsumer
+import com.ecommerce.orderservice.models.OutboxRepository
 import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeGetInventoryBySkuCodeAPIResponse200
 import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeGetInventoryBySkuCodeAPIResponse404
 import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.invokeGetInventoryBySkuCodeWithInsufficientQuantityAPIResponse200
@@ -13,12 +14,12 @@ import com.ecommerce.orderservice.utils.InventoryServiceMockServerStubUtils.veri
 import com.ecommerce.orderservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBodyJson
 import com.ecommerce.orderservice.utils.TestUtils.getPostgreSQLContainer
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.CircuitBreaker
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.kotest.matchers.shouldBe
-import org.apache.kafka.clients.consumer.Consumer
+import io.kotest.matchers.shouldNotBe
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockserver.client.MockServerClient
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,9 +29,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
-import org.springframework.kafka.annotation.EnableKafka
-import org.springframework.kafka.test.EmbeddedKafkaBroker
-import org.springframework.kafka.test.context.EmbeddedKafka
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
@@ -45,12 +43,10 @@ private const val NUMBER_OF_RETRY_CALLS = 3
 
 const val DEFAULT_TEST_TOPIC = "testTopic"
 
-@EnableKafka
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @AutoConfigureMockMvc
 @Testcontainers
-@EmbeddedKafka(topics = [DEFAULT_TEST_TOPIC])
 internal class OrderControllerIntegrationTest {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -59,12 +55,10 @@ internal class OrderControllerIntegrationTest {
     private lateinit var orderRepository: OrderRepository
 
     @Autowired
-    private lateinit var circuitBreakerRegistry: CircuitBreakerRegistry
+    private lateinit var outboxRepository: OutboxRepository
 
     @Autowired
-    private lateinit var embeddedKafkaBroker: EmbeddedKafkaBroker
-
-    private lateinit var testConsumer: Consumer<String, String>
+    private lateinit var circuitBreakerRegistry: CircuitBreakerRegistry
 
     companion object {
         @Container
@@ -89,16 +83,10 @@ internal class OrderControllerIntegrationTest {
         }
     }
 
-    @BeforeEach
-    fun setUp() {
-        testConsumer = createTestConsumer(embeddedKafkaBroker)
-    }
-
     @AfterEach
     internal fun tearDown() {
         orderRepository.deleteAll()
         mockServer.reset()
-        testConsumer.close()
     }
 
     @Test
@@ -107,7 +95,7 @@ internal class OrderControllerIntegrationTest {
 
         invokeGetInventoryBySkuCodeAPIResponse200(mockServer)
 
-        mockMvc.post("/orders") {
+        val result = mockMvc.post("/orders") {
             contentType = MediaType.APPLICATION_JSON
             content = orderRequestBodyJson
         }.andExpect {
@@ -117,11 +105,32 @@ internal class OrderControllerIntegrationTest {
                 code = HttpStatus.OK,
                 message = MessageResponses.ORDER_CREATION_SUCCESS.message
             )
-        }
+        }.andReturn()
+
+        val responseContent = result.response.contentAsString
+        val objectMapper = ObjectMapper()
+        val orderDataNode = objectMapper.readTree(responseContent)["data"]
+        val createdOrder = objectMapper.treeToValue(orderDataNode, Order::class.java)
 
         orderRepository.count() shouldBe 1
+        createdOrder.id shouldNotBe null
+        createdOrder.skuCode shouldBe "test_code"
+        createdOrder.price shouldBe BigDecimal(10)
+        createdOrder.quantity shouldBe 2
+
+        outboxRepository.count() shouldBe 1
+        val actualOutbox = outboxRepository.findAll()[0]
+        actualOutbox.eventId shouldNotBe null
+        actualOutbox.eventType shouldBe Events.ORDER_PLACED_EVENT_TYPE
+        actualOutbox.topic shouldBe "testTopic"
+
+        val objectMapperTwo = ObjectMapper()
+        val actualPayloadNode = objectMapperTwo.readTree(actualOutbox.eventPayload)
+        val actualPayload = objectMapperTwo.treeToValue(actualPayloadNode, Map::class.java)
+
+        actualPayload["skuCode"] shouldBe createdOrder.skuCode
+        actualPayload["quantity"] shouldBe createdOrder.quantity
         verifyGetInventoryBySkuCodeAPICall(mockServer, 1)
-        assertConsumerRecord(testConsumer)
     }
 
     @Test
