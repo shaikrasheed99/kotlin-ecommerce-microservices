@@ -1,6 +1,7 @@
 package com.ecommerce.orderservice.services
 
 import com.ecommerce.orderservice.configs.InventoryServiceClient
+import com.ecommerce.orderservice.constants.Events.ORDER_PLACED_EVENT_TYPE
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.events.OrderPlacedEvent
@@ -8,23 +9,27 @@ import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityExcept
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
-import com.ecommerce.orderservice.producer.EventProducer
+import com.ecommerce.orderservice.models.Outbox
+import com.ecommerce.orderservice.models.OutboxRepository
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.util.UUID
 
 @Service
 class OrderService(
     private val orderRepository: OrderRepository,
     private val inventoryServiceClient: InventoryServiceClient,
-    private val eventProducer: EventProducer,
+    private val outboxRepository: OutboxRepository,
     @Value("\${spring.kafka.topic}")
     private val kafkaTopic: String
 ) {
     @CircuitBreaker(name = "inventoryClient")
     @Retry(name = "inventoryClient", fallbackMethod = "handleCreateOrderRetryFailure")
+    @Transactional
     fun createOrder(orderRequestBody: OrderRequestBody): Order? {
         var order: Order? = null
 
@@ -35,10 +40,9 @@ class OrderService(
                 val inventory = mapper.convertValue(it.data, InventoryResponse::class.java)
                 if (orderRequestBody.quantity <= inventory.quantity) {
                     order = orderRepository.save(mapToOrder(orderRequestBody))
-                    eventProducer.sendOrderPlacedEvent(
-                        kafkaTopic,
-                        mapToOrderPlacedEvent(order)
-                    )
+
+                    val eventToJsonString = convertEventToJsonString(mapToOrderPlacedEvent(order))
+                    outboxRepository.save(buildOutbox(eventToJsonString))
                 } else {
                     val exceptionMessage =
                         "Order cannot be created as it's quantity is more than inventory quantity"
@@ -50,6 +54,18 @@ class OrderService(
         }
 
         return order
+    }
+
+    private fun buildOutbox(eventPayload: String) = Outbox (
+        eventId = UUID.randomUUID(),
+        eventType = ORDER_PLACED_EVENT_TYPE,
+        eventPayload = eventPayload,
+        topic = kafkaTopic
+    )
+
+    private fun convertEventToJsonString(orderPlacedEvent: OrderPlacedEvent): String {
+        val mapper = ObjectMapper()
+        return mapper.writeValueAsString(orderPlacedEvent)
     }
 
     private fun mapToOrderPlacedEvent(order: Order?): OrderPlacedEvent =
