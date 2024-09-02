@@ -30,7 +30,8 @@ class OutboxTest : DescribeSpec({
     describe("Outbox - setters") {
         it("should be able to change Id attribute of the Outbox") {
             val eventId = UUID.randomUUID()
-            outbox = createOutbox(id = eventId)
+            outbox = createOutbox()
+            outbox.eventId = eventId
 
             outbox.eventId shouldBe eventId
         }
