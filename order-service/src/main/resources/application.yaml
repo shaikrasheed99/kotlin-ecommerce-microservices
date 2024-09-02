@@ -8,7 +8,7 @@ spring:
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:root}
   kafka:
-    topic: orderPlaced
+    topic: orders
     bootstrap-servers: ${KAFKA_BROKER_URL:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
