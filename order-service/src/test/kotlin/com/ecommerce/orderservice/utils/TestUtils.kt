@@ -4,6 +4,7 @@ import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.Response
 import com.ecommerce.orderservice.models.Order
+import com.ecommerce.orderservice.models.Outbox
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -39,6 +40,18 @@ object TestUtils {
         skuCode = skuCode,
         price = price,
         quantity = quantity
+    )
+
+    fun createOutbox(
+        id: UUID = UUID.randomUUID(),
+        eventType: String = "test_type",
+        eventPayload: String = "test_payload",
+        topic: String = "test_topic"
+    ) = Outbox (
+        eventId = id,
+        eventType = eventType,
+        eventPayload = eventPayload,
+        topic = topic
     )
 
     fun createOrderRequestBody(
