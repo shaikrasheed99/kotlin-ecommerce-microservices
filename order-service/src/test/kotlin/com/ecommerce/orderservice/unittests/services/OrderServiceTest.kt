@@ -4,16 +4,17 @@ import com.ecommerce.orderservice.configs.InventoryServiceClient
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.responses.InventoryResponse
 import com.ecommerce.orderservice.dto.responses.Response
-import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.exceptions.InsufficientInventoryQuantityException
 import com.ecommerce.orderservice.exceptions.InventoryServiceErrorException
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.OrderRepository
-import com.ecommerce.orderservice.producer.EventProducer
+import com.ecommerce.orderservice.models.Outbox
+import com.ecommerce.orderservice.models.OutboxRepository
 import com.ecommerce.orderservice.services.OrderService
 import com.ecommerce.orderservice.utils.EntityUtils.getMethodAnnotations
 import com.ecommerce.orderservice.utils.TestUtils.createOrder
 import com.ecommerce.orderservice.utils.TestUtils.createOrderRequestBody
+import com.ecommerce.orderservice.utils.TestUtils.createOutbox
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
 import io.kotest.assertions.throwables.shouldThrow
@@ -21,14 +22,13 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.every
-import io.mockk.just
 import io.mockk.mockk
-import io.mockk.runs
 import io.mockk.verify
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClientRequestException
 import java.net.URI
 
@@ -37,17 +37,18 @@ private const val CIRCUIT_BREAKER_INVENTORY_CLIENT = "inventoryClient"
 internal class OrderServiceTest : DescribeSpec({
     val mockOrderRepository = mockk<OrderRepository>()
     val mockInventoryServiceClient = mockk<InventoryServiceClient>()
-    val mockEventProducer = mockk<EventProducer>()
+    val mockOutboxRepository = mockk<OutboxRepository>()
     val kafkaTopic = "testTopic"
 
     val orderService = OrderService(
         mockOrderRepository,
         mockInventoryServiceClient,
-        mockEventProducer,
+        mockOutboxRepository,
         kafkaTopic
     )
 
     val order = createOrder()
+    val outbox = createOutbox()
 
     describe("Order Service - annotations") {
         it("should have Service annotation to the Order Service class") {
@@ -74,9 +75,7 @@ internal class OrderServiceTest : DescribeSpec({
             )
 
             every { mockOrderRepository.save(any(Order::class)) } returns order
-            every {
-                mockEventProducer.sendOrderPlacedEvent(any(String::class), any(OrderPlacedEvent::class))
-            } just runs
+            every { mockOutboxRepository.save(any(Outbox::class)) } returns outbox
             every {
                 mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
             } returns inventorySuccessResponse
@@ -90,7 +89,7 @@ internal class OrderServiceTest : DescribeSpec({
 
             verify {
                 mockOrderRepository.save(any(Order::class))
-                mockEventProducer.sendOrderPlacedEvent(any(String::class), any(OrderPlacedEvent::class))
+                mockOutboxRepository.save(any(Outbox::class))
                 mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
             }
         }
@@ -162,6 +161,73 @@ internal class OrderServiceTest : DescribeSpec({
                 mockInventoryServiceClient.getInventoryBySkuCode(orderRequestBody.skuCode)
             }
         }
+
+        it("should be able to throw RuntimeException when error while saving the Order data") {
+            val orderRequestBody = createOrderRequestBody()
+
+            val inventorySuccessResponse = Response(
+                status = StatusResponses.SUCCESS,
+                code = HttpStatus.OK,
+                message = "success response",
+                data = InventoryResponse(
+                    id = 1,
+                    skuCode = "test_code",
+                    quantity = 2
+                )
+            )
+
+            val exception = RuntimeException("exception while saving order data")
+
+            every { mockOrderRepository.save(any(Order::class)) } throws exception
+            every {
+                mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
+            } returns inventorySuccessResponse
+
+            val actualException = shouldThrow<RuntimeException> {
+                orderService.createOrder(orderRequestBody)
+            }
+
+            actualException.message shouldBe exception.message
+
+            verify {
+                mockOrderRepository.save(any(Order::class))
+                mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
+            }
+        }
+
+        it("should be able to throw RuntimeException when error while saving the Order Placed Event data") {
+            val orderRequestBody = createOrderRequestBody()
+
+            val inventorySuccessResponse = Response(
+                status = StatusResponses.SUCCESS,
+                code = HttpStatus.OK,
+                message = "success response",
+                data = InventoryResponse(
+                    id = 1,
+                    skuCode = "test_code",
+                    quantity = 2
+                )
+            )
+
+            val exception = RuntimeException("exception while saving order placed event data")
+
+            every { mockOrderRepository.save(any(Order::class)) } returns order
+            every { mockOutboxRepository.save(any(Outbox::class)) } throws exception
+            every {
+                mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
+            } returns inventorySuccessResponse
+
+            val actualException = shouldThrow<RuntimeException> {
+                orderService.createOrder(orderRequestBody)
+            }
+
+            actualException.message shouldBe exception.message
+
+            verify {
+                mockOrderRepository.save(any(Order::class))
+                mockInventoryServiceClient.getInventoryBySkuCode(order.skuCode)
+            }
+        }
     }
 
     describe("Create New Order - Circuit Breaker & Retry - annotations") {
@@ -180,6 +246,13 @@ internal class OrderServiceTest : DescribeSpec({
             retryAnnotation shouldNotBe null
             retryAnnotation.name shouldBe CIRCUIT_BREAKER_INVENTORY_CLIENT
             retryAnnotation.fallbackMethod shouldBe "handleCreateOrderRetryFailure"
+        }
+
+        it("should have Transactional annotation to the createOrder method") {
+            val methodAnnotations = orderService.getMethodAnnotations("createOrder")
+            val transactionalAnnotation = methodAnnotations.firstOrNull { it is Transactional } as Transactional
+
+            transactionalAnnotation shouldNotBe null
         }
     }
 
