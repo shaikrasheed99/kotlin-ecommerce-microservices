@@ -56,7 +56,7 @@ class OrderService(
         return order
     }
 
-    private fun buildOutbox(eventPayload: String) = Outbox (
+    private fun buildOutbox(eventPayload: String) = Outbox(
         eventId = UUID.randomUUID(),
         eventType = ORDER_PLACED_EVENT_TYPE,
         eventPayload = eventPayload,

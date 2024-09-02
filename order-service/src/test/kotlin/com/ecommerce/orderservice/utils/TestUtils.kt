@@ -47,7 +47,7 @@ object TestUtils {
         eventType: String = "test_type",
         eventPayload: String = "test_payload",
         topic: String = "test_topic"
-    ) = Outbox (
+    ) = Outbox(
         eventId = id,
         eventType = eventType,
         eventPayload = eventPayload,
