@@ -1,5 +1,6 @@
 package com.ecommerce.orderservice.utils
 
+import com.ecommerce.orderservice.models.Outbox
 import io.cloudevents.CloudEvent
 import io.cloudevents.core.builder.CloudEventBuilder
 import io.cloudevents.core.provider.EventFormatProvider
@@ -10,30 +11,28 @@ import org.springframework.http.MediaType.APPLICATION_JSON
 import java.net.URI
 import java.nio.charset.StandardCharsets
 import java.time.OffsetDateTime
-import java.util.UUID
 
-private const val ORDER_PLACED_EVENT_TYPE = "order_placed"
 private const val ORDER_SERVICE = "order_service"
 
 object CloudEventProcessor {
-    fun createAndSerializeCloudEvent(event: String): String {
+    fun createAndSerializeCloudEvent(event: Outbox): String {
         val cloudEvent = createCloudEvent(event)
         val message = serializeCloudEvent(cloudEvent)
 
         return message
     }
 
-    private fun createCloudEvent(event: String): CloudEvent {
+    private fun createCloudEvent(event: Outbox): CloudEvent {
         logger.info("Creating cloud event for event: $event")
 
         val currentTime = OffsetDateTime.now()
 
         return CloudEventBuilder.v1()
-            .withId(UUID.randomUUID().toString())
-            .withType(ORDER_PLACED_EVENT_TYPE)
+            .withId(event.eventId.toString())
+            .withType(event.eventType)
             .withTime(currentTime)
             .withSource(URI.create(ORDER_SERVICE))
-            .withData(APPLICATION_JSON.toString(), event.toByteArray())
+            .withData(APPLICATION_JSON.toString(), event.eventPayload.toByteArray())
             .build()
     }
 
