@@ -3,6 +3,7 @@ package com.ecommerce.orderservice.utils
 import com.ecommerce.orderservice.constants.StatusResponses
 import com.ecommerce.orderservice.dto.requests.OrderRequestBody
 import com.ecommerce.orderservice.dto.responses.Response
+import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.models.Order
 import com.ecommerce.orderservice.models.Outbox
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -75,6 +76,11 @@ object TestUtils {
             quantity = quantity
         )
     )
+
+    fun convertEventToJsonString(orderPlacedEvent: OrderPlacedEvent): String {
+        val mapper = ObjectMapper()
+        return mapper.writeValueAsString(orderPlacedEvent)
+    }
 
     fun assertCommonFields(
         response: Response?,

@@ -2,6 +2,8 @@ package com.ecommerce.orderservice.unittests.producer
 
 import com.ecommerce.orderservice.events.OrderPlacedEvent
 import com.ecommerce.orderservice.producer.EventPublisher
+import com.ecommerce.orderservice.utils.TestUtils.convertEventToJsonString
+import com.ecommerce.orderservice.utils.TestUtils.createOutbox
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.DescribeSpec
@@ -19,6 +21,7 @@ import java.util.UUID
 import java.util.concurrent.CompletableFuture
 
 private const val TEST_KAFKA_TOPIC = "testTopic"
+const val TEST_ORDER_PLACED_EVENT_TYPE = "test_order_placed"
 
 class EventPublisherTest : DescribeSpec({
     val mockKafkaTemplate = mockk<KafkaTemplate<String, String>>()
@@ -37,6 +40,13 @@ class EventPublisherTest : DescribeSpec({
     describe("Send Order Placed Event") {
         it("should be able to send order placed event") {
             val orderPlacedEvent = createOrderPlacedEvent()
+            val eventId = UUID.randomUUID()
+            val outbox = createOutbox(
+                id = eventId,
+                eventType = TEST_ORDER_PLACED_EVENT_TYPE,
+                eventPayload = convertEventToJsonString(orderPlacedEvent),
+                topic = TEST_KAFKA_TOPIC
+            )
 
             val topicSlot = slot<String>()
             val messageSlot = slot<String>()
@@ -45,9 +55,11 @@ class EventPublisherTest : DescribeSpec({
                 mockKafkaTemplate.send(capture(topicSlot), capture(messageSlot))
             } returns CompletableFuture<SendResult<String, String>>()
 
-            eventPublisher.publish(TEST_KAFKA_TOPIC, orderPlacedEvent)
+            eventPublisher.publish(outbox)
 
             topicSlot.captured shouldBe TEST_KAFKA_TOPIC
+            messageSlot.captured.shouldContainJsonKeyValue("$.id", eventId.toString())
+            messageSlot.captured.shouldContainJsonKeyValue("$.type", TEST_ORDER_PLACED_EVENT_TYPE)
             messageSlot.captured.shouldContainJsonKeyValue("$.data.orderId", orderPlacedEvent.orderId.toString())
             messageSlot.captured.shouldContainJsonKeyValue("$.data.skuCode", orderPlacedEvent.skuCode)
             messageSlot.captured.shouldContainJsonKeyValue("$.data.quantity", orderPlacedEvent.quantity)
@@ -63,6 +75,13 @@ class EventPublisherTest : DescribeSpec({
     describe("Send Order Placed Event - Error scenarios") {
         it("should be able to throw exception when kafka templates throws exception") {
             val orderPlacedEvent = createOrderPlacedEvent()
+            val eventId = UUID.randomUUID()
+            val outbox = createOutbox(
+                id = eventId,
+                eventType = TEST_ORDER_PLACED_EVENT_TYPE,
+                eventPayload = convertEventToJsonString(orderPlacedEvent),
+                topic = TEST_KAFKA_TOPIC
+            )
 
             val exception = Exception("exception from kafka template")
 
@@ -71,7 +90,7 @@ class EventPublisherTest : DescribeSpec({
             } throws exception
 
             shouldThrow<Exception> {
-                eventPublisher.publish(TEST_KAFKA_TOPIC, orderPlacedEvent)
+                eventPublisher.publish(outbox)
             }
 
             verify {
