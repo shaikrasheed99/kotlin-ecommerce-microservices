@@ -12,14 +12,21 @@ import java.nio.charset.StandardCharsets
 class NotificationTableSchemaCreation(private val jdbcTemplate: JdbcTemplate) : CommandLineRunner {
     override fun run(vararg args: String?) {
         val notificationsTablePathResource = ClassPathResource("create-notifications-table.sql")
+        val inboxTablePathResource = ClassPathResource("create-inbox-table.sql")
 
         val notificationsTableInputStreamReader = InputStreamReader(
             notificationsTablePathResource.inputStream,
             StandardCharsets.UTF_8
         )
+        val inboxTableInputStreamReader = InputStreamReader(
+            inboxTablePathResource.inputStream,
+            StandardCharsets.UTF_8
+        )
 
         val notificationsTableQuery = FileCopyUtils.copyToString(notificationsTableInputStreamReader)
+        val inboxTableQuery = FileCopyUtils.copyToString(inboxTableInputStreamReader)
 
         jdbcTemplate.execute(notificationsTableQuery)
+        jdbcTemplate.execute(inboxTableQuery)
     }
 }
