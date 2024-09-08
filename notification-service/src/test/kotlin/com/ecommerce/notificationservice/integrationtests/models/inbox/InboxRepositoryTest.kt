@@ -2,7 +2,7 @@ package com.ecommerce.notificationservice.integrationtests.models.inbox
 
 import com.ecommerce.notificationservice.models.inbox.InboxRepository
 import com.ecommerce.notificationservice.utils.TestUtils.createInbox
-import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
+import com.ecommerce.notificationservice.utils.TestUtils.getPostgreSQLContainerWithTableScript
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
-import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.util.UUID
@@ -25,10 +24,9 @@ class InboxRepositoryTest {
     companion object {
         @Container
         @ServiceConnection
-        val postgreSQLContainer: PostgreSQLContainer<*>? =
-            PostgreSQLContainer("postgres:16-alpine")
-                .withDatabaseName("notifications")
-                .withInitScript("create-inbox-table.sql")
+        val postgreSQLContainer = getPostgreSQLContainerWithTableScript(
+            script = "create-inbox-table.sql"
+        )
     }
 
     @AfterEach

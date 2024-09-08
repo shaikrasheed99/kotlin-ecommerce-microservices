@@ -2,7 +2,7 @@ package com.ecommerce.notificationservice.integrationtests.models.notification
 
 import com.ecommerce.notificationservice.models.notification.NotificationRepository
 import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
-import com.ecommerce.notificationservice.utils.TestUtils.getPostgreSQLContainer
+import com.ecommerce.notificationservice.utils.TestUtils.getPostgreSQLContainerWithTableScript
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
@@ -23,7 +23,9 @@ class NotificationRepositoryTest {
     companion object {
         @Container
         @ServiceConnection
-        val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainerWithTableScript(
+            script = "create-notifications-table.sql"
+        )
     }
 
     @AfterEach

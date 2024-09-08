@@ -42,10 +42,10 @@ object TestUtils {
         topic = topic
     )
 
-    fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
+    fun getPostgreSQLContainerWithTableScript(script: String): PostgreSQLContainer<*>? =
         PostgreSQLContainer("postgres:16-alpine")
             .withDatabaseName("notifications")
-            .withInitScript("create-notifications-table.sql")
+            .withInitScript(script)
 
     fun MockMvcResultMatchersDsl.assertCommonResponseBody(
         status: StatusResponses,
