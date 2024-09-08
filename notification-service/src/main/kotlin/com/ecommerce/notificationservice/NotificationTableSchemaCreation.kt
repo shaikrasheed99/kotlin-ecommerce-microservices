@@ -11,22 +11,22 @@ import java.nio.charset.StandardCharsets
 @Component
 class NotificationTableSchemaCreation(private val jdbcTemplate: JdbcTemplate) : CommandLineRunner {
     override fun run(vararg args: String?) {
-        val notificationsTablePathResource = ClassPathResource("create-notifications-table.sql")
-        val inboxTablePathResource = ClassPathResource("create-inbox-table.sql")
-
-        val notificationsTableInputStreamReader = InputStreamReader(
-            notificationsTablePathResource.inputStream,
-            StandardCharsets.UTF_8
-        )
-        val inboxTableInputStreamReader = InputStreamReader(
-            inboxTablePathResource.inputStream,
-            StandardCharsets.UTF_8
+        val scrips = listOf(
+            "create-notifications-table.sql",
+            "create-inbox-table.sql"
         )
 
-        val notificationsTableQuery = FileCopyUtils.copyToString(notificationsTableInputStreamReader)
-        val inboxTableQuery = FileCopyUtils.copyToString(inboxTableInputStreamReader)
+        scrips.forEach {
+            val tablePathResource = ClassPathResource(it)
 
-        jdbcTemplate.execute(notificationsTableQuery)
-        jdbcTemplate.execute(inboxTableQuery)
+            val tableInputStreamReader = InputStreamReader(
+                tablePathResource.inputStream,
+                StandardCharsets.UTF_8
+            )
+
+            val tableQuery = FileCopyUtils.copyToString(tableInputStreamReader)
+
+            jdbcTemplate.execute(tableQuery)
+        }
     }
 }
