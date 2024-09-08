@@ -6,7 +6,7 @@ import com.ecommerce.inventoryservice.models.inventory.Inventory
 import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
 import com.ecommerce.inventoryservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
-import com.ecommerce.inventoryservice.utils.TestUtils.getPostgreSQLContainer
+import com.ecommerce.inventoryservice.utils.TestUtils.getPostgreSQLContainerWithTableScript
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -35,7 +35,9 @@ internal class InventoryControllerIntegrationTest {
     companion object {
         @Container
         @ServiceConnection
-        val postgreSQLContainer = getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainerWithTableScript(
+            script = "create-inventory-table.sql"
+        )
     }
 
     private lateinit var inventory: Inventory

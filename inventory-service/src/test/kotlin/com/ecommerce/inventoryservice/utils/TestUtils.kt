@@ -10,13 +10,40 @@ import io.kotest.matchers.string.shouldContain
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.testcontainers.containers.PostgreSQLContainer
+import org.testcontainers.containers.wait.strategy.Wait
+import java.sql.DriverManager
 import java.util.UUID
 
 object TestUtils {
-    fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
+    fun getPostgreSQLContainerWithTableScript(script: String): PostgreSQLContainer<*>? =
         PostgreSQLContainer("postgres:16-alpine")
             .withDatabaseName("inventory")
-            .withInitScript("create-inventory-table.sql")
+            .withInitScript(script)
+
+    fun getPostgreSQLContainerWithMultipleScripts(vararg scripts: String): PostgreSQLContainer<*>? {
+        val container = PostgreSQLContainer("postgres:16-alpine")
+            .withDatabaseName("inventory")
+            .waitingFor(Wait.forListeningPort())
+
+        container.start()
+
+        container.waitingFor(Wait.forLogMessage(".*database system is ready to accept connections.*\\n", 1))
+
+        val connection = DriverManager.getConnection(
+            container.jdbcUrl,
+            container.username,
+            container.password
+        )
+
+        scripts.forEach { script ->
+            val scriptContent = this::class.java.classLoader.getResource(script)!!.readText()
+            connection.createStatement().use { stmt ->
+                stmt.execute(scriptContent)
+            }
+        }
+
+        return container
+    }
 
     fun createInventory(
         quantity: Int = 10

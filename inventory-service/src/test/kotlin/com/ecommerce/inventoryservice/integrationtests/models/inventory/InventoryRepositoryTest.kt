@@ -1,8 +1,8 @@
 package com.ecommerce.inventoryservice.integrationtests.models.inventory
 
 import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
-import com.ecommerce.inventoryservice.utils.TestUtils
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
+import com.ecommerce.inventoryservice.utils.TestUtils.getPostgreSQLContainerWithTableScript
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.matchers.shouldBe
 import org.junit.jupiter.api.AfterEach
@@ -24,7 +24,9 @@ class InventoryRepositoryTest {
     companion object {
         @Container
         @ServiceConnection
-        val postgreSQLContainer = TestUtils.getPostgreSQLContainer()
+        val postgreSQLContainer = getPostgreSQLContainerWithTableScript(
+            script = "create-inventory-table.sql"
+        )
     }
 
     @AfterEach
