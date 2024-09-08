@@ -3,8 +3,8 @@ package com.ecommerce.notificationservice.consumer
 import com.ecommerce.notificationservice.constants.EventTypes.ORDER_PLACED
 import com.ecommerce.notificationservice.events.EventData
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
-import com.ecommerce.notificationservice.models.Inbox
-import com.ecommerce.notificationservice.models.InboxRepository
+import com.ecommerce.notificationservice.models.inbox.Inbox
+import com.ecommerce.notificationservice.models.inbox.InboxRepository
 import com.ecommerce.notificationservice.services.NotificationService
 import com.ecommerce.notificationservice.utils.CloudEventProcessor.deserializeCloudEvent
 import com.fasterxml.jackson.databind.ObjectMapper

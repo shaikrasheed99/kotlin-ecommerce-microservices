@@ -1,4 +1,4 @@
-package com.ecommerce.notificationservice.models
+package com.ecommerce.notificationservice.models.inbox
 
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.Optional

@@ -3,8 +3,8 @@ package com.ecommerce.notificationservice.unittests.consumer
 import com.ecommerce.notificationservice.constants.EventTypes
 import com.ecommerce.notificationservice.consumer.EventConsumer
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
-import com.ecommerce.notificationservice.models.Inbox
-import com.ecommerce.notificationservice.models.InboxRepository
+import com.ecommerce.notificationservice.models.inbox.Inbox
+import com.ecommerce.notificationservice.models.inbox.InboxRepository
 import com.ecommerce.notificationservice.services.NotificationService
 import com.ecommerce.notificationservice.utils.EmbeddedKafkaProducerTestUtils.createAndSerializeCloudEvent
 import com.ecommerce.notificationservice.utils.EntityUtils.getMethodAnnotations

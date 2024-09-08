@@ -2,8 +2,8 @@ package com.ecommerce.notificationservice.utils
 
 import com.ecommerce.notificationservice.constants.StatusResponses
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
-import com.ecommerce.notificationservice.models.Inbox
 import com.ecommerce.notificationservice.models.Notification
+import com.ecommerce.notificationservice.models.inbox.Inbox
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
 import org.testcontainers.containers.PostgreSQLContainer

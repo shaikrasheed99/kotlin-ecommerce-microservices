@@ -1,6 +1,6 @@
-package com.ecommerce.notificationservice.unittests.models
+package com.ecommerce.notificationservice.unittests.models.inbox
 
-import com.ecommerce.notificationservice.models.Inbox
+import com.ecommerce.notificationservice.models.inbox.Inbox
 import com.ecommerce.notificationservice.utils.EntityUtils.getAttributeAnnotations
 import com.ecommerce.notificationservice.utils.TestUtils.createInbox
 import io.kotest.core.spec.style.DescribeSpec
