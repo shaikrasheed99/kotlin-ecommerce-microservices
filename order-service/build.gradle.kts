@@ -37,6 +37,7 @@ val kotestJsonVersion = "5.9.1"
 val resilience4jVersion = "2.2.0"
 val testcontainersMockserverVersion = "1.19.8"
 val mockserverNettyVersion = "5.15.0"
+val shedLockVersion = "5.16.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -58,6 +59,9 @@ dependencies {
 
     implementation("org.springframework.kafka:spring-kafka")
     implementation("io.cloudevents:cloudevents-json-jackson:$cloudEventsJsonVersion")
+
+    implementation("net.javacrumbs.shedlock:shedlock-spring:$shedLockVersion")
+    implementation("net.javacrumbs.shedlock:shedlock-provider-jdbc-template:$shedLockVersion")
 
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
 
