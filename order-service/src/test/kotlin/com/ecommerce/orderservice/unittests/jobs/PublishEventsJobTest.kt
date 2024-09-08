@@ -14,6 +14,8 @@ import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.unmockkAll
 import io.mockk.verify
+import net.javacrumbs.shedlock.core.LockAssert.TestHelper.makeAllAssertsPass
+import net.javacrumbs.shedlock.spring.annotation.SchedulerLock
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 
@@ -38,6 +40,7 @@ class PublishEventsJobTest : DescribeSpec({
     describe("PublishEventsJob - publish") {
         it("should execute the job and call the publish method") {
             every { mockPublishEventsService.publish() } just runs
+            makeAllAssertsPass(true)
 
             publishEventsJob.publish()
 
@@ -51,6 +54,7 @@ class PublishEventsJobTest : DescribeSpec({
         it("should throw exception when error occurred while publishing") {
             val exception = RuntimeException("exception while publishing")
             every { mockPublishEventsService.publish() } throws exception
+            makeAllAssertsPass(true)
 
             shouldThrow<RuntimeException> { publishEventsJob.publish() }
 
@@ -67,6 +71,14 @@ class PublishEventsJobTest : DescribeSpec({
 
             scheduledAnnotation shouldNotBe null
             scheduledAnnotation.cron shouldBe "\${jobs.publish-events.cron}"
+        }
+
+        it("should have SchedulerLock annotation to the publish method") {
+            val annotations = publishEventsJob.getMethodAnnotations("publish")
+            val schedulerLockAnnotation = annotations.firstOrNull { it is SchedulerLock } as SchedulerLock
+
+            schedulerLockAnnotation shouldNotBe null
+            schedulerLockAnnotation.name shouldBe "publish-events-job-lock"
         }
     }
 

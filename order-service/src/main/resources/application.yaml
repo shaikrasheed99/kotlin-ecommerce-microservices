@@ -50,3 +50,5 @@ management:
     web:
       exposure:
         include: health
+
+logging.level.net.javacrumbs.shedlock: DEBUG
