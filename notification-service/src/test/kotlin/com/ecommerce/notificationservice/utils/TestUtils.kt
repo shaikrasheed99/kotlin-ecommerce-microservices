@@ -2,6 +2,7 @@ package com.ecommerce.notificationservice.utils
 
 import com.ecommerce.notificationservice.constants.StatusResponses
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
+import com.ecommerce.notificationservice.models.Inbox
 import com.ecommerce.notificationservice.models.Notification
 import org.springframework.http.HttpStatus
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
@@ -27,6 +28,18 @@ object TestUtils {
     fun createTestOrderPlacedEvent(): OrderPlacedEvent = OrderPlacedEvent(
         orderId = UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10"),
         skuCode = "test_skuCode"
+    )
+
+    fun createInbox(
+        id: UUID = UUID.randomUUID(),
+        eventId: UUID = UUID.randomUUID(),
+        eventType: String = "test_type",
+        topic: String = "test_topic"
+    ) = Inbox(
+        id = id,
+        eventId = eventId,
+        eventType = eventType,
+        topic = topic
     )
 
     fun getPostgreSQLContainer(): PostgreSQLContainer<*>? =
