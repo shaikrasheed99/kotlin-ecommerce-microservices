@@ -1,8 +1,8 @@
 package com.ecommerce.notificationservice.services
 
 import com.ecommerce.notificationservice.events.OrderPlacedEvent
-import com.ecommerce.notificationservice.models.Notification
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.models.notification.Notification
+import com.ecommerce.notificationservice.models.notification.NotificationRepository
 import org.springframework.stereotype.Service
 import java.sql.Timestamp
 import java.time.Instant

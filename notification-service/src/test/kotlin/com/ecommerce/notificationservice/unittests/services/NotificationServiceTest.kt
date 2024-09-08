@@ -1,7 +1,7 @@
 package com.ecommerce.notificationservice.unittests.services
 
-import com.ecommerce.notificationservice.models.Notification
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.models.notification.Notification
+import com.ecommerce.notificationservice.models.notification.NotificationRepository
 import com.ecommerce.notificationservice.services.NotificationService
 import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
 import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent

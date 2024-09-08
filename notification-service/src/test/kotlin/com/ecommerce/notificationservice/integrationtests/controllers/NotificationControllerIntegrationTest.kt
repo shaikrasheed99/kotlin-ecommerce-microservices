@@ -2,7 +2,7 @@ package com.ecommerce.notificationservice.integrationtests.controllers
 
 import com.ecommerce.notificationservice.constants.MessageResponses
 import com.ecommerce.notificationservice.constants.StatusResponses
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.models.notification.NotificationRepository
 import com.ecommerce.notificationservice.utils.TestUtils
 import com.ecommerce.notificationservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.notificationservice.utils.TestUtils.getPostgreSQLContainer

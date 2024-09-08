@@ -1,6 +1,6 @@
 package com.ecommerce.notificationservice.integrationtests.models
 
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.models.notification.NotificationRepository
 import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
 import com.ecommerce.notificationservice.utils.TestUtils.getPostgreSQLContainer
 import io.kotest.matchers.shouldBe

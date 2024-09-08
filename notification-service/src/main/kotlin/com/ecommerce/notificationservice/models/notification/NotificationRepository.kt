@@ -1,4 +1,4 @@
-package com.ecommerce.notificationservice.models
+package com.ecommerce.notificationservice.models.notification
 
 import org.springframework.data.jpa.repository.JpaRepository
 import java.util.UUID

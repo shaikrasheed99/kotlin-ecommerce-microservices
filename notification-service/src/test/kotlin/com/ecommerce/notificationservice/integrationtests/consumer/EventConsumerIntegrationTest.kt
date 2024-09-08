@@ -1,6 +1,6 @@
 package com.ecommerce.notificationservice.integrationtests.consumer
 
-import com.ecommerce.notificationservice.models.NotificationRepository
+import com.ecommerce.notificationservice.models.notification.NotificationRepository
 import com.ecommerce.notificationservice.utils.EmbeddedKafkaProducerTestUtils.createTestProducer
 import com.ecommerce.notificationservice.utils.TestUtils.createTestOrderPlacedEvent
 import com.fasterxml.jackson.databind.ObjectMapper

@@ -1,6 +1,6 @@
-package com.ecommerce.notificationservice.unittests.models
+package com.ecommerce.notificationservice.unittests.models.notification
 
-import com.ecommerce.notificationservice.models.Notification
+import com.ecommerce.notificationservice.models.notification.Notification
 import com.ecommerce.notificationservice.utils.EntityUtils.getAttributeAnnotations
 import com.ecommerce.notificationservice.utils.TestUtils.createTestNotification
 import io.kotest.core.spec.style.DescribeSpec

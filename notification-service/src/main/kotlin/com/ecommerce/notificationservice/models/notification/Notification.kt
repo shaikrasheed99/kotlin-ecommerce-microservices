@@ -1,4 +1,4 @@
-package com.ecommerce.notificationservice.models
+package com.ecommerce.notificationservice.models.notification
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
