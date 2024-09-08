@@ -3,6 +3,7 @@ package com.ecommerce.inventoryservice.utils
 import com.ecommerce.inventoryservice.constants.StatusResponses
 import com.ecommerce.inventoryservice.dto.responses.Response
 import com.ecommerce.inventoryservice.events.OrderPlacedEvent
+import com.ecommerce.inventoryservice.models.inbox.Inbox
 import com.ecommerce.inventoryservice.models.inventory.Inventory
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -52,5 +53,17 @@ object TestUtils {
         orderId = UUID.fromString("aaa8a937-0504-4468-823a-04ccd6964d10"),
         skuCode = "test_skuCode",
         quantity = 10
+    )
+
+    fun createInbox(
+        id: UUID = UUID.randomUUID(),
+        eventId: UUID = UUID.randomUUID(),
+        eventType: String = "test_type",
+        topic: String = "test_topic"
+    ) = Inbox(
+        id = id,
+        eventId = eventId,
+        eventType = eventType,
+        topic = topic
     )
 }
