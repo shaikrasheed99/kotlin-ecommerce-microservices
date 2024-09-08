@@ -1,4 +1,4 @@
-package com.ecommerce.inventoryservice.models
+package com.ecommerce.inventoryservice.models.inventory
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.repository.query.Param

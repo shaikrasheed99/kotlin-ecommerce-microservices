@@ -1,6 +1,6 @@
-package com.ecommerce.inventoryservice.unittests.models
+package com.ecommerce.inventoryservice.unittests.models.inventory
 
-import com.ecommerce.inventoryservice.models.Inventory
+import com.ecommerce.inventoryservice.models.inventory.Inventory
 import com.ecommerce.inventoryservice.utils.EntityUtils.getAttributeAnnotations
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
 import io.kotest.core.spec.style.DescribeSpec

@@ -1,8 +1,8 @@
 package com.ecommerce.inventoryservice.unittests.services
 
 import com.ecommerce.inventoryservice.exceptions.InventoryNotFoundException
-import com.ecommerce.inventoryservice.models.Inventory
-import com.ecommerce.inventoryservice.models.InventoryRepository
+import com.ecommerce.inventoryservice.models.inventory.Inventory
+import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
 import com.ecommerce.inventoryservice.services.InventoryService
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
 import io.kotest.assertions.throwables.shouldThrow

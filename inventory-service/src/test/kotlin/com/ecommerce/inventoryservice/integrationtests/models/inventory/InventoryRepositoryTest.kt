@@ -1,6 +1,6 @@
-package com.ecommerce.inventoryservice.integrationtests.models
+package com.ecommerce.inventoryservice.integrationtests.models.inventory
 
-import com.ecommerce.inventoryservice.models.InventoryRepository
+import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
 import com.ecommerce.inventoryservice.utils.TestUtils
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
 import io.kotest.assertions.throwables.shouldNotThrow

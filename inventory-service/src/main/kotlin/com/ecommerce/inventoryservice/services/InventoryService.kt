@@ -2,8 +2,8 @@ package com.ecommerce.inventoryservice.services
 
 import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.exceptions.InventoryNotFoundException
-import com.ecommerce.inventoryservice.models.Inventory
-import com.ecommerce.inventoryservice.models.InventoryRepository
+import com.ecommerce.inventoryservice.models.inventory.Inventory
+import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
 import org.springframework.stereotype.Service
 
 @Service

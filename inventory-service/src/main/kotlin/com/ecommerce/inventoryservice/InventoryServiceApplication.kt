@@ -1,7 +1,7 @@
 package com.ecommerce.inventoryservice
 
-import com.ecommerce.inventoryservice.models.Inventory
-import com.ecommerce.inventoryservice.models.InventoryRepository
+import com.ecommerce.inventoryservice.models.inventory.Inventory
+import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
 import org.slf4j.LoggerFactory
 import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.autoconfigure.SpringBootApplication

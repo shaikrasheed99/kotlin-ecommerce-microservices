@@ -2,8 +2,8 @@ package com.ecommerce.inventoryservice.integrationtests.controllers
 
 import com.ecommerce.inventoryservice.constants.MessageResponses
 import com.ecommerce.inventoryservice.constants.StatusResponses
-import com.ecommerce.inventoryservice.models.Inventory
-import com.ecommerce.inventoryservice.models.InventoryRepository
+import com.ecommerce.inventoryservice.models.inventory.Inventory
+import com.ecommerce.inventoryservice.models.inventory.InventoryRepository
 import com.ecommerce.inventoryservice.utils.TestUtils.assertCommonResponseBody
 import com.ecommerce.inventoryservice.utils.TestUtils.createInventory
 import com.ecommerce.inventoryservice.utils.TestUtils.getPostgreSQLContainer

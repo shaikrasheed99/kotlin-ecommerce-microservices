@@ -1,4 +1,4 @@
-package com.ecommerce.inventoryservice.models
+package com.ecommerce.inventoryservice.models.inventory
 
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue

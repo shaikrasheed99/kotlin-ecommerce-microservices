@@ -3,7 +3,7 @@ package com.ecommerce.inventoryservice.utils
 import com.ecommerce.inventoryservice.constants.StatusResponses
 import com.ecommerce.inventoryservice.dto.responses.Response
 import com.ecommerce.inventoryservice.events.OrderPlacedEvent
-import com.ecommerce.inventoryservice.models.Inventory
+import com.ecommerce.inventoryservice.models.inventory.Inventory
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import org.springframework.http.HttpStatus
