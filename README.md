@@ -8,14 +8,14 @@
 
 In this project, I have implemented several design patterns commonly used in microservices architecture
 
-| Design Pattern               | Tools                                                                                                                                  |
-|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|
-| Service Discovery            | [Spring Cloud Netflix](https://spring.io/projects/spring-cloud-netflix)                                                                |
-| API Gateway                  | [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway)                                                                |
-| Circuit Breaker              | [Resilience4j](https://resilience4j.readme.io/docs)                                                                                    |
-| Distributed Messaging System | [Apache Kafka](https://kafka.apache.org/)                                                                                              |
-| Transactional Outbox Pattern | [Scheduler](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/annotation/Scheduled.html) |
-| Event Inbox Pattern          | [Inbox Database Table](https://softwaremill.com/microservices-101/#inbox-pattern)                                                      |
+| Design Pattern               | Tools                                                                                                                                  | Description                                                                                                      |
+|------------------------------|----------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------|
+| Service Discovery            | [Spring Cloud Netflix](https://spring.io/projects/spring-cloud-netflix)                                                                | Service discovery automatically detects services for communication without relying on hardcoded addresses.       |
+| API Gateway                  | [Spring Cloud Gateway](https://spring.io/projects/spring-cloud-gateway)                                                                | Single entry for managing, routing, and securing requests between clients and services.                          |
+| Circuit Breaker              | [Resilience4j](https://resilience4j.readme.io/docs)                                                                                    | Prevents cascading failures by stopping repeated requests to a failing service and allowing it to recover.       |
+| Distributed Messaging System | [Apache Kafka](https://kafka.apache.org/)                                                                                              | Asynchronous communication between services in microservices environment.                                        |
+| Transactional Outbox Pattern | [Scheduler](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/scheduling/annotation/Scheduled.html) | Resolves the dual write problem by storing messages in an outbox table, ensuring consistency with business data. |
+| Event Inbox Pattern          | [Inbox Database Table](https://softwaremill.com/microservices-101/#inbox-pattern)                                                      | Processes incoming events by storing them in an inbox table, ensuring idempotency and consistency.               |
 
 ## Security Testing Topics
 
