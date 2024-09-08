@@ -40,7 +40,7 @@ class EventConsumer(
             }
 
             inboxRepository.save(buildInbox(cloudEvent, topic))
-        } else if (inbox.isPresent) {
+        } else {
             logger.info("Event with id: ${cloudEvent.id} is already consumed, hence skipping it")
         }
     }
