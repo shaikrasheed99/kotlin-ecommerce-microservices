@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: notification-service-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: notification-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: notification-service
+    spec:
+      containers:
+        - name: notification-service-container
+          image: shaikrasheed99/notification-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8083
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8083
+          env:
+            - name: APP_NAME
+              value: "notification-service"
+            - name: DB_HOST
+              value: "notification-service-db-svc"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: EUREKA_HOST
+              value: "discovery-server-svc"
+            - name: EUREKA_PORT
+              value: "8761"

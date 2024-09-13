@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inventory-service-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: inventory-service
+    spec:
+      containers:
+        - name: inventory-service-container
+          image: shaikrasheed99/inventory-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8084
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8084
+          env:
+            - name: APP_NAME
+              value: "inventory-service"
+            - name: DB_HOST
+              value: "inventory-service-db-svc"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: EUREKA_HOST
+              value: "discovery-server-svc"
+            - name: EUREKA_PORT
+              value: "8761"

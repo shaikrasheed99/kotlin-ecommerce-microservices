@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service-container
+          image: shaikrasheed99/order-service
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+          env:
+            - name: APP_NAME
+              value: "order-service"
+            - name: DB_HOST
+              value: "order-service-db-svc"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              value: "postgres"
+            - name: DB_PASSWORD
+              value: "postgres"
+            - name: EUREKA_HOST
+              value: "discovery-server-svc"
+            - name: EUREKA_PORT
+              value: "8761"
+            - name: INVENTORY_SERVICE_HOST
+              value: "inventory-service-svc"

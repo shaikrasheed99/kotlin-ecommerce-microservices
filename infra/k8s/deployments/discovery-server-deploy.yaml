@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discovery-server-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discovery-server
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  template:
+    metadata:
+      labels:
+        app: discovery-server
+    spec:
+      containers:
+        - name: discovery-server-container
+          image: shaikrasheed99/discovery-server
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8761
