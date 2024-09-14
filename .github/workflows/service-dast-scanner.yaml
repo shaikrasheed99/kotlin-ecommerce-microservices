@@ -63,9 +63,6 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
-      - name: Build the application
-        run: cd ${{ inputs.path }} && ./gradlew clean build
-
       - name: Start the application
         run: cd ${{ inputs.path }} && ./gradlew bootRun &
         env:
