@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'order-service/**'
+      - '.github/workflows/order-service-ci.yaml'
   pull_request:
     paths:
       - 'order-service/**'
+      - '.github/workflows/order-service-ci.yaml'
   workflow_dispatch:
 
 jobs:
