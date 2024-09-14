@@ -24,19 +24,19 @@ jobs:
 
   vulnerability-scanner:
     uses: ./.github/workflows/service-vulnerability-scanner.yaml
-    needs: [ build ]
+    needs: [ build, tests ]
     with:
       path: 'order-service'
 
   image-vulnerability-scanner:
     uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
-    needs: [ build ]
+    needs: [ build, tests ]
     with:
       path: 'order-service'
 
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
-    needs: [ build ]
+    needs: [ build, tests ]
     with:
       path: 'order-service'
       port: 8081
