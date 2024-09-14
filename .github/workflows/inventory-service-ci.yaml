@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'inventory-service/**'
+      - '.github/workflows/inventory-service-ci.yaml'
   pull_request:
     paths:
       - 'inventory-service/**'
+      - '.github/workflows/inventory-service-ci.yaml'
   workflow_dispatch:
 
 jobs:
