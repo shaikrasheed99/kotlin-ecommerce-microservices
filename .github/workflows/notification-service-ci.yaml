@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'notification-service/**'
+      - '.github/workflows/notification-service-ci.yaml'
   pull_request:
     paths:
       - 'notification-service/**'
+      - '.github/workflows/notification-service-ci.yaml'
   workflow_dispatch:
 
 jobs:
