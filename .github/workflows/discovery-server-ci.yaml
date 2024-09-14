@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'discovery-server/**'
+      - '.github/workflows/discovery-server-ci.yaml'
   pull_request:
     paths:
       - 'discovery-server/**'
+      - '.github/workflows/discovery-server-ci.yaml'
   workflow_dispatch:
 
 jobs:
