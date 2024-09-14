@@ -19,16 +19,19 @@ jobs:
 
   vulnerability-scanner:
     uses: ./.github/workflows/service-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'api-gateway'
 
   image-vulnerability-scanner:
     uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'api-gateway'
 
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
+    needs: [ build ]
     with:
       path: 'api-gateway'
       port: 8080
