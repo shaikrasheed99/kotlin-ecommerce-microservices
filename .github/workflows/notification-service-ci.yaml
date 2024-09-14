@@ -24,16 +24,19 @@ jobs:
 
   vulnerability-scanner:
     uses: ./.github/workflows/service-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'notification-service'
 
   image-vulnerability-scanner:
     uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'notification-service'
 
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
+    needs: [ build ]
     with:
       path: 'notification-service'
       port: 8083

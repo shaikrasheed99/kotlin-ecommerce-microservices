@@ -19,16 +19,19 @@ jobs:
 
   vulnerability-scanner:
     uses: ./.github/workflows/service-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'discovery-server'
 
   image-vulnerability-scanner:
     uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'discovery-server'
 
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
+    needs: [ build ]
     with:
       path: 'discovery-server'
       port: 8761

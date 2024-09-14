@@ -24,16 +24,19 @@ jobs:
 
   vulnerability-scanner:
     uses: ./.github/workflows/service-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'inventory-service'
 
   image-vulnerability-scanner:
     uses: ./.github/workflows/service-image-vulnerability-scanner.yaml
+    needs: [ build ]
     with:
       path: 'inventory-service'
 
   dast-scanner:
     uses: ./.github/workflows/service-dast-scanner.yaml
+    needs: [ build ]
     with:
       path: 'inventory-service'
       port: 8084
