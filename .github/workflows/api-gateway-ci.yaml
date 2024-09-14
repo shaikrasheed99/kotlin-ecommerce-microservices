@@ -6,9 +6,11 @@ on:
       - main
     paths:
       - 'api-gateway/**'
+      - '.github/workflows/api-gateway-ci.yaml'
   pull_request:
     paths:
       - 'api-gateway/**'
+      - '.github/workflows/api-gateway-ci.yaml'
   workflow_dispatch:
 
 jobs:
