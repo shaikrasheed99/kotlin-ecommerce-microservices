@@ -26,6 +26,7 @@ I have implemented below security testing automation pipelines
 |--------------------------------------|-----------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
 | Static Application Security Testing  | [OWASP dependency-check](https://jeremylong.github.io/DependencyCheck/index.html) | [Service Vulnerability Scanner](.github/workflows/service-vulnerability-scanner.yaml)      | 
 | Static Application Security Testing  | [Trivy Docker Image Scanner](https://trivy.dev/)                                  | [Service Docker Image Scanner](.github/workflows/service-image-vulnerability-scanner.yaml) | 
+| Static Application Security Testing  | [Kubescape](https://github.com/marketplace/actions/kubescape)                     | [Kubernetes Security Scan](.github/workflows/kubernetes-security-scan.yaml)                | 
 | Dynamic Application Security Testing | [OWASP ZAP Scanner](https://www.zaproxy.org/)                                     | [Service DAST Scanner](.github/workflows/service-dast-scanner.yaml)                        | 
 
 ## Kubernetes Architecture Diagram
