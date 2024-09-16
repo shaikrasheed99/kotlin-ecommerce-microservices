@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: inventory-service-svc
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-    - nodePort: 30004
-      targetPort: 8084
+    - targetPort: 8084
       port: 8084
       protocol: TCP
   selector:

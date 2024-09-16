@@ -3,10 +3,9 @@ kind: Service
 metadata:
   name: notification-service-svc
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
-    - nodePort: 30003
-      targetPort: 8083
+    - targetPort: 8083
       port: 8083
       protocol: TCP
   selector:
