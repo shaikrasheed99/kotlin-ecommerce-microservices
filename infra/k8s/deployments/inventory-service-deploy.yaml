@@ -27,8 +27,8 @@ spec:
               path: /actuator/health
               port: 8084
           env:
-            - name: APP_NAME
-              value: "inventory-service"
+            - name: SPRING_PROFILES_ACTIVE
+              value: "kubernetes"
             - name: DB_HOST
               value: "inventory-service-db-svc"
             - name: DB_PORT
@@ -37,7 +37,5 @@ spec:
               value: "postgres"
             - name: DB_PASSWORD
               value: "postgres"
-            - name: EUREKA_HOST
-              value: "discovery-server-svc"
-            - name: EUREKA_PORT
-              value: "8761"
+            - name: KAFKA_BROKER_URL
+              value: "kafka-svc:9092"
