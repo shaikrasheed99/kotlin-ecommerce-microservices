@@ -66,6 +66,7 @@ jobs:
       - name: Start the application
         run: cd ${{ inputs.path }} && ./gradlew bootRun &
         env:
+          SPRING_PROFILES_ACTIVE: github-ci-cd
           DB_HOST: localhost
           DB_PORT: 5432
           DB_USERNAME: postgres
