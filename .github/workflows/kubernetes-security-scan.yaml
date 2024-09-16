@@ -1,0 +1,37 @@
+name: Kubernetes Security Scan
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'k8s/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'k8s/**'
+  workflow_dispatch:
+
+jobs:
+  kubernetes-security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout to repo
+        uses: actions/checkout@v4
+
+      - name: Run Kubescape scan on Deployments
+        uses: kubescape/github-action@main
+        with:
+          files: "k8s/deployments/*.yaml"
+          format: "json"
+          outputFile: "dp-res.json"
+          severityThreshold: "high"
+          verbose: true
+        continue-on-error: true
+
+      - name: Publish Deployments Kubescape scan results
+        uses: actions/upload-artifact@v4
+        with:
+          name: Deployment Results
+          path: dp-res.json
