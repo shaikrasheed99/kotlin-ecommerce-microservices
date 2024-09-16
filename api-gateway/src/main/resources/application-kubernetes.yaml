@@ -1,0 +1,29 @@
+spring.config.activate.on-profile: kubernetes
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: order-service-route
+          uri: http://${ORDER_SERVICE_HOST}:${ORDER_SERVICE_PORT}
+          predicates:
+            - Path=/api/order/**
+          filters:
+            - RewritePath=/api/order/(?<remaining>.*), /$\{remaining}
+
+        - id: inventory-service-route
+          uri: http://${INVENTORY_SERVICE_HOST}:${INVENTORY_SERVICE_PORT}
+          predicates:
+            - Path=/api/inventory/**
+          filters:
+            - RewritePath=/api/inventory/(?<remaining>.*), /$\{remaining}
+
+        - id: notification-service-route
+          uri: http://${NOTIFICATION_SERVICE_HOST}:${NOTIFICATION_SERVICE_PORT}
+          predicates:
+            - Path=/api/notification/**
+          filters:
+            - RewritePath=/api/notification/(?<remaining>.*), /$\{remaining}
+
+eureka.client.enabled: false
+spring.cloud.loadbalancer.enabled: false
