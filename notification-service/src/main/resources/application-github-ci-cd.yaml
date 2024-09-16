@@ -1,0 +1,13 @@
+spring.config.activate.on-profile: github-ci-cd
+
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/notifications
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  kafka:
+    consumer:
+      bootstrap-servers: ${KAFKA_BROKER_URL}
+
+eureka.client.enabled: false
+spring.cloud.loadbalancer.enabled: false
