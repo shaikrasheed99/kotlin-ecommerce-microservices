@@ -37,9 +37,15 @@ spec:
             - name: DB_PORT
               value: "5432"
             - name: DB_USERNAME
-              value: "postgres"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: POSTGRES_USER
             - name: DB_PASSWORD
-              value: "postgres"
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: POSTGRES_PASSWORD
             - name: INVENTORY_SERVICE_HOST
               valueFrom:
                 configMapKeyRef:
