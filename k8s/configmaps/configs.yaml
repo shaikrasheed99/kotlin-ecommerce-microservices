@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configs
+data:
+  SPRING_PROFILES_ACTIVE: "kubernetes"
+  ORDER_SERVICE_HOST: "order-service-svc"
+  INVENTORY_SERVICE_HOST: "inventory-service-svc"
+  NOTIFICATION_SERVICE_HOST: "notification-service-svc"
+  KAFKA_BROKER_URL: "kafka-svc:9092"
