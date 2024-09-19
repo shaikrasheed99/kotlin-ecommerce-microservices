@@ -28,16 +28,28 @@ spec:
               port: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: "kubernetes"
+              valueFrom:
+                configMapKeyRef:
+                  name: configs
+                  key: SPRING_PROFILES_ACTIVE
             - name: ORDER_SERVICE_HOST
-              value: "order-service-svc"
+              valueFrom:
+                configMapKeyRef:
+                  name: configs
+                  key: ORDER_SERVICE_HOST
             - name: ORDER_SERVICE_PORT
               value: "8081"
             - name: INVENTORY_SERVICE_HOST
-              value: "inventory-service-svc"
+              valueFrom:
+                configMapKeyRef:
+                  name: configs
+                  key: INVENTORY_SERVICE_HOST
             - name: INVENTORY_SERVICE_PORT
               value: "8084"
             - name: NOTIFICATION_SERVICE_HOST
-              value: "notification-service-svc"
+              valueFrom:
+                configMapKeyRef:
+                  name: configs
+                  key: NOTIFICATION_SERVICE_HOST
             - name: NOTIFICATION_SERVICE_PORT
               value: "8083"

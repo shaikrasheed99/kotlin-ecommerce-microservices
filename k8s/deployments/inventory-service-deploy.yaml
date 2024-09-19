@@ -28,7 +28,10 @@ spec:
               port: 8084
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: "kubernetes"
+              valueFrom:
+                configMapKeyRef:
+                  name: configs
+                  key: SPRING_PROFILES_ACTIVE
             - name: DB_HOST
               value: "inventory-service-db-svc"
             - name: DB_PORT
@@ -38,4 +41,7 @@ spec:
             - name: DB_PASSWORD
               value: "postgres"
             - name: KAFKA_BROKER_URL
-              value: "kafka-svc:9092"
+              valueFrom:
+                configMapKeyRef:
+                  name: configs
+                  key: KAFKA_BROKER_URL
