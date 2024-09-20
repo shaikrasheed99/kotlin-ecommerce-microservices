@@ -32,6 +32,9 @@ kubectl apply -f config-maps/.
 # Apply Secrets
 kubectl apply -f secrets/.
 
+# Apply Network Policies
+kubectl apply -f network-policies/.
+
 # Apply all Deployments
 kubectl apply -f deployments/databases/.
 kubectl apply -f deployments/tools/.
