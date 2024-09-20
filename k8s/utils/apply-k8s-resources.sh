@@ -27,7 +27,7 @@ kubectl apply -f persistent-volumes/.
 kubectl apply -f persistent-volume-claims/.
 
 # Apply ConfigMap
-kubectl apply -f configmaps/.
+kubectl apply -f config-maps/.
 
 # Apply Secrets
 kubectl apply -f secrets/.
