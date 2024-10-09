@@ -26,6 +26,10 @@ spec:
             httpGet:
               path: /actuator/health
               port: 8084
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8084
           env:
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
