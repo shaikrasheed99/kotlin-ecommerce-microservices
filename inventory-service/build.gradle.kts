@@ -6,7 +6,7 @@ plugins {
 	id("org.springframework.boot") version "3.3.1"
 	id("io.spring.dependency-management") version "1.1.6"
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
-	id("org.owasp.dependencycheck") version "10.0.3"
+	id("org.owasp.dependencycheck") version "11.1.0"
 
 	kotlin("jvm") version "2.0.0"
 	kotlin("plugin.spring") version "2.0.0"
