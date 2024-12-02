@@ -8,7 +8,7 @@ plugins {
 	id("io.gitlab.arturbosch.detekt") version "1.23.6"
 	id("org.owasp.dependencycheck") version "10.0.3"
 
-	kotlin("jvm") version "2.0.0"
+	kotlin("jvm") version "2.1.0"
 	kotlin("plugin.spring") version "2.0.0"
 	kotlin("plugin.jpa") version "2.0.0"
 	jacoco
