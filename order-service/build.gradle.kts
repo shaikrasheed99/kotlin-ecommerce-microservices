@@ -27,7 +27,7 @@ repositories {
 }
 
 val kotlinXJsonVersion = "1.7.1"
-val eurekaClientVersion = "4.1.3"
+val eurekaClientVersion = "4.2.0"
 val cloudEventsJsonVersion = "4.0.1"
 val detektVersion = "1.23.6"
 val mockkVersion = "1.13.11"
