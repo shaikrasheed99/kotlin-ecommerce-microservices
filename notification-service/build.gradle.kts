@@ -34,6 +34,7 @@ val kotestJunit5Version = "5.9.1"
 val kotestSpringVersion = "1.3.0"
 val kotestJsonVersion = "5.9.1"
 val awaitilityVersion = "4.2.1"
+val kafkaVersion = "3.3.0"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -45,7 +46,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.core:jackson-databind")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
-	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.kafka:spring-kafka:$kafkaVersion")
 	implementation("io.cloudevents:cloudevents-json-jackson:$cloudEventsJsonVersion")
 
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$eurekaClientVersion")
@@ -62,7 +63,7 @@ dependencies {
 	testImplementation("io.kotest:kotest-assertions-json:$kotestJsonVersion")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
-	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.springframework.kafka:spring-kafka-test:$kafkaVersion")
 
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
 	testImplementation("org.testcontainers:junit-jupiter")
