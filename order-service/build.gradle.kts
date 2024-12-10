@@ -197,6 +197,14 @@ configurations.matching { it.name == "detekt" }.all {
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency {
+        if (requested.group == "io.projectreactor.netty") {
+            useVersion("1.2.0")
+        }
+    }
+}
+
 springBoot {
     buildInfo()
 }
