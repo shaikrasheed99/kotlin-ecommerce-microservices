@@ -33,6 +33,7 @@ val mockkVersion = "1.13.11"
 val kotestJunit5Version = "5.9.1"
 val kotestSpringVersion = "1.3.0"
 val kotestJsonVersion = "5.9.1"
+val kafkaVersion = "3.3.0"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -44,7 +45,7 @@ dependencies {
 	implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinXJsonVersion")
 	implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$eurekaClientVersion")
 
-	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.kafka:spring-kafka:$kafkaVersion")
 	implementation("io.cloudevents:cloudevents-json-jackson:$cloudEventsJsonVersion")
 
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:$detektVersion")
@@ -54,7 +55,7 @@ dependencies {
 	testImplementation("io.mockk:mockk:$mockkVersion")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("com.h2database:h2")
-	testImplementation("org.springframework.kafka:spring-kafka-test")
+	testImplementation("org.springframework.kafka:spring-kafka-test:$kafkaVersion")
 
 	testImplementation("io.kotest:kotest-runner-junit5:$kotestJunit5Version")
 	testImplementation("io.kotest.extensions:kotest-extensions-spring:$kotestSpringVersion")
