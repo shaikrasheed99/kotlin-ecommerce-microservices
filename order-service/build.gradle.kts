@@ -38,6 +38,7 @@ val resilience4jVersion = "2.2.0"
 val testcontainersMockserverVersion = "1.19.8"
 val mockserverNettyVersion = "5.15.0"
 val shedLockVersion = "6.0.1"
+val kafkaVersion = "3.3.0"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -57,7 +58,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client:$eurekaClientVersion")
     implementation("io.github.resilience4j:resilience4j-spring-boot2:$resilience4jVersion")
 
-    implementation("org.springframework.kafka:spring-kafka")
+    implementation("org.springframework.kafka:spring-kafka:$kafkaVersion")
     implementation("io.cloudevents:cloudevents-json-jackson:$cloudEventsJsonVersion")
 
     implementation("net.javacrumbs.shedlock:shedlock-spring:$shedLockVersion")
@@ -80,7 +81,7 @@ dependencies {
     testImplementation("org.testcontainers:postgresql")
     testImplementation("org.testcontainers:mockserver:$testcontainersMockserverVersion")
 
-    testImplementation("org.springframework.kafka:spring-kafka-test")
+    testImplementation("org.springframework.kafka:spring-kafka-test:$kafkaVersion")
 }
 
 dependencyCheck {
