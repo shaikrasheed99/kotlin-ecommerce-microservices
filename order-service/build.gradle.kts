@@ -84,6 +84,9 @@ dependencies {
 }
 
 dependencyCheck {
+    analyzers {
+        centralEnabled = false
+    }
     suppressionFile = "./suppression-file.xml"
 }
 
