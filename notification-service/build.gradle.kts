@@ -34,7 +34,7 @@ val kotestJunit5Version = "5.9.1"
 val kotestSpringVersion = "1.3.0"
 val kotestJsonVersion = "5.9.1"
 val awaitilityVersion = "4.2.1"
-val kafkaVersion = "3.3.0"
+val kafkaVersion = "3.3.1"
 
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
