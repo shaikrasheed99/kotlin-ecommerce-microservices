@@ -37,7 +37,7 @@ val kotestJsonVersion = "5.9.1"
 val resilience4jVersion = "2.2.0"
 val testcontainersMockserverVersion = "1.19.8"
 val mockserverNettyVersion = "5.15.0"
-val shedLockVersion = "6.0.1"
+val shedLockVersion = "6.2.0"
 val kafkaVersion = "3.3.0"
 
 dependencies {
