@@ -7,7 +7,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.1.6"
 	id("org.owasp.dependencycheck") version "12.0.1"
 
-	kotlin("jvm") version "2.1.0"
+	kotlin("jvm") version "2.1.10"
 	kotlin("plugin.spring") version "2.1.0"
 }
 
