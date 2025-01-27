@@ -8,7 +8,7 @@ plugins {
 	id("org.owasp.dependencycheck") version "12.0.0"
 
 	kotlin("jvm") version "2.1.0"
-	kotlin("plugin.spring") version "2.1.0"
+	kotlin("plugin.spring") version "2.1.10"
 }
 
 group = "com.ecommerce"
